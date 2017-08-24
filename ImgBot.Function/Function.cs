@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using ImageMagick;
 using LibGit2Sharp;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
@@ -27,7 +28,11 @@ namespace ImgBot.Function
 
 
             // optimize images
-
+            ImageOptimizer imageOptimizer = new ImageOptimizer();
+            foreach (var inputPath in images)
+            {
+                try { imageOptimizer.LosslessCompress(inputPath); } catch { }
+            }
         }
     }
 
