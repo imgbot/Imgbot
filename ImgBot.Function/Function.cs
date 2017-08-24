@@ -28,17 +28,6 @@ namespace ImgBot.Function
 
             // optimize images
 
-            foreach (var inputPath in images)
-            {
-                using (var input = File.OpenRead(inputPath))
-                {
-                    using (var output = File.OpenWrite("C:\\tmp\\img1.png"))
-                    {
-                        var image = new Image(input);
-                    }
-                }
-            }
-
         }
     }
 
