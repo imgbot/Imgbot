@@ -1,26 +1,17 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using ImageMagick;
 using LibGit2Sharp;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 
 namespace ImgBot.Function
 {
-    public static class Function
+    public static class Work
     {
-        [FunctionName("QueueTrigger")]        
-        public static void Run([QueueTrigger("analyze", Connection = "")]AnalyzeMessage analyzeMessage, TraceWriter log, ExecutionContext context)
+        public static void CompressImages(string cloneUrl, string localPath)
         {
-            log.Info($"C# Queue trigger function processed: {context.FunctionDirectory}");
-
-            var localPath = Path.Combine(context.FunctionDirectory, analyzeMessage.RepoName +  new Random().Next(100,99999).ToString());
-
-
             // clone
-            Repository.Clone(analyzeMessage.CloneUrl, localPath);
-
+            Repository.Clone(cloneUrl, localPath);
 
             // extract images
             var imgPatterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", };
@@ -49,16 +40,10 @@ namespace ImgBot.Function
             var options = new PushOptions
             {
                 CredentialsProvider = (_url, _user, _cred) =>
-                    new UsernamePasswordCredentials { Username = "dabutvin", Password = "XXXXXXXXXXXX" }
+                    new UsernamePasswordCredentials { Username = "dabutvin", Password = "3a594c384364a54a7e181adbe4599be6d28ec9b6" }
             };
 
             repo.Network.Push(remote, @"refs/heads/imgbot", options);
         }
-    }
-
-    public class AnalyzeMessage
-    {
-        public string CloneUrl { get; set; }
-        public string RepoName { get; set; }
     }
 }

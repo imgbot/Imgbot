@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgBot.Function", "ImgBot.Function\ImgBot.Function.csproj", "{EFAA486B-C1E6-408A-BF32-D288BF198706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImgBot.Function", "ImgBot.Function\ImgBot.Function.csproj", "{EFAA486B-C1E6-408A-BF32-D288BF198706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgBot.Web", "ImgBot.Web\ImgBot.Web.csproj", "{42A58CB9-5507-440D-8807-56C74299E329}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImgBot.Web", "ImgBot.Web\ImgBot.Web.csproj", "{42A58CB9-5507-440D-8807-56C74299E329}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgBot.Common", "ImgBot.Common\ImgBot.Common.csproj", "{D9A6A538-CC4E-4FDD-A39C-65BC8F763D95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{42A58CB9-5507-440D-8807-56C74299E329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A58CB9-5507-440D-8807-56C74299E329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A58CB9-5507-440D-8807-56C74299E329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9A6A538-CC4E-4FDD-A39C-65BC8F763D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9A6A538-CC4E-4FDD-A39C-65BC8F763D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9A6A538-CC4E-4FDD-A39C-65BC8F763D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9A6A538-CC4E-4FDD-A39C-65BC8F763D95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

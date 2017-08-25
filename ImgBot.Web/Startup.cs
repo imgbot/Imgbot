@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ImgBot.Common.Mediation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 
 namespace ImgBot.Web
 {
@@ -27,6 +29,19 @@ namespace ImgBot.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var storageAccount = CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]);
+            services.AddSingleton(_ =>
+            {
+                return storageAccount.CreateCloudBlobClient();
+            });
+
+            services.AddSingleton(_ =>
+            {
+                return storageAccount.CreateCloudQueueClient();
+            });
+
+            services.AddScoped<IMediator, QueueMediator>();
+
             // Add framework services.
             services.AddMvc();
         }

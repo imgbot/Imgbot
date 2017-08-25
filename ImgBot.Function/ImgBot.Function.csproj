@@ -13,6 +13,9 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.0-alpha3" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImgBot.Common\ImgBot.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
