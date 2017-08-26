@@ -2,3 +2,4 @@ bin
 obj
 packages
 .vs
+*.pem

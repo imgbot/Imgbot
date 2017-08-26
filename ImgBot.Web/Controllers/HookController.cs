@@ -59,11 +59,17 @@ namespace ImgBot.Web.Controllers
             switch (hook.action)
             {
                 case "created":
-                    await _mediator.SendAsync(new InstallationMessage
+                    foreach (var repo in hook.repositories)
                     {
-                        InstallationId = hook.installation.id,
-                        Owner = hook.installation.account.login,
-                    });
+                        await _mediator.SendAsync(new InstallationMessage
+                        {
+                            InstallationId = hook.installation.id,
+                            Owner = hook.installation.account.login,
+                            AccessTokensUrl = hook.installation.access_tokens_url,
+                            RepoName = repo.name,
+                            CloneUrl = $"https://github.com/{repo.full_name}",
+                        });
+                    }
                     break;
                 case "deleted":
                     await Task.FromResult(0);
