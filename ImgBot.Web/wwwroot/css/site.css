@@ -1,37 +1,57 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    color: #fff;
+    background: #333;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+h1 {
+    font-family: 'Oswald', cursive;
+    font-size: 180px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
+h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 100px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+p {
+    font-family: 'Muli', sans-serif;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+h1,
+h2,
+h3,
+h4 {
+    text-transform: uppercase;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
+.btn {
+    font-size: 36px;
+    
+}
+
+.row-how-it-works {
+    padding: 50px 0;
+}
+
+.row-footer {
+    height: 100px;
+    position: relative;
+    background: #000;
+}
+
+.row-footer p {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+}
+
+@media only screen and (min-width: 960px) {
+    .row-hero {
+        background-image: url('../images/hero.jpg');
+        background-position-x: center;
+        height: 120vh;
     }
 }
