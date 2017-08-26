@@ -21,7 +21,7 @@ namespace ImgBot.Function
             // good for ~10 minutes
             var installationToken = await InstallationToken.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText("imgbot.2017-08-23.private-key.pem"));
+                File.OpenText(Path.Combine(context.FunctionDirectory, "..\\imgbot.2017-08-23.private-key.pem")));
 
             var localPath = Path.Combine(context.FunctionDirectory, installationMessage.RepoName + new Random().Next(100, 99999).ToString());
 

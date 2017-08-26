@@ -3,3 +3,6 @@ obj
 packages
 .vs
 *.pem
+*.pubxml
+*.pubxml.user
+*.csproj.user
