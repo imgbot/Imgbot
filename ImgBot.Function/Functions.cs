@@ -31,9 +31,11 @@ namespace ImgBot.Function
                 LocalPath = localPath,
                 Username = "x-access-token",
                 Password = installationToken.token,
+                RepoName = installationMessage.RepoName,
+                RepoOwner = installationMessage.Owner,
             };
 
-            CompressImages.Run(compressImagesParameters);
+            await CompressImages.RunAsync(compressImagesParameters);
         }
     }
 }

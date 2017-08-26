@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ImageMagick;
 using LibGit2Sharp;
+using Octokit;
+using Octokit.Internal;
 
 namespace ImgBot.Function
 {
@@ -10,17 +13,17 @@ namespace ImgBot.Function
     {
         private const string BranchName = "imgbot";
 
-        public static void Run(CompressimagesParameters parameters)
+        public static async Task RunAsync(CompressimagesParameters parameters)
         {
             // clone
-            Repository.Clone(parameters.CloneUrl, parameters.LocalPath);
+            LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath);
 
             // extract images
             var imgPatterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", };
             var images = imgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(parameters.LocalPath, pattern, SearchOption.AllDirectories)).ToArray();
 
             // check out a branch
-            var repo = new Repository(parameters.LocalPath);
+            var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
             repo.CreateBranch(BranchName);
             var branch = Commands.Checkout(repo, BranchName);
 
@@ -33,7 +36,7 @@ namespace ImgBot.Function
             }
 
             // commit
-            var signature = new Signature("imgbot", "imgbot@gmail.com", DateTimeOffset.Now);
+            var signature = new LibGit2Sharp.Signature("imgbot", "imgbot@gmail.com", DateTimeOffset.Now);
             repo.Commit("[ImgBot] optimizes images", signature, signature);
 
             // push to GitHub
@@ -46,11 +49,22 @@ namespace ImgBot.Function
             };
 
             repo.Network.Push(remote, $"refs/heads/{BranchName}", options);
+
+
+            // open PR
+            var credentials = new InMemoryCredentialStore(new Octokit.Credentials(parameters.Username, parameters.Password));
+            var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), credentials);
+
+            var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
+            pr.Body = "Beep boop. Optimizing your images is my life";
+            await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
     }
 
     public class CompressimagesParameters
     {
+        public string RepoOwner { get; set; }
+        public string RepoName { get; set; }
         public string LocalPath { get; set; }
         public string CloneUrl { get; set; }
         public string Username { get; set; }
