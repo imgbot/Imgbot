@@ -36,7 +36,7 @@ namespace ImgBot.Function
             }
 
             // commit
-            var signature = new LibGit2Sharp.Signature("imgbot", "imgbot@gmail.com", DateTimeOffset.Now);
+            var signature = new LibGit2Sharp.Signature("imgbot", "imgbothelp@gmail.com", DateTimeOffset.Now);
             repo.Commit("[ImgBot] optimizes images", signature, signature);
 
             // push to GitHub
