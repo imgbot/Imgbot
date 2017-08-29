@@ -3,12 +3,11 @@
     padding: 0;
     overflow-x: hidden;
     color: #fff;
-    background: #333;
 }
 
 h1 {
     font-family: 'Oswald', cursive;
-    font-size: 160px;
+    font-size: 96px;
 }
 
 h2 {
@@ -19,6 +18,10 @@ h2 {
 p {
     font-family: 'Muli', sans-serif;
     font-size: 18px;
+}
+
+img {
+    max-width: 100%;
 }
 
 h1,
@@ -32,32 +35,41 @@ h4 {
     font-size: 30px;
 }
 
-.row-how-it-works {
+.row {
     padding: 50px 0;
+    background: #2f1919;
 }
 
-.row-info {
-    background-color: #666;
-    padding: 50px 0;
+.row-light {
+    background-color: #fff;
+    color: #000;
+    border-bottom: 1px solid #000;
 }
 
 .row-footer {
-    height: 60px;
     position: relative;
     background: #000;
 }
 
-.row-footer p {
-    position: absolute;
-    bottom: 0;
-    left: 50px;
-}
-
 @media only screen and (min-width: 960px) {
     .row-hero {
+        padding: 0;
         background-image: url('../images/hero.jpg');
         background-position-x: center;
         background-repeat: no-repeat;
         height: 120vh;
+    }
+
+    h1 {
+        font-size: 160px;
+    }
+
+    .message {
+        font-size: 48px;
+    }
+
+    .row-footer li {
+        float: left;
+        margin-right: 30px;
     }
 }
