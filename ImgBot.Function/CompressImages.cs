@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ImageMagick;
+using ImgBot.Common;
 using LibGit2Sharp;
 using Octokit;
 using Octokit.Internal;
@@ -60,8 +61,7 @@ namespace ImgBot.Function
         private static Dictionary<string, Percentage> OptimizeImages(LibGit2Sharp.Repository repo, string localPath)
         {
             // extract images
-            var imgPatterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", };
-            var images = imgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories)).ToArray();
+            var images = KnownImgPatterns.ImgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories)).ToArray();
 
             var optimizedImages = new Dictionary<string, Percentage>();
 
