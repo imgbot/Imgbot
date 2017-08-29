@@ -18,7 +18,7 @@ namespace ImgBot.Function
             TraceWriter log,
             ExecutionContext context)
         {
-            if(installation == null)
+            if (installation == null)
             {
                 throw new Exception($"No installation found for installion: {installation.InstallationId}");
             }
@@ -49,22 +49,23 @@ namespace ImgBot.Function
         public static async Task RunInstallationMessage(
             [QueueTrigger("installationmessage")]InstallationMessage installationMessage,
             [Table("installation")] ICollector<Installation> installations,
+            [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
             TraceWriter log,
             ExecutionContext context)
         {
-            try
+
+            if (installation != null)
             {
-                installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
-                {
-                    AccessTokensUrl = installationMessage.AccessTokensUrl,
-                    CloneUrl = installationMessage.CloneUrl,
-                    Owner = installationMessage.Owner,
-                });
+                // already installed
+                return;
             }
-            catch(Exception e)
+
+            installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
             {
-                log.Error($"Unable to store installation. InstallationId: {installationMessage.InstallationId} RepoName: {installationMessage.RepoName}", e);
-            }
+                AccessTokensUrl = installationMessage.AccessTokensUrl,
+                CloneUrl = installationMessage.CloneUrl,
+                Owner = installationMessage.Owner,
+            });
 
             var installationTokenParameters = new InstallationTokenParameters
             {
