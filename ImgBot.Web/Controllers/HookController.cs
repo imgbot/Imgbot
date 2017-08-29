@@ -70,6 +70,7 @@ namespace ImgBot.Web.Controllers
             await _mediator.SendAsync(new ImageUpdateMessage
             {
                 InstallationId = hook.installation.id,
+                RepoName = hook.repository.name,
             });
 
             return "true";

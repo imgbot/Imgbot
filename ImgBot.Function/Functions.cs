@@ -14,7 +14,7 @@ namespace ImgBot.Function
         [FunctionName("imageupdatemessage")]
         public static async Task RunImageUpdateMessage(
             [QueueTrigger("imageupdatemessage")]ImageUpdateMessage imageUpdateMessage,
-            [Table("installation", "partition", "{InstallationId}")] Installation installation,
+            [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
             TraceWriter log,
             ExecutionContext context)
         {
