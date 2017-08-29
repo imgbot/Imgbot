@@ -36,7 +36,7 @@ namespace ImgBot.Web.Controllers
             switch (hookEvent)
             {
                 case "installation_repositories":
-                    await ProcessInstallationRepositoriesAsync(hook);
+                    await ProcessInstallationAsync(hook);
                     break;
                 case "installation":
                     await ProcessInstallationAsync(hook);
@@ -71,16 +71,24 @@ namespace ImgBot.Web.Controllers
                         });
                     }
                     break;
+                case "added":
+                    foreach (var repo in hook.repositories_added)
+                    {
+                        await _mediator.SendAsync(new InstallationMessage
+                        {
+                            InstallationId = hook.installation.id,
+                            Owner = hook.installation.account.login,
+                            AccessTokensUrl = hook.installation.access_tokens_url,
+                            RepoName = repo.name,
+                            CloneUrl = $"https://github.com/{repo.full_name}",
+                        });
+                    }
+                    break;
                 case "deleted":
                     await Task.FromResult(0);
                     break;
 
             }
-        }
-
-        private Task ProcessInstallationRepositoriesAsync(Hook hook)
-        {
-            throw new NotImplementedException();
         }
     }
 }
