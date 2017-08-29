@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ImgBot.Web.Models
 {
@@ -14,6 +15,24 @@ namespace ImgBot.Web.Models
         public int number { get; set; }
         public PullRequest pull_request { get; set; }
         public Repository repository { get; set; }
+
+        public List<Commit> commits { get; set; }
+
+        [JsonProperty("ref")]
+        public string @ref { get; set; }
+
+        public class Commit
+        {
+            public string id { get; set; }
+            public string tree_id { get; set; }
+            public bool distinct { get; set; }
+            public string message { get; set; }
+            public string timestamp { get; set; }
+            public string url { get; set; }
+            public List<string> added { get; set; }
+            public List<string> removed { get; set; }
+            public List<string> modified { get; set; }
+        }
 
         public class Account
         {

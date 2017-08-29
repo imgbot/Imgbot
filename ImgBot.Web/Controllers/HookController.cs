@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ImgBot.Common;
 using ImgBot.Common.Mediation;
 using ImgBot.Common.Messages;
 using ImgBot.Web.Models;
@@ -23,38 +23,60 @@ namespace ImgBot.Web.Controllers
         {
             var hookEvent = HttpContext.Request.Headers["X-GitHub-Event"];
 
-            if (hookEvent != "installation_repositories" && hookEvent != "installation" && hookEvent != "pull_request")
+            if (hookEvent != "installation_repositories" && hookEvent != "installation" && hookEvent != "push")
             {
                 return Json(new { data = "Not supported." });
             }
 
-            if (hook.installation.access_tokens_url == null && hookEvent != "pull_request")
+            if (hook.installation.access_tokens_url == null && hookEvent != "push")
             {
                 return Json(new { data = "Installation access_tokens_url required" });
             }
 
+            string response = "false";
+
             switch (hookEvent)
             {
                 case "installation_repositories":
-                    await ProcessInstallationAsync(hook);
+                    response = await ProcessInstallationAsync(hook);
                     break;
                 case "installation":
-                    await ProcessInstallationAsync(hook);
+                    response = await ProcessInstallationAsync(hook);
                     break;
-                case "pull_request":
-                    await ProcessPullRequestAsync(hook);
+                case "push":
+                    response = await ProcessPushAsync(hook);
                     break;
             }
 
-            return Json(new { data = true });
+            return Json(new { data = response });
         }
 
-        private Task ProcessPullRequestAsync(Hook hook)
+        private async Task<string> ProcessPushAsync(Hook hook)
         {
-            throw new NotImplementedException();
+            if (hook.@ref != "refs/heads/master")
+            {
+                return "Commit to non master branch";
+            }
+
+            var files = hook.commits.SelectMany(x => x.added)
+                .Concat(hook.commits.SelectMany(x => x.modified))
+                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.EndsWith(extension)));
+
+            if (files.Any() == false)
+            {
+                return "No image files touched";
+            }
+
+            await _mediator.SendAsync(new ImageUpdateMessage
+            {
+                InstallationId = hook.installation.id,
+                RepoName = hook.repository.name,
+            });
+
+            return "true";
         }
 
-        private async Task ProcessInstallationAsync(Hook hook)
+        private async Task<string> ProcessInstallationAsync(Hook hook)
         {
             switch (hook.action)
             {
@@ -89,6 +111,8 @@ namespace ImgBot.Web.Controllers
                     break;
 
             }
+
+            return "true";
         }
     }
 }
