@@ -1,4 +1,5 @@
 ﻿using ImgBot.Common.Mediation;
+using ImgBot.Common.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,13 @@ namespace ImgBot.Web
                 return storageAccount.CreateCloudQueueClient();
             });
 
+            services.AddSingleton(_ =>
+            {
+                return storageAccount.CreateCloudTableClient();
+            });
+
             services.AddScoped<IMediator, QueueMediator>();
+            services.AddScoped<IRepository, TableRepository>();
 
             services.Configure<MvcOptions>(options =>
             {

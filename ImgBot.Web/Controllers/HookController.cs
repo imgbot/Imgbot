@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ImgBot.Common;
 using ImgBot.Common.Mediation;
 using ImgBot.Common.Messages;
+using ImgBot.Common.Repository;
+using ImgBot.Common.TableModels;
 using ImgBot.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,12 @@ namespace ImgBot.Web.Controllers
     public class HookController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IRepository _repository;
 
-        public HookController(IMediator mediator)
+        public HookController(IMediator mediator, IRepository repository)
         {
             _mediator = mediator;
+            _repository = repository;
         }
 
         [HttpPost]
@@ -23,24 +26,14 @@ namespace ImgBot.Web.Controllers
         {
             var hookEvent = HttpContext.Request.Headers["X-GitHub-Event"];
 
-            if (hookEvent != "installation_repositories" && hookEvent != "installation" && hookEvent != "push")
-            {
-                return Json(new { data = "Not supported." });
-            }
-
-            if (hook.installation.access_tokens_url == null && hookEvent != "push")
-            {
-                return Json(new { data = "Installation access_tokens_url required" });
-            }
-
             string response = "false";
 
             switch (hookEvent)
             {
                 case "installation_repositories":
-                    response = await ProcessInstallationAsync(hook);
-                    break;
                 case "installation":
+                case "integration_installation_repositories":
+                case "integration_installation":
                     response = await ProcessInstallationAsync(hook);
                     break;
                 case "push":
@@ -106,8 +99,19 @@ namespace ImgBot.Web.Controllers
                         });
                     }
                     break;
+                case "removed":
+                    foreach (var repo in hook.repositories_removed)
+                    {
+                        await _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), repo.name);
+                    }
+                    break;
                 case "deleted":
-                    await Task.FromResult(0);
+                    var installations = await _repository.RetrievePartitionAsync<Installation>(hook.installation.id.ToString());
+                    foreach (var installation in installations)
+                    {
+                        await _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), installation.RepoName);
+                    }
+
                     break;
 
             }
