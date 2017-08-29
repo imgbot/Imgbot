@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ImageMagick;
 using LibGit2Sharp;
@@ -18,26 +20,21 @@ namespace ImgBot.Function
             // clone
             LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath);
 
-            // extract images
-            var imgPatterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", };
-            var images = imgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(parameters.LocalPath, pattern, SearchOption.AllDirectories)).ToArray();
-
             // check out a branch
             var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
             repo.CreateBranch(BranchName);
             var branch = Commands.Checkout(repo, BranchName);
 
             // optimize images
-            ImageOptimizer imageOptimizer = new ImageOptimizer();
-            foreach (var image in images)
-            {
-                try { imageOptimizer.LosslessCompress(image); } catch { }
-                Commands.Stage(repo, image);
-            }
+            var optimizedImages = OptimizeImages(repo, parameters.LocalPath);
+            if (optimizedImages.Count == 0)
+                return;
+
+            var commitMessage = CreateCommitMessage(optimizedImages);
 
             // commit
             var signature = new LibGit2Sharp.Signature("imgbot", "imgbothelp@gmail.com", DateTimeOffset.Now);
-            repo.Commit("[ImgBot] optimizes images", signature, signature);
+            repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
             var remote = repo.Network.Remotes["origin"];
@@ -58,6 +55,48 @@ namespace ImgBot.Function
             var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
             pr.Body = "Beep boop. Optimizing your images is my life";
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+        }
+
+        private static Dictionary<string, Percentage> OptimizeImages(LibGit2Sharp.Repository repo, string localPath)
+        {
+            // extract images
+            var imgPatterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", };
+            var images = imgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories)).ToArray();
+
+            var optimizedImages = new Dictionary<string, Percentage>();
+
+            ImageOptimizer imageOptimizer = new ImageOptimizer();
+            foreach (var image in images)
+            {
+                try
+                {
+                    FileInfo file = new FileInfo(image);
+                    double before = file.Length;
+                    if (imageOptimizer.LosslessCompress(file))
+                    {
+                        string fileName = image.Substring(localPath.Length);
+                        optimizedImages[fileName] = new Percentage((1 - (file.Length / before)) * 100);
+                        Commands.Stage(repo, image);
+                    }
+                }
+                catch { }
+            }
+
+            return optimizedImages;
+        }
+
+        private static string CreateCommitMessage(Dictionary<string, Percentage> optimizedImages)
+        {
+            var commitMessage = new StringBuilder();
+            commitMessage.AppendLine("[ImgBot] optimizes images");
+
+            foreach (var optimizedImage in optimizedImages.Keys)
+            {
+                commitMessage.AppendFormat("{0} ({1}))", optimizedImage, optimizedImages[optimizedImage].ToString());
+                commitMessage.AppendLine();
+            }
+
+            return commitMessage.ToString();
         }
     }
 
