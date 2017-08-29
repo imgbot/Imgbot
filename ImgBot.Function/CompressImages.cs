@@ -39,18 +39,19 @@ namespace ImgBot.Function
 
             // push to GitHub
             var remote = repo.Network.Remotes["origin"];
+            var username = "x-access-token";
 
             var options = new PushOptions
             {
                 CredentialsProvider = (_url, _user, _cred) =>
-                    new UsernamePasswordCredentials { Username = parameters.Username, Password = parameters.Password }
+                    new UsernamePasswordCredentials { Username = username, Password = parameters.Password }
             };
 
             repo.Network.Push(remote, $"refs/heads/{BranchName}", options);
 
 
             // open PR
-            var credentials = new InMemoryCredentialStore(new Octokit.Credentials(parameters.Username, parameters.Password));
+            var credentials = new InMemoryCredentialStore(new Octokit.Credentials(username, parameters.Password));
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), credentials);
 
             var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
@@ -106,7 +107,6 @@ namespace ImgBot.Function
         public string RepoName { get; set; }
         public string LocalPath { get; set; }
         public string CloneUrl { get; set; }
-        public string Username { get; set; }
         public string Password { get; set; }
     }
 }
