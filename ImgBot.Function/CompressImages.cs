@@ -67,10 +67,11 @@ namespace ImgBot.Function
             var optimizedImages = new Dictionary<string, Percentage>();
 
             ImageOptimizer imageOptimizer = new ImageOptimizer();
-            foreach (var image in images)
+            Parallel.ForEach(images, image =>
             {
                 try
                 {
+                    Console.WriteLine(image);
                     FileInfo file = new FileInfo(image);
                     double before = file.Length;
                     if (imageOptimizer.LosslessCompress(file))
@@ -81,7 +82,7 @@ namespace ImgBot.Function
                     }
                 }
                 catch { }
-            }
+            });
 
             return optimizedImages;
         }
