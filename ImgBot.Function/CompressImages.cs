@@ -33,7 +33,7 @@ namespace ImgBot.Function
             var commitMessage = CreateCommitMessage(optimizedImages);
 
             // commit
-            var signature = new LibGit2Sharp.Signature("imgbot", "imgbothelp@gmail.com", DateTimeOffset.Now);
+            var signature = new LibGit2Sharp.Signature("ImgBotApp", "ImgBotHelp@gmail.com", DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
