@@ -54,18 +54,15 @@ namespace ImgBot.Function
             ExecutionContext context)
         {
 
-            if (installation != null)
+            if (installation != null) // already installed
             {
-                // already installed
-                return;
+                installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
+                {
+                    AccessTokensUrl = installationMessage.AccessTokensUrl,
+                    CloneUrl = installationMessage.CloneUrl,
+                    Owner = installationMessage.Owner,
+                });
             }
-
-            installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
-            {
-                AccessTokensUrl = installationMessage.AccessTokensUrl,
-                CloneUrl = installationMessage.CloneUrl,
-                Owner = installationMessage.Owner,
-            });
 
             var installationTokenParameters = new InstallationTokenParameters
             {
