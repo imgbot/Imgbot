@@ -20,9 +20,14 @@ namespace ImgBot.Function
         {
             // clone
             LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath);
-
-            // check out a branch
             var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
+            var remote = repo.Network.Remotes["origin"];
+
+            // check if we have the branch already
+            if (repo.Network.ListReferences(remote).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
+                return;
+
+            // check out the branch
             repo.CreateBranch(BranchName);
             var branch = Commands.Checkout(repo, BranchName);
 
@@ -38,9 +43,7 @@ namespace ImgBot.Function
             repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
-            var remote = repo.Network.Remotes["origin"];
             var username = "x-access-token";
-
             var options = new PushOptions
             {
                 CredentialsProvider = (_url, _user, _cred) =>
@@ -48,7 +51,6 @@ namespace ImgBot.Function
             };
 
             repo.Network.Push(remote, $"refs/heads/{BranchName}", options);
-
 
             // open PR
             var credentials = new InMemoryCredentialStore(new Octokit.Credentials(username, parameters.Password));
