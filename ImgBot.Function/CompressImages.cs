@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ImageMagick;
 using ImgBot.Common;
 using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
 using Octokit;
 using Octokit.Internal;
 
@@ -15,11 +16,22 @@ namespace ImgBot.Function
     public static class CompressImages
     {
         private const string BranchName = "imgbot";
+        private const string Username = "x-access-token";
 
         public static async Task RunAsync(CompressimagesParameters parameters)
         {
+            CredentialsHandler credentialsProvider =
+                (_url, _user, _cred) =>
+                new UsernamePasswordCredentials { Username = Username, Password = parameters.Password };
+
+            InMemoryCredentialStore inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
+
             // clone
-            LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath);
+            var cloneOptions = 
+            LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath, new CloneOptions
+            {
+                CredentialsProvider = credentialsProvider,
+            });
             var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
 
@@ -43,18 +55,13 @@ namespace ImgBot.Function
             repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
-            var username = "x-access-token";
-            var options = new PushOptions
+            repo.Network.Push(remote, $"refs/heads/{BranchName}", new PushOptions
             {
-                CredentialsProvider = (_url, _user, _cred) =>
-                    new UsernamePasswordCredentials { Username = username, Password = parameters.Password }
-            };
-
-            repo.Network.Push(remote, $"refs/heads/{BranchName}", options);
+                CredentialsProvider = credentialsProvider,
+            });
 
             // open PR
-            var credentials = new InMemoryCredentialStore(new Octokit.Credentials(username, parameters.Password));
-            var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), credentials);
+            var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
             var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
             pr.Body = "Beep boop. Optimizing your images is my life";
