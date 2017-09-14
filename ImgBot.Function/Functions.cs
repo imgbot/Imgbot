@@ -54,7 +54,7 @@ namespace ImgBot.Function
             ExecutionContext context)
         {
 
-            if (installation != null) // already installed
+            if (installation == null) // not already installed
             {
                 installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
                 {
