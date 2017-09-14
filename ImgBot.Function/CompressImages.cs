@@ -36,8 +36,15 @@ namespace ImgBot.Function
             var remote = repo.Network.Remotes["origin"];
 
             // check if we have the branch already
-            if (repo.Network.ListReferences(remote).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
-                return;
+            try
+            {
+                if (repo.Network.ListReferences(remote).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
+                    return;
+            }
+            catch
+            {
+                // ignore
+            }
 
             // check out the branch
             repo.CreateBranch(BranchName);
