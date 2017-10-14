@@ -71,7 +71,7 @@ namespace ImgBot.Function
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
             var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
-            pr.Body = "Beep boop. Optimizing your images is my life";
+            pr.Body = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information.";
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
 
