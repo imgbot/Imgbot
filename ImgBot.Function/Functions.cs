@@ -11,6 +11,8 @@ namespace ImgBot.Function
 {
     public static class Functions
     {
+        private static Random s_random = new Random();
+
         [FunctionName("imageupdatemessage")]
         public static async Task RunImageUpdateMessage(
             [QueueTrigger("imageupdatemessage")]ImageUpdateMessage imageUpdateMessage,
@@ -83,6 +85,12 @@ namespace ImgBot.Function
                 RepoName = installationMessage.RepoName,
                 RepoOwner = installationMessage.Owner,
             };
+
+            // getting duplicate work happening at the same exact time in multiple threads
+            // the most common case is install and add events on the same repo when the queue is asleep
+            // the queue wakes up and dequeues both messages at the same time in 2 threads
+            // wait a random amount of seconds so that one will win
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(s_random.Next(0, 20)));
 
             await CompressImages.RunAsync(compressImagesParameters);
         }
