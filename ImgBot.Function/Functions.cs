@@ -22,7 +22,7 @@ namespace ImgBot.Function
         {
             if (installation == null)
             {
-                throw new Exception($"No installation found for installion: {installation.InstallationId}");
+                throw new Exception($"No installation found for InstallationId: {installation.InstallationId}");
             }
 
             var installationTokenParameters = new InstallationTokenParameters

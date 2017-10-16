@@ -36,7 +36,7 @@ namespace ImgBot.Function
                     break;
             }
 
-            // find the last time imgbot commited here
+            // find the last time imgbot committed here
             var imgbotCommit = repo.Commits.FirstOrDefault(x => x.Author.Email == KnownGitHubs.ImgBotEmail);
 
             if (imgbotCommit == null)
