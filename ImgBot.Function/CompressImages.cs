@@ -8,6 +8,7 @@ using ImageMagick;
 using ImgBot.Common;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
+using Newtonsoft.Json;
 using Octokit;
 using Octokit.Internal;
 
@@ -24,7 +25,7 @@ namespace ImgBot.Function
                 (_url, _user, _cred) =>
                 new UsernamePasswordCredentials { Username = Username, Password = parameters.Password };
 
-            InMemoryCredentialStore inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
+            var inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
 
             // clone
             var cloneOptions = 
@@ -46,6 +47,25 @@ namespace ImgBot.Function
                 // ignore
             }
 
+            var repoConfiguration = new RepoConfiguration();
+
+            try
+            {
+                // see if .imgbotconfig exists in repo root
+                var repoConfigJson = File.ReadAllText(parameters.LocalPath + "\\.imgbotconfig");
+                if (!string.IsNullOrEmpty(repoConfigJson))
+                {
+                    repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+
+            if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
+                return;
+
             // check out the branch
             repo.CreateBranch(BranchName);
             var branch = Commands.Checkout(repo, BranchName);
@@ -58,7 +78,7 @@ namespace ImgBot.Function
             var commitMessage = CreateCommitMessage(optimizedImages);
 
             // commit
-            var signature = new LibGit2Sharp.Signature("ImgBotApp", "ImgBotHelp@gmail.com", DateTimeOffset.Now);
+            var signature = new LibGit2Sharp.Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
@@ -110,7 +130,7 @@ namespace ImgBot.Function
 
             foreach (var optimizedImage in optimizedImages.Keys)
             {
-                commitMessage.AppendFormat("{0} ({1}))", optimizedImage, optimizedImages[optimizedImage].ToString());
+                commitMessage.AppendFormat("{0} ({1})", optimizedImage, optimizedImages[optimizedImage].ToString());
                 commitMessage.AppendLine();
             }
 
