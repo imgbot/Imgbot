@@ -39,7 +39,7 @@ namespace ImgBot.Function
             // check if we have the branch already
             try
             {
-                if (repo.Network.ListReferences(remote).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
+                if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
                     return;
             }
             catch
