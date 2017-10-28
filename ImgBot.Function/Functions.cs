@@ -38,7 +38,7 @@ namespace ImgBot.Function
             var compressImagesParameters = new CompressimagesParameters
             {
                 CloneUrl = installation.CloneUrl,
-                LocalPath = LocalPath.CloneDir(context.FunctionDirectory, installation.RepoName),
+                LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP"), installation.RepoName),
                 Password = installationToken.token,
                 RepoName = installation.RepoName,
                 RepoOwner = installation.Owner,
@@ -80,7 +80,7 @@ namespace ImgBot.Function
             var compressImagesParameters = new CompressimagesParameters
             {
                 CloneUrl = installationMessage.CloneUrl,
-                LocalPath = LocalPath.CloneDir(context.FunctionDirectory, installationMessage.RepoName),
+                LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP"), installationMessage.RepoName),
                 Password = installationToken.token,
                 RepoName = installationMessage.RepoName,
                 RepoOwner = installationMessage.Owner,
