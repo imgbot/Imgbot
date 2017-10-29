@@ -13,7 +13,15 @@ You can either get the tools [integrated with Visual Studio](https://blogs.msdn.
 or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run ImgBot.Function`.
 All operating systems welcome :)
 
-Within the ImgBot.Function directory you will see the following key classes
+Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage/AzureWebJobsDashboard` filled out. 
+
+You can see the schema of this file in [the doc](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#local-settings-file)
+
+Alternatively, running `func init` from the function directory will stamp out everything for you, or if you have a deployed function you can fetch the storage it is using.
+
+`func azure functionapp fetch-app-settings <functionName>`
+
+Now that you are running, within the ImgBot.Function directory you will see the following key classes
 
  - `Functions.cs` - the triggers for starting the workflows
  - `CompressImages.cs` - clone the repo, compress the images, open the PR
@@ -37,6 +45,8 @@ Within the ImgBot.Web directory you will see the following key files
 The 2 main events we deal with through webhooks are installation events and push events.
 Each time a repo has ImgBot installed, GitHub fires a hook to `HookController.cs` and we start the installation workflow.
 Each time a repo that already has ImgBot installed gets pushed to, GitHub fires a hook to `HookController.cs` and, if the commit contains an image update, we start the compression worflow.
+
+If you need to make a connection to a real storage account you can update the `appsettings.json` locally to replace the `ACCOUNT_NAME` and `ACCOUNT_KEY` placeholders there
 
 ## The tests
 
