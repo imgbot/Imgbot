@@ -64,6 +64,11 @@ This file should be placed in the root of the repository and set to your liking.
 ```
 {
     "schedule": "daily" // daily|weekly|monthly
+    "ignoredFiles": [
+    	"*.jpg",                   // by extension
+    	"image1.png",              // by filename
+    	"public/special_images/*", // by folderpath
+    ]
 }
 ```
 
@@ -77,6 +82,11 @@ to ImgBotHelp@gmail.com
     - Accepts: daily|weekly|monthly
     - Limits the PRs from ImgBot to once a day, once a week, or once a month respectively
     - The default behavior is to receive ImgBot PRs as images require optimization
+ - ignoredFiles
+ 	- optional
+ 	- Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
+ 	- Limits the images optimized by ImgBot by esentially ignoring them
+ 	- When ignoring by filename no path is neccesary, when ignoring by foldername full path from root is necessary
 
 ## The end result
 

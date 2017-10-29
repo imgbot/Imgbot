@@ -71,7 +71,8 @@ namespace ImgBot.Function
             var branch = Commands.Checkout(repo, BranchName);
 
             // optimize images
-            var optimizedImages = OptimizeImages(repo, parameters.LocalPath);
+            var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
+            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths);
             if (optimizedImages.Count == 0)
                 return;
 
@@ -95,15 +96,12 @@ namespace ImgBot.Function
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
 
-        private static Dictionary<string, Percentage> OptimizeImages(LibGit2Sharp.Repository repo, string localPath)
+        private static Dictionary<string, Percentage> OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
         {
-            // extract images
-            var images = KnownImgPatterns.ImgPatterns.AsParallel().SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories)).ToArray();
-
             var optimizedImages = new Dictionary<string, Percentage>();
 
             ImageOptimizer imageOptimizer = new ImageOptimizer();
-            Parallel.ForEach(images, image =>
+            Parallel.ForEach(imagePaths, image =>
             {
                 try
                 {
