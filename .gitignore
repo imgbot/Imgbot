@@ -6,3 +6,5 @@ packages
 *.pubxml
 *.pubxml.user
 *.csproj.user
+local.settings.json
+appsettings.json
