@@ -36,9 +36,12 @@ namespace ImgBot.Function
             var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
 
-            // check if we have the branch already
+            // check if we have the branch already or this is empty repo
             try
             {
+                if (repo.Network.ListReferences(remote, credentialsProvider).Any() == false)
+                    return;
+
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
                     return;
             }
