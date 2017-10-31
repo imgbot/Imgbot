@@ -28,7 +28,7 @@ namespace ImgBot.Function
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
 
             // clone
-            var cloneOptions = 
+            var cloneOptions =
             LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath, new CloneOptions
             {
                 CredentialsProvider = credentialsProvider,
@@ -99,9 +99,9 @@ namespace ImgBot.Function
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
 
-        private static Dictionary<string, Percentage> OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
+        private static Dictionary<string, Tuple<double, double>> OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
         {
-            var optimizedImages = new Dictionary<string, Percentage>();
+            var optimizedImages = new Dictionary<string, Tuple<double, double>>();
 
             ImageOptimizer imageOptimizer = new ImageOptimizer();
             Parallel.ForEach(imagePaths, image =>
@@ -114,7 +114,7 @@ namespace ImgBot.Function
                     if (imageOptimizer.LosslessCompress(file))
                     {
                         string fileName = image.Substring(localPath.Length);
-                        optimizedImages[fileName] = new Percentage((1 - (file.Length / before)) * 100);
+                        optimizedImages[fileName] = new Tuple<double, double>(before, file.Length);
                         Commands.Stage(repo, image);
                     }
                 }
@@ -124,16 +124,24 @@ namespace ImgBot.Function
             return optimizedImages;
         }
 
-        private static string CreateCommitMessage(Dictionary<string, Percentage> optimizedImages)
+        private static string CreateCommitMessage(Dictionary<string, Tuple<double, double>> optimizedImages)
         {
             var commitMessage = new StringBuilder();
+            var totalOrigKb = 0.0;
+            var totalOptKb = 0.0;
             commitMessage.AppendLine("[ImgBot] optimizes images");
 
             foreach (var optimizedImage in optimizedImages.Keys)
             {
-                commitMessage.AppendFormat("{0} ({1})", optimizedImage, optimizedImages[optimizedImage].ToString());
+                var percent = 1 - (optimizedImages[optimizedImage].Item1 - optimizedImages[optimizedImage].Item2) * 100;
+                commitMessage.AppendFormat("{0} -- {1}kb -> {2}kb ({3})", optimizedImage, optimizedImages[optimizedImage].Item1, optimizedImages[optimizedImage].Item2, percent);
                 commitMessage.AppendLine();
+                totalOrigKb += optimizedImages[optimizedImage].Item1;
+                totalOptKb += optimizedImages[optimizedImage].Item2;
             }
+
+            commitMessage.AppendFormat("*Total: {0}kb -> {1}kb ({2})", totalOrigKb, totalOptKb, (1 - (totalOrigKb - totalOptKb) * 100));
+            commitMessage.AppendLine();
 
             return commitMessage.ToString();
         }
