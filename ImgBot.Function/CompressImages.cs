@@ -79,7 +79,8 @@ namespace ImgBot.Function
             if (optimizedImages.Count == 0)
                 return;
 
-            var commitMessage = CreateCommitMessage(optimizedImages);
+            // create commit message based on optimizations
+            var commitMessage = CommitMessage.Create(optimizedImages);
 
             // commit
             var signature = new LibGit2Sharp.Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
@@ -94,7 +95,7 @@ namespace ImgBot.Function
             // open PR
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
-            var pr = new NewPullRequest("[ImgBot] Optimizes Images", BranchName, "master");
+            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, BranchName, "master");
             pr.Body = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information.";
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
@@ -114,7 +115,7 @@ namespace ImgBot.Function
                     if (imageOptimizer.LosslessCompress(file))
                     {
                         string fileName = image.Substring(localPath.Length);
-                        optimizedImages[fileName] = new Tuple<double, double>(before, file.Length);
+                        optimizedImages[fileName] = new Tuple<double, double>(before / 1024d, file.Length / 1024d);
                         Commands.Stage(repo, image);
                     }
                 }
@@ -122,28 +123,6 @@ namespace ImgBot.Function
             });
 
             return optimizedImages;
-        }
-
-        private static string CreateCommitMessage(Dictionary<string, Tuple<double, double>> optimizedImages)
-        {
-            var commitMessage = new StringBuilder();
-            var totalOrigKb = 0.0;
-            var totalOptKb = 0.0;
-            commitMessage.AppendLine("[ImgBot] optimizes images");
-
-            foreach (var optimizedImage in optimizedImages.Keys)
-            {
-                var percent = 1 - (optimizedImages[optimizedImage].Item1 - optimizedImages[optimizedImage].Item2) * 100;
-                commitMessage.AppendFormat("{0} -- {1}kb -> {2}kb ({3})", optimizedImage, optimizedImages[optimizedImage].Item1, optimizedImages[optimizedImage].Item2, percent);
-                commitMessage.AppendLine();
-                totalOrigKb += optimizedImages[optimizedImage].Item1;
-                totalOptKb += optimizedImages[optimizedImage].Item2;
-            }
-
-            commitMessage.AppendFormat("*Total: {0}kb -> {1}kb ({2})", totalOrigKb, totalOptKb, (1 - (totalOrigKb - totalOptKb) * 100));
-            commitMessage.AppendLine();
-
-            return commitMessage.ToString();
         }
     }
 
