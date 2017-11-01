@@ -18,12 +18,13 @@ namespace ImgBot.Function
             var totalOrigKb = 0.0;
             var totalOptKb = 0.0;
             commitMessage.AppendLine(KnownGitHubs.CommitMessageTitle);
+            commitMessage.AppendLine();
 
             var imageLog = new StringBuilder();
             foreach (var optimizedImage in optimizedImages.Keys)
             {
                 var percent = (1 - (optimizedImages[optimizedImage].Item2 / optimizedImages[optimizedImage].Item1)) * 100;
-                imageLog.AppendFormat("{0} -- {1}kb -> {2}kb ({3:0.##}%)", optimizedImage, optimizedImages[optimizedImage].Item1, optimizedImages[optimizedImage].Item2, percent);
+                imageLog.AppendFormat("{0} -- {1:N2}kb -> {2:N2}kb ({3:0.##}%)", optimizedImage, optimizedImages[optimizedImage].Item1, optimizedImages[optimizedImage].Item2, percent);
                 imageLog.AppendLine();
                 totalOrigKb += optimizedImages[optimizedImage].Item1;
                 totalOptKb += optimizedImages[optimizedImage].Item2;
@@ -32,7 +33,7 @@ namespace ImgBot.Function
             if (optimizedImages.Keys.Count > 1)
             {
                 var totalPercent = (1 - (totalOptKb / totalOrigKb)) * 100;
-                commitMessage.AppendFormat("*Total: {0}kb -> {1}kb ({2:0.##}%)", totalOrigKb, totalOptKb, totalPercent);
+                commitMessage.AppendFormat("*Total: {0:N2}kb -> {1:N2}kb ({2:0.##}%)", totalOrigKb, totalOptKb, totalPercent);
                 commitMessage.AppendLine();
                 commitMessage.AppendLine();
             }

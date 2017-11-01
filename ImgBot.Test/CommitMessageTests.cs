@@ -15,17 +15,18 @@ namespace ImgBot.Test
         {
             var images = new Dictionary<string, Tuple<double, double>>
             {
-                ["path/to/image.png"] = Tuple.Create(100.3, 95.7),
-                ["path/to/image2.png"] = Tuple.Create(500.3, 360.1)
+                ["path/to/image.png"] = Tuple.Create(100.3678, 95.78743),
+                ["path/to/image2.png"] = Tuple.Create(500.3234, 360.1321987)
             };
 
             var message = CommitMessage.Create(images);
 
             var expectedMessage = $@"{KnownGitHubs.CommitMessageTitle}
-*Total: 600.6kb -> 455.8kb (24.11%)
 
-path/to/image.png -- 100.3kb -> 95.7kb (4.59%)
-path/to/image2.png -- 500.3kb -> 360.1kb (28.02%)
+*Total: 600.69kb -> 455.92kb (24.1%)
+
+path/to/image.png -- 100.37kb -> 95.79kb (4.56%)
+path/to/image2.png -- 500.32kb -> 360.13kb (28.02%)
 ";
 
             Assert.AreEqual(expectedMessage, message);
@@ -42,7 +43,8 @@ path/to/image2.png -- 500.3kb -> 360.1kb (28.02%)
             var message = CommitMessage.Create(images);
 
             var expectedMessage = $@"{KnownGitHubs.CommitMessageTitle}
-path/to/image.png -- 100.3kb -> 95.7kb (4.59%)
+
+path/to/image.png -- 100.30kb -> 95.70kb (4.59%)
 ";
 
             Assert.AreEqual(expectedMessage, message);
