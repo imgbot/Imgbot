@@ -55,6 +55,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommitMessageTests.cs" />
     <Compile Include="ImageQueryTests.cs" />
     <Compile Include="ScheduleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
