@@ -25,23 +25,21 @@ namespace ImgBot.Web
 
         public IConfigurationRoot Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var storageAccount = CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]);
             services.AddSingleton(_ =>
             {
-                return storageAccount.CreateCloudBlobClient();
+                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudBlobClient();
             });
 
             services.AddSingleton(_ =>
             {
-                return storageAccount.CreateCloudQueueClient();
+                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudQueueClient();
             });
 
             services.AddSingleton(_ =>
             {
-                return storageAccount.CreateCloudTableClient();
+                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudTableClient();
             });
 
             services.AddScoped<IMediator, QueueMediator>();
