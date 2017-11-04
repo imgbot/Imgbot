@@ -1,0 +1,30 @@
+﻿[
+  {
+    "slug": "docs",
+    "title": "Documentation"
+  },
+  {
+    "slug": "whats-imgbot",
+    "title": "What is ImgBot?"
+  },
+  {
+    "slug": "compression",
+    "title": "Compression"
+  },
+  {
+    "slug": "configuration",
+    "title": "Configuration"
+  },
+  {
+    "slug": "schedule",
+    "title": "Schedule"
+  },
+  {
+    "slug": "ignoring-files",
+    "title": "Ignoring images"
+  },
+  {
+    "slug": "contributing",
+    "title": "Contributing to ImgBot"
+  },
+]

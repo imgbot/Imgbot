@@ -23,4 +23,10 @@
     <ProjectReference Include="..\ImgBot.Common\ImgBot.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Docs\*.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
