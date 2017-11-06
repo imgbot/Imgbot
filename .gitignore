@@ -8,3 +8,5 @@ packages
 *.csproj.user
 local.settings.json
 appsettings.json
+node_modules
+lib

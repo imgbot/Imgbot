@@ -1,0 +1,21 @@
+{
+  "name": "imgbot",
+  "version": "1.0.0",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "grunt": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.2.1",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-markdown": "^0.7.0",
+    "jquery": "^2.0"
+  },
+  "scripts": {
+    "compile-docs": "grunt markdown:all",
+    "compile-less": "grunt less:all",
+    "watch": "grunt watch",
+    "copy-libs": "grunt copy:libs",
+    "prod": "grunt markdown:all & grunt less:all & grunt cssmin & grunt copy:libs"
+  }
+}
