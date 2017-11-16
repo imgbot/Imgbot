@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ImgBot.Common;
+﻿using ImgBot.Common;
 using ImgBot.Function;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,10 +11,20 @@ namespace ImgBot.Test
         [TestMethod]
         public void GivenImages_ShouldReportEach()
         {
-            var images = new Dictionary<string, Tuple<double, double>>
+            var images = new[]
             {
-                ["path/to/image.png"] = Tuple.Create(100.3678, 95.78743),
-                ["path/to/image2.png"] = Tuple.Create(500.3234, 360.1321987)
+                new CompressionResult
+                {
+                    FileName = "path/to/image.png",
+                    SizeBefore = 100.3678,
+                    SizeAfter = 95.78743
+                },
+                new CompressionResult
+                {
+                    FileName = "path/to/image2.png",
+                    SizeBefore = 500.3234,
+                    SizeAfter = 360.1321987
+                },
             };
 
             var message = CommitMessage.Create(images);
@@ -25,8 +33,8 @@ namespace ImgBot.Test
 
 *Total: 600.69kb -> 455.92kb (24.1%)
 
-path/to/image.png -- 100.37kb -> 95.79kb (4.56%)
 path/to/image2.png -- 500.32kb -> 360.13kb (28.02%)
+path/to/image.png -- 100.37kb -> 95.79kb (4.56%)
 ";
 
             Assert.AreEqual(expectedMessage, message);
@@ -35,9 +43,14 @@ path/to/image2.png -- 500.32kb -> 360.13kb (28.02%)
         [TestMethod]
         public void GivenOneImage_ShouldReportSingleImageNoTotal()
         {
-            var images = new Dictionary<string, Tuple<double, double>>
+            var images = new[]
             {
-                ["path/to/image.png"] = Tuple.Create(100.3, 95.7),
+                new CompressionResult
+                {
+                    FileName = "path/to/image.png",
+                    SizeBefore = 100.3,
+                    SizeAfter = 95.7
+                },
             };
 
             var message = CommitMessage.Create(images);
@@ -51,9 +64,12 @@ path/to/image.png -- 100.30kb -> 95.70kb (4.59%)
         }
 
         [TestMethod]
-        public void GivenNullImageDictionary_ShouldCreateEmptyString()
+        public void GivenNullOrEmptyCompressionResults_ShouldCreateEmptyString()
         {
             var message = CommitMessage.Create(null);
+            Assert.AreEqual("", message);
+
+            var message2 = CommitMessage.Create(new CompressionResult[0]);
             Assert.AreEqual("", message);
         }
     }

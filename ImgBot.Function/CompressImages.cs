@@ -76,7 +76,7 @@ namespace ImgBot.Function
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths);
-            if (optimizedImages.Count == 0)
+            if (optimizedImages.Length == 0)
                 return;
 
             // create commit message based on optimizations
@@ -100,9 +100,9 @@ namespace ImgBot.Function
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
 
-        private static Dictionary<string, Tuple<double, double>> OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
+        private static CompressionResult[] OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
         {
-            var optimizedImages = new Dictionary<string, Tuple<double, double>>();
+            var optimizedImages = new List<CompressionResult>();
 
             ImageOptimizer imageOptimizer = new ImageOptimizer();
             Parallel.ForEach(imagePaths, image =>
@@ -114,15 +114,20 @@ namespace ImgBot.Function
                     double before = file.Length;
                     if (imageOptimizer.LosslessCompress(file))
                     {
-                        string fileName = image.Substring(localPath.Length);
-                        optimizedImages[fileName] = new Tuple<double, double>(before / 1024d, file.Length / 1024d);
+                        optimizedImages.Add(new CompressionResult
+                        {
+                            FileName = image.Substring(localPath.Length),
+                            SizeBefore = before / 1024d,
+                            SizeAfter = file.Length / 1024d,
+                        });
+                            
                         Commands.Stage(repo, image);
                     }
                 }
                 catch { }
             });
 
-            return optimizedImages;
+            return optimizedImages.ToArray();
         }
     }
 
