@@ -116,7 +116,7 @@ namespace ImgBot.Function
                     {
                         optimizedImages.Add(new CompressionResult
                         {
-                            FileName = image.Substring(localPath.Length),
+                            Title = image.Substring(localPath.Length),
                             SizeBefore = before / 1024d,
                             SizeAfter = file.Length / 1024d,
                         });
