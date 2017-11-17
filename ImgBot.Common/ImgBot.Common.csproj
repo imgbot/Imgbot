@@ -1,11 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard1.4</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+        <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
 </Project>

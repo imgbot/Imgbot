@@ -12,6 +12,7 @@ namespace ImgBot.Common.Mediation
         {
             _queueClient = queueClient;
         }
+
         public async Task SendAsync<T>(T message)
         {
             var queue = _queueClient.GetQueueReference(typeof(T).Name.ToLowerInvariant());

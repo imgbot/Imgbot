@@ -2,10 +2,14 @@
 {
     public static class KnownGitHubs
     {
-        public static int AppId = 4706;
-        public static string PrivateKeyFilename = "imgbot.2017-08-23.private-key.pem";
-        public static string ImgBotLogin = "ImgBotApp";
-        public static string ImgBotEmail = "ImgBotHelp@gmail.com";
-        public static string CommitMessageTitle = "[ImgBot] optimizes images";
+        public const int AppId = 4706;
+
+        public const string PrivateKeyFilename = "imgbot.2017-08-23.private-key.pem";
+
+        public const string ImgBotLogin = "ImgBotApp";
+
+        public const string ImgBotEmail = "ImgBotHelp@gmail.com";
+
+        public const string CommitMessageTitle = "[ImgBot] optimizes images";
     }
 }
