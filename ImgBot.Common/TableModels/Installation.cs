@@ -18,9 +18,13 @@ namespace ImgBot.Common.TableModels
         }
 
         public int InstallationId { get; set; }
+
         public string RepoName { get; set; }
+
         public string AccessTokensUrl { get; set; }
+
         public string CloneUrl { get; set; }
+
         public string Owner { get; set; }
     }
 }

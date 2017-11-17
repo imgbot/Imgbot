@@ -13,7 +13,8 @@ namespace ImgBot.Common.Repository
             _client = client;
         }
 
-        public async Task InsertOrMergeAsync<T>(T entity) where T : TableEntity, new()
+        public async Task InsertOrMergeAsync<T>(T entity)
+            where T : TableEntity, new()
         {
             var table = await GetTableAsync<T>();
             var insertOperation = TableOperation.InsertOrMerge(entity);
@@ -21,7 +22,8 @@ namespace ImgBot.Common.Repository
             await table.ExecuteAsync(insertOperation);
         }
 
-        public async Task<T> RetrieveAsync<T>(string partitionKey, string rowKey) where T : TableEntity, new()
+        public async Task<T> RetrieveAsync<T>(string partitionKey, string rowKey)
+            where T : TableEntity, new()
         {
             var table = await GetTableAsync<T>();
             var retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
@@ -30,7 +32,8 @@ namespace ImgBot.Common.Repository
             return (T)result.Result;
         }
 
-        public async Task DeleteAsync<T>(string partitionKey, string rowKey) where T : TableEntity, new()
+        public async Task DeleteAsync<T>(string partitionKey, string rowKey)
+            where T : TableEntity, new()
         {
             var table = await GetTableAsync<T>();
             var entity = await RetrieveAsync<T>(partitionKey, rowKey);
@@ -39,7 +42,8 @@ namespace ImgBot.Common.Repository
             await table.ExecuteAsync(operation);
         }
 
-        public async Task<T[]> RetrievePartitionAsync<T>(string partitionKey) where T : TableEntity, new()
+        public async Task<T[]> RetrievePartitionAsync<T>(string partitionKey)
+            where T : TableEntity, new()
         {
             var table = await GetTableAsync<T>();
 
@@ -53,7 +57,8 @@ namespace ImgBot.Common.Repository
                 var queryResponse = await table.ExecuteQuerySegmentedAsync(query, tableContinuationToken);
                 tableContinuationToken = queryResponse.ContinuationToken;
                 result.AddRange(queryResponse.Results);
-            } while (tableContinuationToken != null);
+            }
+            while (tableContinuationToken != null);
 
             return result.ToArray();
         }
