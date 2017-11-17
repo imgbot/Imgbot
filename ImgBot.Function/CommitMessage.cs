@@ -14,6 +14,7 @@ namespace ImgBot.Function
             }
 
             var commitMessage = new StringBuilder();
+
             var totalOrigKb = 0.0;
             var totalOptKb = 0.0;
             commitMessage.AppendLine(KnownGitHubs.CommitMessageTitle);
@@ -22,13 +23,7 @@ namespace ImgBot.Function
             var imageLog = new StringBuilder();
             foreach (var optimizedImage in optimizedImages.OrderByDescending(x => x.PercentSaved))
             {
-                imageLog.AppendFormat(
-                    "{0} -- {1:N2}kb -> {2:N2}kb ({3:0.##}%)",
-                    optimizedImage.FileName,
-                    optimizedImage.SizeBefore,
-                    optimizedImage.SizeAfter,
-                    optimizedImage.PercentSaved);
-
+                imageLog.Append(optimizedImage);
                 imageLog.AppendLine();
 
                 totalOrigKb += optimizedImage.SizeBefore;
@@ -37,13 +32,14 @@ namespace ImgBot.Function
 
             if (optimizedImages.Length > 1)
             {
-                var totalPercent = (1 - (totalOptKb / totalOrigKb)) * 100;
-                commitMessage.AppendFormat(
-                    "*Total: {0:N2}kb -> {1:N2}kb ({2:0.##}%)",
-                    totalOrigKb,
-                    totalOptKb, 
-                    totalPercent);
+                var totalCompression = new CompressionResult
+                {
+                    Title = "*Total",
+                    SizeBefore = totalOrigKb,
+                    SizeAfter = totalOptKb,
+                };
 
+                commitMessage.Append(totalCompression);
                 commitMessage.AppendLine();
                 commitMessage.AppendLine();
             }
