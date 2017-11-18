@@ -8,8 +8,11 @@ namespace ImgBot.Function
     {
         /// <summary>
         /// Using the repo and the repoConfiguration determine whether
-        /// the schedule permits an optimization at this time
+        /// the schedule permits an optimization at this time.
         /// </summary>
+        /// <param name="repoConfiguration">The configuration for the repository</param>
+        /// <param name="repo">The repository</param>
+        /// <returns>True when the images can be optimized.</returns>
         public static bool ShouldOptimizeImages(RepoConfiguration repoConfiguration, LibGit2Sharp.IRepository repo)
         {
             if (string.IsNullOrEmpty(repoConfiguration.Schedule))
@@ -44,7 +47,7 @@ namespace ImgBot.Function
                 // no imgbot commit in history - let's optimize those images
                 return true;
             }
-            
+
             if (DateTimeOffset.Now - imgbotCommit.Author.When > backofftime)
             {
                 // Now minus the last imgbot commit is greater than the backoff time - let's optimize those images

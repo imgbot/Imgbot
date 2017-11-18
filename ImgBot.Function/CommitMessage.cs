@@ -8,7 +8,7 @@ namespace ImgBot.Function
     {
         public static string Create(CompressionResult[] optimizedImages)
         {
-            if(optimizedImages?.Any() != true)
+            if (optimizedImages?.Any() != true)
             {
                 return string.Empty;
             }
