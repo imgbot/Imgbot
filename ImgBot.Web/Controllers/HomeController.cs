@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using ImgBot.Web.Models;
+using ImgBot.Web.Models.Docs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 using static System.IO.File;
-using static System.IO.Directory;
-using Newtonsoft.Json;
-using ImgBot.Web.Models.Docs;
 
 namespace ImgBot.Web.Controllers
 {

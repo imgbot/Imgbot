@@ -85,7 +85,9 @@ namespace ImgBot.Web.Controllers
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });
                     }
+
                     break;
+
                 case "added":
                     foreach (var repo in hook.repositories_added)
                     {
@@ -98,13 +100,17 @@ namespace ImgBot.Web.Controllers
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });
                     }
+
                     break;
+
                 case "removed":
                     foreach (var repo in hook.repositories_removed)
                     {
                         await _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), repo.name);
                     }
+
                     break;
+
                 case "deleted":
                     var installations = await _repository.RetrievePartitionAsync<Installation>(hook.installation.id.ToString());
                     foreach (var installation in installations)
@@ -113,7 +119,6 @@ namespace ImgBot.Web.Controllers
                     }
 
                     break;
-
             }
 
             return "true";
