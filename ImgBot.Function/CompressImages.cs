@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ImageMagick;
 using ImgBot.Common;
@@ -22,7 +21,7 @@ namespace ImgBot.Function
         public static async Task RunAsync(CompressimagesParameters parameters)
         {
             CredentialsHandler credentialsProvider =
-                (_url, _user, _cred) =>
+                (url, user, cred) =>
                 new UsernamePasswordCredentials { Username = Username, Password = parameters.Password };
 
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
@@ -120,23 +119,16 @@ namespace ImgBot.Function
                             SizeBefore = before / 1024d,
                             SizeAfter = file.Length / 1024d,
                         });
-                            
+
                         Commands.Stage(repo, image);
                     }
                 }
-                catch { }
+                catch
+                {
+                }
             });
 
             return optimizedImages.ToArray();
         }
-    }
-
-    public class CompressimagesParameters
-    {
-        public string RepoOwner { get; set; }
-        public string RepoName { get; set; }
-        public string LocalPath { get; set; }
-        public string CloneUrl { get; set; }
-        public string Password { get; set; }
     }
 }

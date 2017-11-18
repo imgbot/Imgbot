@@ -5,9 +5,12 @@
         <Rule Id="SA1600" Action="None" />
         <!-- XmlCommentAnalysisDisabled -->
         <Rule Id="SA0001" Action="None" />
-        
+
         <!-- FileMustHaveHeader -->
         <Rule Id="SA1633" Action="None" />
+
+        <!-- BracesMustNotBeOmitted -->
+        <Rule Id="SA1503" Action="None" />
 
         <!-- PrefixLocalCallsWithThis -->
         <Rule Id="SA1101" Action="None" />

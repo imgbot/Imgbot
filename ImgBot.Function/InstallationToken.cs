@@ -14,8 +14,9 @@ namespace ImgBot.Function
 {
     public class InstallationToken
     {
-        public string token { get; set; }
-        public string expires_at { get; set; }
+        public string Token { get; set; }
+
+        public string ExpiresAt { get; set; }
 
         public static async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader)
         {
@@ -45,6 +46,7 @@ namespace ImgBot.Function
             {
                 keyPair = (AsymmetricCipherKeyPair)new PemReader(privateKeyReader).ReadObject();
             }
+
             signer.Init(true, keyPair.Private);
             signer.BlockUpdate(bytesToSign, 0, bytesToSign.Length);
             var sigBytes = signer.GenerateSignature();
@@ -74,11 +76,5 @@ namespace ImgBot.Function
             output = output.Replace('/', '_'); // 63rd char of encoding
             return output;
         }
-    }
-
-    public class InstallationTokenParameters
-    {
-        public int AppId { get; set; }
-        public string AccessTokensUrl { get; set; }
     }
 }

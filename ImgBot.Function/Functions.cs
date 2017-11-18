@@ -11,7 +11,7 @@ namespace ImgBot.Function
 {
     public static class Functions
     {
-        private static Random s_random = new Random();
+        private static Random _random = new Random();
 
         [FunctionName("imageupdatemessage")]
         public static async Task RunImageUpdateMessage(
@@ -39,7 +39,7 @@ namespace ImgBot.Function
             {
                 CloneUrl = installation.CloneUrl,
                 LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP"), installation.RepoName),
-                Password = installationToken.token,
+                Password = installationToken.Token,
                 RepoName = installation.RepoName,
                 RepoOwner = installation.Owner,
             };
@@ -55,8 +55,8 @@ namespace ImgBot.Function
             TraceWriter log,
             ExecutionContext context)
         {
-
-            if (installation == null) // not already installed
+            // not already installed
+            if (installation == null)
             {
                 installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
                 {
@@ -81,7 +81,7 @@ namespace ImgBot.Function
             {
                 CloneUrl = installationMessage.CloneUrl,
                 LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP"), installationMessage.RepoName),
-                Password = installationToken.token,
+                Password = installationToken.Token,
                 RepoName = installationMessage.RepoName,
                 RepoOwner = installationMessage.Owner,
             };
@@ -90,7 +90,7 @@ namespace ImgBot.Function
             // the most common case is install and add events on the same repo when the queue is asleep
             // the queue wakes up and dequeues both messages at the same time in 2 threads
             // wait a random amount of seconds so that one will win
-            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(s_random.Next(0, 20)));
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_random.Next(0, 20)));
 
             await CompressImages.RunAsync(compressImagesParameters);
         }
