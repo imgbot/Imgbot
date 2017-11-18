@@ -9,12 +9,12 @@ namespace ImgBot.Test
     {
         private readonly IEnumerable<Commit> _commits;
 
-        public CommitSortStrategies SortedBy => throw new NotImplementedException();
-
         public SimpleCommitLog(IEnumerable<Commit> commits)
         {
             _commits = commits;
         }
+
+        public CommitSortStrategies SortedBy => throw new NotImplementedException();
 
         public IEnumerator<Commit> GetEnumerator() => _commits.GetEnumerator();
 
