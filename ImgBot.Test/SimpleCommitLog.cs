@@ -22,7 +22,9 @@ namespace ImgBot.Test
 
         public IEnumerable<LogEntry> QueryBy(string path) => throw new NotImplementedException();
 
+#pragma warning disable CS0618 // Type or member is obsolete
         public IEnumerable<LogEntry> QueryBy(string path, FollowFilter filter) => throw new NotImplementedException();
+#pragma warning restore CS0618 // Type or member is obsolete
 
         public IEnumerable<LogEntry> QueryBy(string path, CommitFilter filter) => throw new NotImplementedException();
 

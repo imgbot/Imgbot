@@ -17,6 +17,7 @@ namespace ImgBot.Function
         public static async Task RunImageUpdateMessage(
             [QueueTrigger("imageupdatemessage")]ImageUpdateMessage imageUpdateMessage,
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
+            [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             TraceWriter log,
             ExecutionContext context)
         {
@@ -44,7 +45,16 @@ namespace ImgBot.Function
                 RepoOwner = installation.Owner,
             };
 
-            await CompressImages.RunAsync(compressImagesParameters);
+            var didCompress = CompressImages.Run(compressImagesParameters);
+
+            if (didCompress)
+            {
+                openPrMessages.Add(new OpenPrMessage
+                {
+                    InstallationId = imageUpdateMessage.InstallationId,
+                    RepoName = imageUpdateMessage.RepoName,
+                });
+            }
         }
 
         [FunctionName("installationmessage")]
@@ -52,10 +62,11 @@ namespace ImgBot.Function
             [QueueTrigger("installationmessage")]InstallationMessage installationMessage,
             [Table("installation")] ICollector<Installation> installations,
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
+            [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             TraceWriter log,
             ExecutionContext context)
         {
-            // not already installed
+            // if not already installed
             if (installation == null)
             {
                 installations.Add(new Installation(installationMessage.InstallationId, installationMessage.RepoName)
@@ -92,7 +103,46 @@ namespace ImgBot.Function
             // wait a random amount of seconds so that one will win
             System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_random.Next(0, 20)));
 
-            await CompressImages.RunAsync(compressImagesParameters);
+            var didCompress = CompressImages.Run(compressImagesParameters);
+
+            if (didCompress)
+            {
+                openPrMessages.Add(new OpenPrMessage
+                {
+                    InstallationId = installationMessage.InstallationId,
+                    RepoName = installationMessage.RepoName,
+                });
+            }
+        }
+
+        [FunctionName("openprmessage")]
+        public static async Task RunOpenPr(
+            [QueueTrigger("openprmessage")]OpenPrMessage openPrMessage,
+            [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
+            TraceWriter log,
+            ExecutionContext context)
+        {
+            if (installation == null)
+            {
+                throw new Exception($"No installation found for InstallationId: {installation.InstallationId}");
+            }
+
+            var installationTokenParameters = new InstallationTokenParameters
+            {
+                AccessTokensUrl = installation.AccessTokensUrl,
+                AppId = KnownGitHubs.AppId,
+            };
+
+            var installationToken = await InstallationToken.GenerateAsync(
+                installationTokenParameters,
+                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PrivateKeyFilename}")));
+
+            await PullRequest.OpenAsync(new PullRequestParameters
+            {
+                Password = installationToken.Token,
+                RepoName = installation.RepoName,
+                RepoOwner = installation.Owner,
+            });
         }
     }
 }

@@ -11,5 +11,9 @@
         public const string ImgBotEmail = "ImgBotHelp@gmail.com";
 
         public const string CommitMessageTitle = "[ImgBot] optimizes images";
+
+        public const string Username = "x-access-token";
+
+        public const string BranchName = "imgbot";
     }
 }

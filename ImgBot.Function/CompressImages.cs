@@ -8,23 +8,16 @@ using ImgBot.Common;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Newtonsoft.Json;
-using Octokit;
-using Octokit.Internal;
 
 namespace ImgBot.Function
 {
     public static class CompressImages
     {
-        private const string BranchName = "imgbot";
-        private const string Username = "x-access-token";
-
-        public static async Task RunAsync(CompressimagesParameters parameters)
+        public static bool Run(CompressimagesParameters parameters)
         {
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
-                new UsernamePasswordCredentials { Username = Username, Password = parameters.Password };
-
-            var inMemoryCredentialStore = new InMemoryCredentialStore(new Octokit.Credentials(Username, parameters.Password));
+                new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
 
             // clone
             var cloneOptions =
@@ -39,10 +32,10 @@ namespace ImgBot.Function
             try
             {
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any() == false)
-                    return;
+                    return false;
 
-                if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{BranchName}"))
-                    return;
+                if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{KnownGitHubs.BranchName}"))
+                    return false;
             }
             catch
             {
@@ -66,37 +59,32 @@ namespace ImgBot.Function
             }
 
             if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
-                return;
+                return false;
 
             // check out the branch
-            repo.CreateBranch(BranchName);
-            var branch = Commands.Checkout(repo, BranchName);
+            repo.CreateBranch(KnownGitHubs.BranchName);
+            var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
 
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths);
             if (optimizedImages.Length == 0)
-                return;
+                return false;
 
             // create commit message based on optimizations
             var commitMessage = CommitMessage.Create(optimizedImages);
 
             // commit
-            var signature = new LibGit2Sharp.Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
+            var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
             // push to GitHub
-            repo.Network.Push(remote, $"refs/heads/{BranchName}", new PushOptions
+            repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
             {
                 CredentialsProvider = credentialsProvider,
             });
 
-            // open PR
-            var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
-
-            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, BranchName, "master");
-            pr.Body = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information.";
-            await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+            return true;
         }
 
         private static CompressionResult[] OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
