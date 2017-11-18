@@ -130,10 +130,10 @@ path/to/_image.png -- 200.97kb -> 195.12kb (2.91%)
         public void GivenNullOrEmptyCompressionResults_ShouldCreateEmptyString()
         {
             var message = CommitMessage.Create(null);
-            Assert.AreEqual("", message);
+            Assert.AreEqual(string.Empty, message);
 
             var message2 = CommitMessage.Create(new CompressionResult[0]);
-            Assert.AreEqual("", message);
+            Assert.AreEqual(string.Empty, message);
         }
     }
 }

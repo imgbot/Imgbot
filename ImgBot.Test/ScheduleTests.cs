@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using ImgBot.Common;
 using ImgBot.Function;
 using LibGit2Sharp;
@@ -11,6 +10,21 @@ namespace ImgBot.Test
     [TestClass]
     public class ScheduleTests
     {
+        private readonly RepoConfiguration _dailyConfiguration = new RepoConfiguration
+        {
+            Schedule = KnownScheduleSettings.Daily,
+        };
+
+        private readonly RepoConfiguration _weeklyConfiguration = new RepoConfiguration
+        {
+            Schedule = KnownScheduleSettings.Weekly,
+        };
+
+        private readonly RepoConfiguration _monthlyConfiguration = new RepoConfiguration
+        {
+            Schedule = KnownScheduleSettings.Monthly,
+        };
+
         [TestMethod]
         public void GivenDefaultConfiguration_ShouldOptimizeImages()
         {
@@ -26,27 +40,18 @@ namespace ImgBot.Test
 
             var commits = new SimpleCommitLog(new[]
             {
-                OneRandoCommit(new DateTime(2017,10,31)),
-                OneRandoCommit(new DateTime(2017,10,30)),
-                OneRandoCommit(new DateTime(2017,10,29)),
+                OneRandoCommit(new DateTime(2017, 10, 31)),
+                OneRandoCommit(new DateTime(2017, 10, 30)),
+                OneRandoCommit(new DateTime(2017, 10, 29)),
             });
 
             repository.Commits.Returns(commits);
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Daily,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_dailyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Weekly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_weeklyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Monthly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_monthlyConfiguration, repository));
 
             Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration(), repository));
         }
@@ -60,28 +65,19 @@ namespace ImgBot.Test
             {
                 OneRandoCommit(DateTime.Now),
                 OneImgbotCommit(DateTime.Now - TimeSpan.FromHours(35)),
-                OneRandoCommit(new DateTime(2017,10,29)),
-                OneImgbotCommit(new DateTime(2017,10,27)),
-                OneImgbotCommit(new DateTime(2017,10,25)),
-                OneRandoCommit(new DateTime(2017,10,20)),
+                OneRandoCommit(new DateTime(2017, 10, 29)),
+                OneImgbotCommit(new DateTime(2017, 10, 27)),
+                OneImgbotCommit(new DateTime(2017, 10, 25)),
+                OneRandoCommit(new DateTime(2017, 10, 20)),
             });
 
             repository.Commits.Returns(commits);
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Daily,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_dailyConfiguration, repository));
 
-            Assert.IsFalse(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Weekly,
-            }, repository));
+            Assert.IsFalse(Schedule.ShouldOptimizeImages(_weeklyConfiguration, repository));
 
-            Assert.IsFalse(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Monthly,
-            }, repository));
+            Assert.IsFalse(Schedule.ShouldOptimizeImages(_monthlyConfiguration, repository));
 
             Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration(), repository));
         }
@@ -95,28 +91,19 @@ namespace ImgBot.Test
             {
                 OneRandoCommit(DateTime.Now),
                 OneImgbotCommit(DateTime.Now - TimeSpan.FromDays(9)),
-                OneRandoCommit(new DateTime(2017,8,29)),
-                OneImgbotCommit(new DateTime(2017,8,27)),
-                OneImgbotCommit(new DateTime(2017,8,25)),
-                OneRandoCommit(new DateTime(2017,8,20)),
+                OneRandoCommit(new DateTime(2017, 8, 29)),
+                OneImgbotCommit(new DateTime(2017, 8, 27)),
+                OneImgbotCommit(new DateTime(2017, 8, 25)),
+                OneRandoCommit(new DateTime(2017, 8, 20)),
             });
 
             repository.Commits.Returns(commits);
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Daily,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_dailyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Weekly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_weeklyConfiguration, repository));
 
-            Assert.IsFalse(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Monthly,
-            }, repository));
+            Assert.IsFalse(Schedule.ShouldOptimizeImages(_monthlyConfiguration, repository));
 
             Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration(), repository));
         }
@@ -131,28 +118,19 @@ namespace ImgBot.Test
                 OneRandoCommit(DateTime.Now),
                 OneRandoCommit(DateTime.Now - TimeSpan.FromDays(3)),
                 OneImgbotCommit(DateTime.Now - TimeSpan.FromDays(40)),
-                OneRandoCommit(new DateTime(2017,8,29)),
-                OneImgbotCommit(new DateTime(2017,8,27)),
-                OneImgbotCommit(new DateTime(2017,8,25)),
-                OneRandoCommit(new DateTime(2017,8,20)),
+                OneRandoCommit(new DateTime(2017, 8, 29)),
+                OneImgbotCommit(new DateTime(2017, 8, 27)),
+                OneImgbotCommit(new DateTime(2017, 8, 25)),
+                OneRandoCommit(new DateTime(2017, 8, 20)),
             });
 
             repository.Commits.Returns(commits);
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Daily,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_dailyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Weekly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_weeklyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Monthly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_monthlyConfiguration, repository));
 
             Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration(), repository));
         }
@@ -164,27 +142,18 @@ namespace ImgBot.Test
 
             var commits = new SimpleCommitLog(new[]
             {
-                OneRandoCommit(new DateTime(2017,10,31)),
-                OneImgbotCommit(new DateTime(2016,10,30)),
-                OneRandoCommit(new DateTime(2015,10,29)),
+                OneRandoCommit(new DateTime(2017, 10, 31)),
+                OneImgbotCommit(new DateTime(2016, 10, 30)),
+                OneRandoCommit(new DateTime(2015, 10, 29)),
             });
 
             repository.Commits.Returns(commits);
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Daily,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_dailyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Weekly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_weeklyConfiguration, repository));
 
-            Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration
-            {
-                Schedule = KnownScheduleSettings.Monthly,
-            }, repository));
+            Assert.IsTrue(Schedule.ShouldOptimizeImages(_monthlyConfiguration, repository));
 
             Assert.IsTrue(Schedule.ShouldOptimizeImages(new RepoConfiguration(), repository));
         }

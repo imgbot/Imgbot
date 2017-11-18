@@ -8,7 +8,17 @@
         <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
         <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
         <PackageReference Include="NSubstitute" Version="3.1.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" PrivateAssets="All" />
     </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+        <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ImgBot.Common\ImgBot.Common.csproj" />
