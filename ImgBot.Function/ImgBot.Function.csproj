@@ -7,12 +7,12 @@
         <PackageReference Include="BouncyCastle" Version="1.8.1" />
         <PackageReference Include="LibGit2Sharp" Version="0.24.0" />
         <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.1.0.0" />
-        <PackageReference Include="Microsoft.Azure.WebJobs" Version="2.1.0-beta1" />
-        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="2.1.0-beta1" />
-        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="1.0.0-beta1" />
-        <PackageReference Include="Microsoft.Azure.WebJobs.ServiceBus" Version="2.1.0-beta1" />
+        <PackageReference Include="Microsoft.Azure.WebJobs" Version="2.1.0-beta4" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="2.1.0-beta4" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="1.0.0-beta4" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.ServiceBus" Version="2.1.0-beta4" />
         <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.0" />
+        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.6" />
         <PackageReference Include="Octokit" Version="0.25.0" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" PrivateAssets="All" />
     </ItemGroup>
@@ -45,4 +45,8 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+    
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="xcopy /Y &quot;$(OutDir)lib\win32\x86\git2-15e1193.dll&quot; &quot;$(OutDir)bin\&quot;&#xD;&#xA;" />
+    </Target>
 </Project>
