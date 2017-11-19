@@ -11,8 +11,6 @@ namespace ImgBot.Function
 {
     public static class Functions
     {
-        private static Random _random = new Random();
-
         [FunctionName("imageupdatemessage")]
         public static async Task RunImageUpdateMessage(
             [QueueTrigger("imageupdatemessage")]ImageUpdateMessage imageUpdateMessage,
