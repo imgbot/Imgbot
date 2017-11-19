@@ -13,10 +13,13 @@ namespace ImgBot.Function
 
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
-            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, "master")
+            var repo = await githubClient.Repository.Get(parameters.RepoOwner, parameters.RepoName);
+
+            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, repo.DefaultBranch)
             {
                 Body = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information."
             };
+
             await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
         }
     }

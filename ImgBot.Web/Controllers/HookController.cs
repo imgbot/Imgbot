@@ -46,9 +46,9 @@ namespace ImgBot.Web.Controllers
 
         private async Task<string> ProcessPushAsync(Hook hook)
         {
-            if (hook.@ref != "refs/heads/master")
+            if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
             {
-                return "Commit to non master branch";
+                return "Commit to non default branch";
             }
 
             var files = hook.commits.SelectMany(x => x.added)

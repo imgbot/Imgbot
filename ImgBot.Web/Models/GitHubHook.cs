@@ -86,6 +86,7 @@ namespace ImgBot.Web.Models
             public int id { get; set; }
             public string name { get; set; }
             public string full_name { get; set; }
+            public string default_branch { get; set; }
         }
 
         public class Sender
