@@ -97,12 +97,6 @@ namespace ImgBot.Function
                 RepoOwner = installationMessage.Owner,
             };
 
-            // getting duplicate work happening at the same exact time in multiple threads
-            // the most common case is install and add events on the same repo when the queue is asleep
-            // the queue wakes up and dequeues both messages at the same time in 2 threads
-            // wait a random amount of seconds so that one will win
-            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_random.Next(0, 20)));
-
             var didCompress = CompressImages.Run(compressImagesParameters);
 
             if (didCompress)
@@ -115,6 +109,7 @@ namespace ImgBot.Function
             }
         }
 
+        [Singleton("{InstallationId}")] // https://github.com/Azure/azure-webjobs-sdk/wiki/Singleton#scenarios
         [FunctionName("openprmessage")]
         public static async Task RunOpenPr(
             [QueueTrigger("openprmessage")]OpenPrMessage openPrMessage,
