@@ -20,12 +20,14 @@ namespace ImgBot.Function
                 new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
 
             // clone
-            var cloneOptions =
-            LibGit2Sharp.Repository.Clone(parameters.CloneUrl, parameters.LocalPath, new CloneOptions
+            var cloneOptions = new CloneOptions
             {
                 CredentialsProvider = credentialsProvider,
-            });
-            var repo = new LibGit2Sharp.Repository(parameters.LocalPath);
+            };
+
+            Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
+
+            var repo = new Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
 
             // check if we have the branch already or this is empty repo
@@ -87,7 +89,7 @@ namespace ImgBot.Function
             return true;
         }
 
-        private static CompressionResult[] OptimizeImages(LibGit2Sharp.Repository repo, string localPath, string[] imagePaths)
+        private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths)
         {
             var optimizedImages = new List<CompressionResult>();
 
