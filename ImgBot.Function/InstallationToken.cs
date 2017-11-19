@@ -16,6 +16,7 @@ namespace ImgBot.Function
     {
         public string Token { get; set; }
 
+        [JsonProperty("expires_at")]
         public string ExpiresAt { get; set; }
 
         public static async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader)
