@@ -93,7 +93,11 @@ namespace ImgBot.Function
         {
             var optimizedImages = new List<CompressionResult>();
 
-            ImageOptimizer imageOptimizer = new ImageOptimizer();
+            ImageOptimizer imageOptimizer = new ImageOptimizer
+            {
+                OptimalCompression = true
+            };
+
             Parallel.ForEach(imagePaths, image =>
             {
                 try
