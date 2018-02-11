@@ -38,4 +38,11 @@ to ImgBotHelp@gmail.com
  	- Limits the images optimized by ImgBot by esentially ignoring them
  	- When ignoring by filename no path is neccesary, when ignoring by foldername full path from root is necessary
 
+
 Find out more: https://imgbot.net/docs
+
+## Contributing
+
+All the code for ImgBot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation. This is where you can find out how to get set up to run locally as well as detailed information on exactly how ImgBot works.
+
+https://imgbot.net/docs#contributing
