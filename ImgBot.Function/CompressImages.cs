@@ -80,6 +80,28 @@ namespace ImgBot.Function
             var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
+            // We jsut made a normal commit, now we are going to capture all the values generated from that commit
+            // then rewind and make a signed commit
+            var treeSha = repo.Head.Tip.Tree.Id.Sha;
+            var parentSha = repo.Head.Tip.Parents.First().Sha;
+            var authorData = repo.Head.Tip.Author.ToString();
+            var ticks = repo.Head.Tip.Author.When.ToSecondsSinceEpoch();
+
+            var commitData = $"tree {treeSha}\n" +
+                                $"parent {parentSha}\n" +
+                                $"author {authorData} {ticks} +0000\n" +
+                                $"committer {authorData} {ticks} +0000\n" +
+                                "\n" +
+                                $"{commitMessage}\n";
+
+            var signedCommitData = CommitSignature.Sign(commitData, parameters.PgpPrivateKeyStream, parameters.PgPPassword);
+
+            repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
+            var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitData, signedCommitData);
+            repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
+            var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            repo.Reset(ResetMode.Hard, commitToKeep.Sha);
+
             // push to GitHub
             repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
             {
