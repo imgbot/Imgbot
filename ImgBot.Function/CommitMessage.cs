@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using ImgBot.Common;
 
@@ -47,6 +48,12 @@ namespace ImgBot.Function
             commitMessage.Append(imageLog);
 
             return commitMessage.ToString();
+        }
+
+        public static int ToSecondsSinceEpoch(this DateTimeOffset date)
+        {
+            var utcDate = date.ToUniversalTime();
+            return (int)utcDate.Subtract(new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds;
         }
     }
 }

@@ -2,6 +2,8 @@ bin
 obj
 packages
 .vs
+pgp_private_key.txt
+pgp_password.txt
 *.pem
 *.pubxml
 *.pubxml.user

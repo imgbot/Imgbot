@@ -4,7 +4,11 @@
     {
         public const int AppId = 4706;
 
-        public const string PrivateKeyFilename = "imgbot.2017-08-23.private-key.pem";
+        public const string AppPrivateKey = "imgbot.2017-08-23.private-key.pem";
+
+        public const string PGPPrivateKeyFilename = "pgp_private_key.txt";
+
+        public const string PGPPasswordFilename = "pgp_password.txt";
 
         public const string ImgBotLogin = "ImgBotApp";
 

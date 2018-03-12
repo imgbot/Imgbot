@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ImageMagick;
 using ImgBot.Common;
@@ -79,6 +80,30 @@ namespace ImgBot.Function
             // commit
             var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
+
+
+            // We just made a normal commit, now we are going to capture all the values generated from that commit
+            // then rewind and make a signed commit
+
+            var commitBuffer = Commit.CreateBuffer(
+                repo.Head.Tip.Author,
+                repo.Head.Tip.Committer,
+                repo.Head.Tip.Message,
+                repo.Head.Tip.Tree,
+                repo.Head.Tip.Parents,
+                true,
+                null);
+            
+
+            var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKeyStream, parameters.PgPPassword);
+
+            repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
+            var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);
+            
+
+            repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
+            var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            repo.Reset(ResetMode.Hard, commitToKeep.Sha);
 
             // push to GitHub
             repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions

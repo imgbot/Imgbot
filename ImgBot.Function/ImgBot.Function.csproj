@@ -41,6 +41,12 @@
         <None Update="imgbot.2017-08-23.private-key.pem">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="pgp_private_key.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="pgp_password.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="local.settings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

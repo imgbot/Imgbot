@@ -32,7 +32,7 @@ namespace ImgBot.Function
 
             var installationToken = await InstallationToken.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PrivateKeyFilename}")));
+                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.AppPrivateKey}")));
 
             var compressImagesParameters = new CompressimagesParameters
             {
@@ -41,6 +41,8 @@ namespace ImgBot.Function
                 Password = installationToken.Token,
                 RepoName = installation.RepoName,
                 RepoOwner = installation.Owner,
+                PgpPrivateKeyStream = File.OpenRead(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PGPPrivateKeyFilename}")),
+                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PGPPasswordFilename}"))
             };
 
             var didCompress = CompressImages.Run(compressImagesParameters);
@@ -84,7 +86,7 @@ namespace ImgBot.Function
             // good for ~10 minutes
             var installationToken = await InstallationToken.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PrivateKeyFilename}")));
+                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.AppPrivateKey}")));
 
             var compressImagesParameters = new CompressimagesParameters
             {
@@ -93,6 +95,8 @@ namespace ImgBot.Function
                 Password = installationToken.Token,
                 RepoName = installationMessage.RepoName,
                 RepoOwner = installationMessage.Owner,
+                PgpPrivateKeyStream = File.OpenRead(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PGPPrivateKeyFilename}")),
+                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PGPPasswordFilename}"))
             };
 
             var didCompress = CompressImages.Run(compressImagesParameters);
@@ -128,7 +132,7 @@ namespace ImgBot.Function
 
             var installationToken = await InstallationToken.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.PrivateKeyFilename}")));
+                File.OpenText(Path.Combine(context.FunctionDirectory, $"..\\{KnownGitHubs.AppPrivateKey}")));
 
             await PullRequest.OpenAsync(new PullRequestParameters
             {
