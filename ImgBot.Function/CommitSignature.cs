@@ -15,7 +15,7 @@ namespace ImgBot.Function
             // cutoff the actual message, we just want the signature
             return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE"));
         }
-
+    
         private static string DoSigning(string input, Stream keyIn, Stream outputStream, char[] pass)
         {
             var digest = HashAlgorithmTag.Sha256;
@@ -24,7 +24,7 @@ namespace ImgBot.Function
             var signatureGenerator = new PgpSignatureGenerator(pgpSecretKey.PublicKey.Algorithm, digest);
             var subpacketGenerator = new PgpSignatureSubpacketGenerator();
 
-            signatureGenerator.InitSign(PgpSignature.CanonicalTextDocument, pgpPrivateKey);
+            signatureGenerator.InitSign(PgpSignature.StandAlone, pgpPrivateKey);
 
             foreach (var userId in pgpSecretKey.PublicKey.GetUserIds())
             {
@@ -49,7 +49,6 @@ namespace ImgBot.Function
                 {
                     lookAhead = ReadInputLine(lineOut, lookAhead, inputStream);
 
-                    signatureGenerator.Update((byte)'\r');
                     signatureGenerator.Update((byte)'\n');
 
                     ProcessLine(armoredOut, signatureGenerator, lineOut.ToArray());
