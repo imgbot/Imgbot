@@ -24,6 +24,10 @@
     "title": "Ignoring images"
   },
   {
+      "slug": "authorization",
+      "title": "Authorization"
+  },
+  {
     "slug": "contributing",
     "title": "Contributing to ImgBot"
   },
