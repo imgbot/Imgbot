@@ -1,65 +1,87 @@
 ﻿@{
-    ViewData["Title"] = "ImgBot - Home";
+    ViewData["Title"] = "ImgBot - GitHub Image Optimization Bot";
 }
 
 <div class="row row-hero">
+    <div class="top-nav">
+        <a class="github" href="https://github.com/dabutvin/ImgBot" aria-label="GitHub"></a>
+    </div>
     <div class="col-md-12 text-center">
         <h1>ImgBot</h1>
-        <a class="btn btn-default" href="https://github.com/apps/ImgBot">Install now free</a>
+        <p>A GitHub app that optimizes your images</p>
+        <a class="btn btn-default" href="https://github.com/apps/ImgBot">Install now</a>
+        <br />
+        <a class="docs-link" href="/docs">view docs</a>
     </div>
 </div>
 
-<div class="row row-light">
-    <div class="col-md-5 col-xs-offset-1 col-xs-10" style="margin-top: 30px;">
-        <p class="message">ImgBot is a GitHub app designed to keep your image files optimized</p>
-        <p class="hidden-xs">
-            <a class="btn btn-default" href="https://github.com/apps/ImgBot">Try it now</a>
-            <a class="btn btn-default" href="/docs">Docs</a>
-        </p>
+<div class="row">
+    <div class="col-md-12 col-md-offset-1 col-xs-offset-2 col-xs-10">
+        <h2>How it works</h2>
+        <br /><br />
     </div>
-    <div class="col-md-6 text-center">
-        <img src="~/images/icon.svg" width="200" />
+    <br />
+    <div class="col-md-11 col-md-offset-1 text-center">
+        <div class="col-md-3 col-xs-12">
+            <a href="https://github.com/apps/ImgBot"><img alt="" src="~/images/icon.svg" width="70" /></a>
+            <h3>
+                1. Install
+            </h3>
+            <p>Install ImgBot from the GitHub marketplace right into your repos with the click of a button.</p>
+        </div>
+        <div class="col-md-3 col-md-offset-1 col-xs-12">
+            <img alt="" src="~/images/merge.svg" width="70" />
+            <h3>2. Merge</h3>
+            <p>ImgBot will send you your first pull request optimizing all of the images that it can find.</p>
+        </div>
+        <div class="col-md-3 col-md-offset-1 col-xs-12">
+            <img alt="" src="~/images/flame.svg" width="70" />
+            <h3>3. Win</h3>
+            <p>As new images get uploaded into your repository, ImgBot will open more pull requests.</p>
+        </div>
     </div>
 </div>
 
-<div class="row row-how-it-works">
-    <div class="col-md-4 col-xs-offset-1 col-xs-10 text-left">
-        <h2 style="">How it works</h2>
-        <p>ImgBot is simple to get up and running in any GitHub repository with only a few clicks.</p>
+<div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+        <h2>Why ImgBot?</h2>
     </div>
     <div class="col-md-5 col-xs-offset-1 col-xs-10">
-        <h3>1. Install</h3>
-        <p>Install ImgBot from the GitHub marketplace right into some or all of your repos with the click of a button.</p>
-        <h3>2. Merge</h3>
-        <p>Soon after installation, ImgBot will send you your first pull request optimizing all of the images it can find.</p>
-        <h3>3. Win</h3>
-        <p>As new images get uploaded into your repository ImgBot will be there to optimize them for you with more pull requests.</p>
+        <p>It's @DateTime.Now.Year, your image optimization should be automated. No really, <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/automating-image-optimization/">don't do it manually</a>.</p>
+        <p>
+            Images often account for most of the downloaded bytes on a web page and also often occupy a significant amount of visual space. As a result, optimizing images can often yield some of the largest byte savings and performance improvements for your website: the fewer bytes the browser has to download, the less competition there is for the client's bandwidth and the faster the browser can download and render useful content on the screen.
+            <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/image-optimization">-Google</a>
+        </p>
+        <p>This goes for building apps as well as websites. Whatever images you are shipping should be optimized. Everytime.</p>
+        <h3>Features</h3>
+        <ul class="features-list">
+            <li>Lossless compression from ImageMagick</li>
+            <li>Fully open source implementation</li>
+            <li>Natural pull request workflow</li>
+            <li>GitHub app based permissions</li>
+            <li>Compression details in commit message</li>
+            <li>Schedulable optimization runs</li>
+            <li>File and folder ignore options</li>
+            <li>Signed and verified GitHub commits</li>
+            <li>Public + Private repo support</li>
+            <li>Completely and totally free :)</li>
+        </ul>
     </div>
-</div>
-
-<div class="row row-light">
-    <div class="col-md-9 col-xs-offset-1 col-xs-10">
-        <p>Images often account for most of the downloaded bytes on a web page and also often occupy a significant amount of visual space. As a result, optimizing images can often yield some of the largest byte savings and performance improvements for your website: the fewer bytes the browser has to download, the less competition there is for the client's bandwidth and the faster the browser can download and render useful content on the screen.</p>
-        <p> <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/image-optimization">- Google</a>
+    <div class="col-md-5 col-xs-12 text-center">
+        <img class="screen" src="~/images/screen.png" alt="" />
     </div>
-    <div class="col-md-9 col-xs-offset-1 col-xs-10">
-        <p>Optimizing images yourself is time consuming, let ImgBot do all the heavy lifting for you.  You just sit back and review the PRs :)</p>
-    </div>
-</div>
-
-<div class="row row-light text-center">
-    <img src="~/images/screen.png" />
 </div>
 
 <div class="row row-footer">
     <div class="col-md-9 col-xs-offset-1 col-xs-10">
         <ul>
-            <li>ImgBot &copy; 2017</li>
+            <li>ImgBot &copy; 2017-@DateTime.Now.Year</li>
             <li><a href="mailto:imgbothelp@gmail.com">ImgBotHelp@gmail.com</a></li>
-            <li><a href="https://github.com/apps/ImgBot">Install now free</a> </li>
+            <li><a href="https://github.com/apps/ImgBot">Install now</a> </li>
             <li><a href="@Url.Action("Privacy")">Privacy policy</a></li>
             <li><a href="https://github.com/dabutvin/ImgBot/issues">Open an issue</a></li>
             <li><a href="/docs">Docs</a></li>
+            <li><a href="https://github.com/works-with/category/code-quality">Works with GitHub</a></li>
         </ul>
     </div>
 </div>
