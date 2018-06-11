@@ -12,6 +12,7 @@ namespace ImgBot.Web.Models
         public List<Repository> repositories_added { get; set; }
         public List<Repository> repositories_removed { get; set; }
         public Sender sender { get; set; }
+        public MarketplacePurchase marketplace_purchase { get; set; }
 
         public int number { get; set; }
         public PullRequest pull_request { get; set; }
@@ -312,6 +313,18 @@ namespace ImgBot.Web.Models
             public int additions { get; set; }
             public int deletions { get; set; }
             public int changed_files { get; set; }
+        }
+
+        public class MarketplacePurchase
+        {
+            public Account account { get; set; }
+
+            public Plan plan { get; set; }
+        }
+
+        public class Plan
+        {
+            public int id { get; set; }
         }
     }
 }
