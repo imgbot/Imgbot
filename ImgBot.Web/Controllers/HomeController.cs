@@ -32,6 +32,11 @@ namespace ImgBot.Web.Controllers
             return View();
         }
 
+        public IActionResult VulnerabilityManagement()
+        {
+            return View();
+        }
+
         [Route("docs")]
         public IActionResult Docs()
         {
