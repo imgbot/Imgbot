@@ -264,3 +264,31 @@ ul,ol {
     right: 25px;
 }
 
+.scrolling-bot img {
+    position: absolute;
+    top: 200px;
+    left: 0;
+    animation: go 4s infinite cubic-bezier(.2,.65,.8,.25);
+}
+
+.scrolling-bot img:nth-child(2) {
+    animation-delay: 400ms;
+}
+
+.scrolling-bot img:nth-child(3) {
+    animation-delay: 800ms;
+}
+
+.scrolling-bot img:nth-child(3) {
+    animation-delay: 1000ms;
+}
+
+@keyframes go {
+    0% {
+        left: 0%
+    }
+
+    100% {
+        left: 100%
+    }
+}
