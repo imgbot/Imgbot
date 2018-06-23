@@ -1,0 +1,32 @@
+﻿using Microsoft.WindowsAzure.Storage.Table;
+
+namespace ImgBot.Common.TableModels
+{
+    public class Marketplace : TableEntity
+    {
+        public Marketplace()
+        {
+        }
+
+        public Marketplace(int accountId, string accountLogin)
+        {
+            PartitionKey = accountId.ToString();
+            RowKey = accountLogin;
+
+            AccountId = accountId;
+            AccountLogin = accountLogin;
+        }
+
+        public int AccountId { get; set; }
+
+        public string AccountLogin { get; set; }
+
+        public string AccountType { get; set; }
+
+        public int PlanId { get; set; }
+
+        public int SenderId { get; set; }
+
+        public string SenderLogin { get; set; }
+    }
+}

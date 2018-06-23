@@ -39,6 +39,9 @@ namespace ImgBot.Web.Controllers
                 case "push":
                     response = await ProcessPushAsync(hook);
                     break;
+                case "marketplace_purchase":
+                    response = await ProcessMarketplacePurchaseAsync(hook);
+                    break;
             }
 
             return Json(new { data = response });
@@ -122,6 +125,27 @@ namespace ImgBot.Web.Controllers
             }
 
             return "true";
+        }
+
+        private async Task<string> ProcessMarketplacePurchaseAsync(Hook hook)
+        {
+            switch (hook.action)
+            {
+                case "purchased":
+                    await _repository.InsertOrMergeAsync(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
+                    {
+                        AccountType = hook.marketplace_purchase.account.type,
+                        PlanId = hook.marketplace_purchase.plan.id,
+                        SenderId = hook.sender.id,
+                        SenderLogin = hook.sender.login,
+                    });
+                    return "true";
+                case "cancelled":
+                    await _repository.DeleteAsync<Marketplace>(hook.marketplace_purchase.account.id.ToString(), hook.marketplace_purchase.account.login);
+                    return "true";
+                default:
+                    return hook.action;
+            }
         }
     }
 }
