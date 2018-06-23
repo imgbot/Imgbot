@@ -54,6 +54,12 @@ namespace ImgBot.Web.Controllers
             return View(docs);
         }
 
+        [Route("winning")]
+        public IActionResult Winning()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();
