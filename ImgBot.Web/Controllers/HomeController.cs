@@ -27,6 +27,11 @@ namespace ImgBot.Web.Controllers
             return View();
         }
 
+        public IActionResult IncidentResponse()
+        {
+            return View();
+        }
+
         [Route("docs")]
         public IActionResult Docs()
         {
