@@ -81,7 +81,6 @@ namespace ImgBot.Function
             var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
-
             // We just made a normal commit, now we are going to capture all the values generated from that commit
             // then rewind and make a signed commit
 
@@ -93,13 +92,11 @@ namespace ImgBot.Function
                 repo.Head.Tip.Parents,
                 true,
                 null);
-            
 
             var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKeyStream, parameters.PgPPassword);
 
             repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
             var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);
-            
 
             repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
             var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);

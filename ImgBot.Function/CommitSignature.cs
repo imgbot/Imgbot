@@ -15,7 +15,7 @@ namespace ImgBot.Function
             // cutoff the actual message, we just want the signature
             return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE"));
         }
-    
+
         private static string DoSigning(string input, Stream keyIn, Stream outputStream, char[] pass)
         {
             var digest = HashAlgorithmTag.Sha256;
