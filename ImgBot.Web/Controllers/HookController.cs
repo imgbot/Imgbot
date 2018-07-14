@@ -77,49 +77,37 @@ namespace ImgBot.Web.Controllers
             switch (hook.action)
             {
                 case "created":
-                    foreach (var repo in hook.repositories)
+                    await Task.WhenAll(hook.repositories.Select(repo => _mediator.SendAsync(new InstallationMessage
                     {
-                        await _mediator.SendAsync(new InstallationMessage
-                        {
-                            InstallationId = hook.installation.id,
-                            Owner = hook.installation.account.login,
-                            AccessTokensUrl = hook.installation.access_tokens_url,
-                            RepoName = repo.name,
-                            CloneUrl = $"https://github.com/{repo.full_name}",
-                        });
-                    }
+                        InstallationId = hook.installation.id,
+                        Owner = hook.installation.account.login,
+                        AccessTokensUrl = hook.installation.access_tokens_url,
+                        RepoName = repo.name,
+                        CloneUrl = $"https://github.com/{repo.full_name}",
+                    })));
 
                     break;
 
                 case "added":
-                    foreach (var repo in hook.repositories_added)
+                    await Task.WhenAll(hook.repositories_added.Select(repo => _mediator.SendAsync(new InstallationMessage
                     {
-                        await _mediator.SendAsync(new InstallationMessage
-                        {
-                            InstallationId = hook.installation.id,
-                            Owner = hook.installation.account.login,
-                            AccessTokensUrl = hook.installation.access_tokens_url,
-                            RepoName = repo.name,
-                            CloneUrl = $"https://github.com/{repo.full_name}",
-                        });
-                    }
+                        InstallationId = hook.installation.id,
+                        Owner = hook.installation.account.login,
+                        AccessTokensUrl = hook.installation.access_tokens_url,
+                        RepoName = repo.name,
+                        CloneUrl = $"https://github.com/{repo.full_name}",
+                    })));
 
                     break;
 
                 case "removed":
-                    foreach (var repo in hook.repositories_removed)
-                    {
-                        await _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), repo.name);
-                    }
+                    await Task.WhenAll(hook.repositories_removed.Select(repo => _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), repo.name)));
 
                     break;
 
                 case "deleted":
                     var installations = await _repository.RetrievePartitionAsync<Installation>(hook.installation.id.ToString());
-                    foreach (var installation in installations)
-                    {
-                        await _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), installation.RepoName);
-                    }
+                    await Task.WhenAll(installations.Select(installation => _repository.DeleteAsync<Installation>(hook.installation.id.ToString(), installation.RepoName)));
 
                     break;
             }
