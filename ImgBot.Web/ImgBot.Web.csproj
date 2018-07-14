@@ -13,7 +13,7 @@
         <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
         <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.2" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" PrivateAssets="All" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>

@@ -6,7 +6,7 @@
 
     <ItemGroup>
         <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" PrivateAssets="All" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
