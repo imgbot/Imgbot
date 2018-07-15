@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPrFunction", "OpenPrFunction\OpenPrFunction.csproj", "{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{5DE80CA7-E47E-4262-8C8E-28C2CC2607F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Install", "Install\Install.csproj", "{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE80CA7-E47E-4262-8C8E-28C2CC2607F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE80CA7-E47E-4262-8C8E-28C2CC2607F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE80CA7-E47E-4262-8C8E-28C2CC2607F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE80CA7-E47E-4262-8C8E-28C2CC2607F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
