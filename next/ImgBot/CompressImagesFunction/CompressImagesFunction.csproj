@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-6311e88.dylib ${TargetDir}/bin/</command>
+        </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetDir}/bin/runtimes/win7-x86/native/git2-6311e88.dll ${TargetDir}/bin/</command>
+        </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetDir}/bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib ${TargetDir}/bin/</command>
+        </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetDir}/bin/runtimes/win7-x64/native/Magick.NET-Q16-x64.Native.dll ${TargetDir}/bin/</command>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.13" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.5.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="**/*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="imgbot.2017-08-23.private-key.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="pgp_password.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="pgp_private_key.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Install\Install.csproj" />
+  </ItemGroup>
+
+</Project>

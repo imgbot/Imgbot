@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Install", "Install\Install.csproj", "{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressImagesFunction", "CompressImagesFunction\CompressImagesFunction.csproj", "{4DBC4C11-027B-44A6-86FC-84CB752DBB99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,5 +27,9 @@ Global
 		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84422DBF-F2CA-4FAF-AE75-914E8C7B97E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
