@@ -13,7 +13,7 @@ namespace CompressImagesFunction
     {
         [FunctionName("CompressImagesFunction")]
         public static async Task Run(
-            [QueueTrigger("compressimages")]CompressImagesMessage compressImagesMessage,
+            [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             TraceWriter log,
             ExecutionContext context)
@@ -43,6 +43,7 @@ namespace CompressImagesFunction
 
             if (didCompress)
             {
+                log.Info("Compressed images; Route to OpenPR");
                 openPrMessages.Add(new OpenPrMessage
                 {
                     InstallationId = compressImagesMessage.InstallationId,
@@ -50,6 +51,8 @@ namespace CompressImagesFunction
                     CloneUrl = compressImagesMessage.CloneUrl,
                 });
             }
+
+            log.Info("Completed run");
         }
     }
 }

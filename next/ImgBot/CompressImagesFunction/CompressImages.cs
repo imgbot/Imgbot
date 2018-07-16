@@ -27,12 +27,7 @@ namespace CompressImagesFunction
 
             Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
 
-            var repoOptions = new RepositoryOptions
-            {
-                WorkingDirectoryPath = parameters.LocalPath
-            };
-
-            var repo = new Repository(parameters.LocalPath, repoOptions);
+            var repo = new Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
 
             // check if we have the branch already or this is empty repo

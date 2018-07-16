@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Install", "Install\Install.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressImagesFunction", "CompressImagesFunction\CompressImagesFunction.csproj", "{4DBC4C11-027B-44A6-86FC-84CB752DBB99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouterFunction", "RouterFunction\RouterFunction.csproj", "{C7DA8CA7-8540-4698-A7C0-5537565F345B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,5 +33,9 @@ Global
 		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DBC4C11-027B-44A6-86FC-84CB752DBB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7DA8CA7-8540-4698-A7C0-5537565F345B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7DA8CA7-8540-4698-A7C0-5537565F345B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7DA8CA7-8540-4698-A7C0-5537565F345B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7DA8CA7-8540-4698-A7C0-5537565F345B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
