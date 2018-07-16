@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="ImgBit" ToolsVersion="14.0">
+    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+        <!-- lementsMustBeDocumented -->
+        <Rule Id="SA1600" Action="None" />
+        <!-- XmlCommentAnalysisDisabled -->
+        <Rule Id="SA0001" Action="None" />
+
+        <!-- UseTrailingCommasInMultiLineInitializers -->
+        <Rule Id="SA1413" Action="None" />
+
+        <!-- BracesMustNotBeOmitted -->
+        <Rule Id="SA1503" Action="None" />
+
+        <!-- FileMustHaveHeader -->
+        <Rule Id="SA1633" Action="None" />
+
+        <!-- PrefixLocalCallsWithThis -->
+        <Rule Id="SA1101" Action="None" />
+        <!-- DoNotPrefixLocalMembersWithThis -->
+        <Rule Id="SX1101" Action="Warning" />
+
+        <!-- FieldNamesMustNotBeginWithUnderscore -->
+        <Rule Id="SA1309" Action="None" />
+        <!-- FieldNamesMustBeginWithUnderscore -->
+        <Rule Id="SX1309" Action="Warning" />
+    </Rules>
+</RuleSet>

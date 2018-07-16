@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.13" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -15,6 +16,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+      <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+      <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
+  </ItemGroup>
+
+  <PropertyGroup>
+      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>

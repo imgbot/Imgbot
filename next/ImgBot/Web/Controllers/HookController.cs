@@ -57,7 +57,7 @@ namespace Web.Controllers
 
             var files = hook.commits.SelectMany(x => x.added)
                 .Concat(hook.commits.SelectMany(x => x.modified))
-                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.EndsWith(extension)));
+                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.EndsWith(extension, StringComparison.Ordinal)));
 
             if (files.Any() == false)
             {

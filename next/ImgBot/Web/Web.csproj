@@ -6,12 +6,26 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Shared\_CookieConsentPartial.cshtml" />
+      <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+      <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
   </ItemGroup>
+
+  <PropertyGroup>
+      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+      <None Update="Docs\*.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+  </ItemGroup>
+
 </Project>

@@ -74,7 +74,18 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.5.0.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+    <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
+  </ItemGroup>
+
+  <PropertyGroup>
+      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

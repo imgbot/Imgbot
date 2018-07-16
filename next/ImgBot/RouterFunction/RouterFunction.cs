@@ -26,8 +26,10 @@ namespace RouterFunction
                 });
             }
 
-            // TODO: add logic for routing 
-            //       https://github.com/dabutvin/ImgBot/issues/98
+            /*
+             *  TODO: add logic for routing
+             *        https://github.com/dabutvin/ImgBot/issues/98
+             */
 
             log.Info($"Routing {routerMessage.CloneUrl} to {nameof(compressImagesMessages)}.");
 

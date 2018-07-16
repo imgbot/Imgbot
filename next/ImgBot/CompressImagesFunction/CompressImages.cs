@@ -82,7 +82,6 @@ namespace CompressImagesFunction
 
             // We just made a normal commit, now we are going to capture all the values generated from that commit
             // then rewind and make a signed commit
-
             var commitBuffer = Commit.CreateBuffer(
                 repo.Head.Tip.Author,
                 repo.Head.Tip.Committer,
@@ -138,8 +137,9 @@ namespace CompressImagesFunction
                         Commands.Stage(repo, image);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                 }
             });
 

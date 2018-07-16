@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
@@ -13,7 +14,7 @@ namespace CompressImagesFunction
             var signedMessage = DoSigning(commitMessage, privateKeyStream, outputStream, password.ToCharArray());
 
             // cutoff the actual message, we just want the signature
-            return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE"));
+            return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE", StringComparison.Ordinal));
         }
 
         private static string DoSigning(string input, Stream keyIn, Stream outputStream, char[] pass)
