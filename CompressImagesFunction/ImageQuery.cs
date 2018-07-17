@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Common;
 
@@ -16,8 +17,9 @@ namespace CompressImagesFunction
             {
                 // find all the ignored files and exclude them from the found images
                 var ignoredFiles = repoConfiguration.IgnoredFiles
+                    .Select(x => x.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar))
                     .AsParallel()
-                    .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern.Replace("\\", "/"), SearchOption.AllDirectories));
+                    .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories));
 
                 images = images.Except(ignoredFiles);
             }

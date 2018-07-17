@@ -13,7 +13,7 @@ namespace ImgBot.Test
         {
             var images = ImageQuery.FindImages("data", new RepoConfiguration());
 
-            Assert.AreEqual(7, images.Length);
+            Assert.AreEqual(7, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -34,7 +34,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(6, images.Length);
+            Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -54,7 +54,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(3, images.Length);
+            Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -71,7 +71,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(3, images.Length);
+            Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -88,7 +88,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(2, images.Length);
+            Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("item3.jpg");
         }
@@ -104,7 +104,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(0, images.Length);
+            Assert.AreEqual(0, images.Length, $"Images found {string.Join("; ", images)}.");
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(5, images.Length);
+            Assert.AreEqual(5, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -138,7 +138,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(6, images.Length);
+            Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -158,7 +158,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(6, images.Length);
+            Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
@@ -178,7 +178,7 @@ namespace ImgBot.Test
                 }
             });
 
-            Assert.AreEqual(6, images.Length);
+            Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             images.Contains("a.jpg");
             images.Contains("b.png");
             images.Contains("c.png");
