@@ -17,7 +17,7 @@ namespace CompressImagesFunction
                 // find all the ignored files and exclude them from the found images
                 var ignoredFiles = repoConfiguration.IgnoredFiles
                     .AsParallel()
-                    .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories));
+                    .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern.Replace("\\", "/"), SearchOption.AllDirectories));
 
                 images = images.Except(ignoredFiles);
             }
