@@ -12,3 +12,5 @@ local.settings.json
 appsettings.json
 node_modules
 lib
+.DS_Store
+UserPrefs.xml
