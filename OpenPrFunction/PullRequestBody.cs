@@ -36,7 +36,7 @@ namespace OpenPrFunction
                         continue;
                     }
 
-                    var pattern = @"(.*) -- (.*) -> (.*) \((.*)\)";
+                    var pattern = @"\*?(.*) -- (.*) -> (.*) \((.*)%\)";
                     var capture = Regex.Matches(commitLines[i], pattern)[0];
 
                     imageStats.Add(new ImageStat
@@ -44,41 +44,57 @@ namespace OpenPrFunction
                         Name = capture.Groups[1].Value,
                         Before = capture.Groups[2].Value,
                         After = capture.Groups[3].Value,
-                        Percent = capture.Groups[4].Value,
+                        Percent = Convert.ToDouble(capture.Groups[4].Value),
                     });
                 }
 
-                var sb = new StringBuilder();
+                if (imageStats.Count == 0)
+                {
+                    throw new Exception("No images found in commit message");
+                }
 
-                sb.AppendLine("Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information.");
+                var sb = new StringBuilder();
+                sb.AppendLine("## Beep boop. Your images are optimized!");
+                sb.AppendLine();
+                sb.AppendLine($"Your image file size has been reduced by **{imageStats[0].Percent:N0}%** 🎉");
+                sb.AppendLine();
+                sb.AppendLine("<details>");
+
+                sb.AppendLine("<summary>");
+                sb.AppendLine("Details");
+                sb.AppendLine("</summary>");
                 sb.AppendLine();
 
-                if (imageStats.Count > 0)
+                sb.AppendLine("| File | Before | After | Percent reduction |");
+                sb.AppendLine("|:--|:--|:--|:--|");
+
+                if (imageStats.Count == 1)
                 {
-                    sb.AppendLine("<details>");
-
-                    sb.AppendLine("<summary>");
-                    sb.AppendLine("Compression result");
-                    sb.AppendLine("</summary>");
-                    sb.AppendLine();
-
-                    sb.AppendLine("| | Before | After | Percent reduction |");
-                    sb.AppendLine("|:--|:--|:--|:--|");
-
-                    for (var i = 0; i < imageStats.Count; i++)
+                    sb.AppendLine($"| {imageStats[0].Name} | {imageStats[0].Before} | {imageStats[0].After} | {imageStats[0].Percent:N2}% |");
+                }
+                else
+                {
+                    // the zeroth item is the total; we print it at the bottom of the table
+                    for (var i = 1; i < imageStats.Count; i++)
                     {
-                        sb.AppendLine($"| {imageStats[i].Name} | {imageStats[i].Before} | {imageStats[i].After} | {imageStats[i].Percent} |");
-
-                        if (imageStats.Count > 1 && i == 0)
-                        {
-                            // print separator line between summary and individual stats
-                            // there is only a summary if there is more than one image
-                            sb.AppendLine("| | | | |");
-                        }
+                        sb.AppendLine($"| {imageStats[i].Name} | {imageStats[i].Before} | {imageStats[i].After} | {imageStats[i].Percent:N2}% |");
                     }
 
-                    sb.AppendLine("</details>");
+                    sb.AppendLine("| | | | |");
+                    sb.AppendLine($"| **Total :** | **{imageStats[0].Before}** | **{imageStats[0].After}** | **{imageStats[0].Percent:N2}%** |");
                 }
+
+                sb.AppendLine("</details>");
+                sb.AppendLine();
+                sb.AppendLine("---");
+                sb.AppendLine();
+
+                sb.Append("[📝docs](https://imgbot.net/docs) | ");
+                sb.Append("[:octocat: repo](https://github.com/dabutvin/ImgBot) | ");
+                sb.Append("[🙋issues](https://github.com/dabutvin/ImgBot/issues) | ");
+                sb.Append("[🏪marketplace](https://github.com/marketplace/imgbot)");
+
+                sb.AppendLine();
 
                 return sb.ToString();
             }
@@ -97,7 +113,7 @@ namespace OpenPrFunction
 
             public string After { get; set; }
 
-            public string Percent { get; set; }
+            public double Percent { get; set; }
         }
     }
 }
