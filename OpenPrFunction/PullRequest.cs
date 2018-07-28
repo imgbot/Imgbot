@@ -14,13 +14,18 @@ namespace OpenPrFunction
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
             var repo = await githubClient.Repository.Get(parameters.RepoOwner, parameters.RepoName);
+            var branch = await githubClient.Repository.Branch.Get(parameters.RepoOwner, parameters.RepoName, KnownGitHubs.BranchName);
+            var commit = await githubClient.Repository.Commit.Get(parameters.RepoOwner, parameters.RepoName, branch.Commit.Sha);
 
-            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, repo.DefaultBranch)
+            if (branch != null)
             {
-                Body = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information."
-            };
+                var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, repo.DefaultBranch)
+                {
+                    Body = PullRequestBody.Generate(commit.Commit.Message),
+                };
 
-            await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+                await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+            }
         }
     }
 }

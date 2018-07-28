@@ -50,5 +50,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\CompressImagesFunction\CompressImagesFunction.csproj" />
+    <ProjectReference Include="..\OpenPrFunction\OpenPrFunction.csproj" />
   </ItemGroup>
 </Project>
