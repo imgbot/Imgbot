@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,16 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="WindowsAzure.Storage" Version="8.6.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-    <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
-  </ItemGroup>
-
-  <PropertyGroup>
-      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+  <Import Project="../ImgBot.targets" />
 
 </Project>

@@ -7,5 +7,6 @@ branches:
   - master
 before_build:
 - nuget restore
+configuration: Release
 build:
   verbosity: minimal

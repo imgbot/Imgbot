@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,16 +7,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-    <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
-  </ItemGroup>
-
-  <PropertyGroup>
-      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+  <Import Project="../ImgBot.targets" />
 
 </Project>
