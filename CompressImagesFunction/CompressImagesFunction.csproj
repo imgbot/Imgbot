@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
+
   <PropertyGroup>
     <CustomCommands>
       <CustomCommands>
@@ -25,6 +26,7 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <CustomCommands>
       <CustomCommands>
@@ -47,6 +49,7 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CustomCommands>
       <CustomCommands>
@@ -69,22 +72,13 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.13" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.5.0.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
   </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-    <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
-  </ItemGroup>
-
-  <PropertyGroup>
-      <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
 
   <ItemGroup>
     <None Update="host.json">
@@ -103,9 +97,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Install\Install.csproj" />
   </ItemGroup>
+
+  <Import Project="../ImgBot.targets" />
 
 </Project>

@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -10,19 +9,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.1" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-    <AdditionalFiles Include="..\ImgBot.ruleset" Link="ImgBot.ruleset" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\ImgBot.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
 
   <ItemGroup>
     <None Update="data\a.jpg">
@@ -46,10 +35,14 @@
     <None Update="data\folder\item3.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-</ItemGroup>
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\CompressImagesFunction\CompressImagesFunction.csproj" />
     <ProjectReference Include="..\OpenPrFunction\OpenPrFunction.csproj" />
   </ItemGroup>
+
+  <Import Project="../ImgBot.targets" />
+
 </Project>

@@ -10,8 +10,8 @@ namespace CompressImagesFunction
         /// Using the repo and the repoConfiguration determine whether
         /// the schedule permits an optimization at this time.
         /// </summary>
-        /// <param name="repoConfiguration">The configuration for the repository</param>
-        /// <param name="repo">The repository</param>
+        /// <param name="repoConfiguration">The configuration for the repository.</param>
+        /// <param name="repo">The repository.</param>
         /// <returns>True when the images can be optimized.</returns>
         public static bool ShouldOptimizeImages(RepoConfiguration repoConfiguration, LibGit2Sharp.IRepository repo)
         {
