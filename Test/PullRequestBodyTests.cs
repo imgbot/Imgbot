@@ -13,6 +13,7 @@ namespace Test
                                                 "[📝docs](https://imgbot.net/docs) | " +
                                                 "[:octocat: repo](https://github.com/dabutvin/ImgBot) | " +
                                                 "[🙋issues](https://github.com/dabutvin/ImgBot/issues) | " +
+                                                "[🏅swag](https://goo.gl/forms/1GX7wlhGEX8nkhGO2) | " +
                                                 "[🏪marketplace](https://github.com/marketplace/imgbot)" +
                                                 Environment.NewLine;
 

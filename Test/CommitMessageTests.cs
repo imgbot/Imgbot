@@ -3,7 +3,7 @@ using Common;
 using CompressImagesFunction;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ImgBot.Test
+namespace Test
 {
     [TestClass]
     public class CommitMessageTests

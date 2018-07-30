@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-namespace ImgBot.Test
+namespace Test
 {
     public class SimpleCommitLog : IQueryableCommitLog
     {
