@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,40 +12,40 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
-namespace PrPoisonHandler
+namespace CompressPoisonHandler
 {
     /// <summary>
     /// The point of this Timer function is to clean up after the main function
     /// It is read only as it relates to GitHub - only querying for status
     /// The action it takes is moving queue messages around
-    /// If there is work to do it moves the message back into the main openPR queue
+    /// If there is work to do it moves the message back into the main compress images queue
     /// If there is no work to do it deletes the message entirely
     /// </summary>
-    public static class PrPoisonFunction
+    public static class CompressPoisonFunction
     {
         [Singleton]
-        [FunctionName("PrPoison")]
+        [FunctionName("CompressPoison")]
         public static async Task Run(
             [TimerTrigger("0 */30 * * * *", RunOnStartup = true)]TimerInfo timerInfo,
             [Table("installation")] CloudTable installationTable,
-            [Queue("openprmessage")] CloudQueue openPrQueue,
-            [Queue("openprmessage-poison")] CloudQueue openPrPoisonQueue,
+            [Queue("compressimagesmessage")] CloudQueue compressImagesQueue,
+            [Queue("compressimagesmessage-poison")] CloudQueue compressImagesPoisonQueue,
             TraceWriter log,
             ExecutionContext context)
         {
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 50; i++)
             {
                 System.Threading.Thread.Sleep(1000);
 
-                var topQueueMessage = await openPrPoisonQueue.GetMessageAsync();
+                var topQueueMessage = await compressImagesPoisonQueue.GetMessageAsync();
                 if (topQueueMessage == null)
                 {
                     continue;
                 }
 
                 // pre-emptively delete the message from the queue we are pulling from
-                await openPrPoisonQueue.DeleteMessageAsync(topQueueMessage);
-                var topMessage = JsonConvert.DeserializeObject<OpenPrMessage>(topQueueMessage.AsString);
+                await compressImagesPoisonQueue.DeleteMessageAsync(topQueueMessage);
+                var topMessage = JsonConvert.DeserializeObject<CompressImagesMessage>(topQueueMessage.AsString);
 
                 try
                 {
@@ -71,7 +71,7 @@ namespace PrPoisonHandler
                         installationTokenParameters,
                         File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 
-                    var appClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("MyApp"))
+                    var appClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("CompressPoison"))
                     {
                         Credentials = new Octokit.Credentials(installationToken.Token, Octokit.AuthenticationType.Bearer)
                     };
@@ -85,28 +85,14 @@ namespace PrPoisonHandler
                     var branches = await appClient.Repository.Branch.GetAll(installation.Owner, installation.RepoName);
                     var imgbotBranches = branches.Where(x => x.Name == "imgbot");
 
-                    if (imgbotBranches.Count() == 0)
+                    if (imgbotBranches.Count() == 1)
                     {
-                        // we have no open imgbot branches right now, let's just leave
+                        // we have open imgbot branches right now, let's just leave
                         continue;
                     }
                     else
                     {
-                        log.Info("Open 'imgbot' branch found");
-                    }
-
-                    // check for ImgBot PRs
-                    var prs = await appClient.Repository.PullRequest.GetAllForRepository(installation.Owner, installation.RepoName);
-                    var imgbotPrs = prs.Where(x => x.Head.Ref == "imgbot");
-
-                    if (imgbotPrs.Count() > 0)
-                    {
-                        // we have an open imgbot PR right now, let's just leave
-                        continue;
-                    }
-                    else
-                    {
-                        log.Info("Open 'imgbot' PR not found, do we need to open one?");
+                        log.Info("Open 'imgbot' branch not found");
                     }
 
                     // query for closed ImgBot PRs
@@ -119,23 +105,8 @@ namespace PrPoisonHandler
                     var imgbotIssues = await appClient.Search.SearchIssues(searchRequest);
                     if (imgbotIssues.TotalCount == 0)
                     {
-                        // no imgbot prs in history, let's queue a message to get the pr open
-                        await openPrQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(topMessage)));
-                    }
-                    else
-                    {
-                        // this is the case where an 'imgbot' branch exists, but there are closed imgbot prs
-                        var latestClosedPr = imgbotIssues.Items.OrderByDescending(x => x.ClosedAt).First();
-                        var potentialBranch = branches.First(x => x.Name == "imgbot");
-
-                        var commitInImgbotBranch = await appClient.Repository.Commit
-                                                            .Get(installation.Owner, installation.RepoName, potentialBranch.Commit.Sha);
-
-                        if (commitInImgbotBranch.Commit.Author.Date > latestClosedPr.ClosedAt)
-                        {
-                            // if the branch is newer than the last closed imgbot PR then we should queue a message to get the pr open
-                            await openPrQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(topMessage)));
-                        }
+                        log.Info("no imgbot prs in history, let's queue a message to try and compress images");
+                        await compressImagesQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(topMessage)));
                     }
                 }
                 catch (Exception e)
@@ -143,7 +114,7 @@ namespace PrPoisonHandler
                     log.Error("ERROR!", e);
 
                     // add it back to the poison queue
-                    await openPrPoisonQueue.AddMessageAsync(topQueueMessage);
+                    await compressImagesPoisonQueue.AddMessageAsync(topQueueMessage);
                 }
             }
         }
