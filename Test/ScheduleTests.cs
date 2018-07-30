@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
-namespace ImgBot.Test
+namespace Test
 {
     [TestClass]
     public class ScheduleTests
