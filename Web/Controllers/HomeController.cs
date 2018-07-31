@@ -42,6 +42,11 @@ namespace Web.Controllers
             return View();
         }
 
+        public IActionResult Terms()
+        {
+            return View();
+        }
+
         [Route("docs")]
         public IActionResult Docs()
         {
