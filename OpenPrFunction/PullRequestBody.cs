@@ -56,7 +56,16 @@ namespace OpenPrFunction
                 var sb = new StringBuilder();
                 sb.AppendLine("## Beep boop. Your images are optimized!");
                 sb.AppendLine();
-                sb.AppendLine($"Your image file size has been reduced by **{imageStats[0].Percent:N0}%** 🎉");
+
+                if (imageStats[0].Percent == 0)
+                {
+                    sb.AppendLine("Your image file size has been reduced!");
+                }
+                else
+                {
+                    sb.AppendLine($"Your image file size has been reduced by **{imageStats[0].Percent:N0}%** 🎉");
+                }
+
                 sb.AppendLine();
                 sb.AppendLine("<details>");
 

@@ -52,6 +52,32 @@ namespace Test
         }
 
         [TestMethod]
+        public void GivenZeroPercentReductionCommitMessage_ShouldOmitPercentage()
+        {
+            var commitMessage = "[ImgBot] optimizes images" + Environment.NewLine +
+                         Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11kb -> 160.11kb (0.02%)" + Environment.NewLine;
+
+            var expectedMarkdown = "## Beep boop. Your images are optimized!" + Environment.NewLine +
+                          Environment.NewLine +
+                          "Your image file size has been reduced!" + Environment.NewLine +
+                          Environment.NewLine +
+                          "<details>" + Environment.NewLine +
+                          "<summary>" + Environment.NewLine +
+                          "Details" + Environment.NewLine +
+                          "</summary>" + Environment.NewLine +
+                          Environment.NewLine +
+                          "| File | Before | After | Percent reduction |" + Environment.NewLine +
+                          "|:--|:--|:--|:--|" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
+                          "</details>" + expectedFooter;
+
+            var result = PullRequestBody.Generate(commitMessage);
+
+            Assert.AreEqual(expectedMarkdown, result);
+        }
+
+        [TestMethod]
         public void GivenSingleImageCommitMessage_ShouldFormatMarkdownTable()
         {
             var commitMessage = "[ImgBot] optimizes images" + Environment.NewLine +
