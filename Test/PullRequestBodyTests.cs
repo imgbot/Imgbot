@@ -69,7 +69,7 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11kb | 160.11kb | 0.02% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(commitMessage);
