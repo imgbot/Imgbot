@@ -67,6 +67,9 @@ namespace CompressImagesFunction
             repo.CreateBranch(KnownGitHubs.BranchName);
             var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
 
+            // reset any mean files
+            repo.Reset(ResetMode.Mixed, repo.Head.Tip);
+
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths);
