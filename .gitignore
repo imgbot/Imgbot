@@ -14,3 +14,4 @@ node_modules
 lib
 .DS_Store
 UserPrefs.xml
+.vscode

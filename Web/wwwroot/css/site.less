@@ -7,16 +7,21 @@
 h1 {
     font-family: 'Oswald', cursive;
     font-size: 76px;
+    margin-top: 20px;
 }
 
 h2 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 50px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 h3 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 36px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 p, ul {
@@ -44,22 +49,14 @@ ul,ol {
     padding: 0;
 }
 
-.row {
-    padding: 30px 0;
-}
-
 .row-footer {
     position: relative;
     background: #000;
     color: #fff;
 }
 
-.row + .row {
+.container + .container {
     border-top: 1px solid #666;
-}
-
-.screen {
-    padding: 30px;
 }
 
 .features-list {
@@ -71,7 +68,33 @@ ul,ol {
     }
 }
 
-@media only screen and (min-width: 960px) {
+footer {
+    background-color: #000;
+    color: #fff;
+    margin-top: 20px;
+    padding: 30px;
+
+    ul {
+        margin-left: 20px;
+    }
+}
+
+@media only screen and (min-width: 720px) {
+    footer {
+        padding: 30px 60px;
+
+        ul {
+            overflow: hidden;
+        }
+
+        li {
+            float: left;
+            margin-right: 30px;
+        }
+    }
+}
+
+@media only screen and (min-width: 1000px) {
     .row-hero {
         padding: 0;
         background-image: url('../images/hero.jpg');
@@ -114,16 +137,27 @@ ul,ol {
     }
 
     h1 {
-        font-size: 120px;
+        font-size: 100px;
     }
 
     .message {
         font-size: 48px;
     }
 
-    .row-footer li {
-        float: left;
-        margin-right: 30px;
+    .container-howitworks {
+        padding: 30px 70px;
+
+        .col-sm {
+            padding: 0 40px;
+        }
+    }
+
+    .container-whyimgbot {
+        padding: 30px 70px;
+    }
+
+    footer {
+        padding: 30px 180px;
     }
 }
 
@@ -238,6 +272,10 @@ ul,ol {
 }
 
 @media only screen and (max-width: 960px) { 
+    h2,h3 {
+        text-align: center;
+    }
+    
     .docs-sidebar {
         display: none;
     }
@@ -291,4 +329,18 @@ ul,ol {
     100% {
         left: 100%
     }
+}
+
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
