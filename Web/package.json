@@ -9,7 +9,7 @@
     "grunt-contrib-less": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-markdown": "^0.7.0",
-    "jquery": "^2.0"
+    "jquery": "^3.3"
   },
   "scripts": {
     "compile-docs": "grunt markdown:all",
