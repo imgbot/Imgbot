@@ -77,7 +77,7 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.13" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.5.0.1" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.6.0" />
   </ItemGroup>
 
   <ItemGroup>
