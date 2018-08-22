@@ -76,11 +76,6 @@ namespace CompressImagesFunction
             if (optimizedImages.Length == 0)
                 return false;
 
-            // Fail safe for overly optimized images
-            // https://github.com/dabutvin/ImgBot/issues/141
-            if (optimizedImages.Average(x => x.PercentSaved) > 85)
-                return false;
-
             // create commit message based on optimizations
             var commitMessage = CommitMessage.Create(optimizedImages);
 
