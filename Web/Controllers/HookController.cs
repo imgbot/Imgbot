@@ -50,6 +50,18 @@ namespace Web.Controllers
 
         private async Task<string> ProcessPushAsync(Hook hook)
         {
+            if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}")
+            {
+                await _mediator.SendAsync(new OpenPrMessage
+                {
+                    InstallationId = hook.installation.id,
+                    RepoName = hook.repository.name,
+                    CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                });
+
+                return "imgbot push";
+            }
+
             if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
             {
                 return "Commit to non default branch";
