@@ -1,0 +1,76 @@
+﻿{
+  "action": "removed",
+  "installation": {
+    "id": 49158,
+    "account": {
+      "login": "dabutvin",
+      "id": 5168796,
+      "node_id": "MDQ6VXNlcjUxNjg3OTY=",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5168796?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/dabutvin",
+      "html_url": "https://github.com/dabutvin",
+      "followers_url": "https://api.github.com/users/dabutvin/followers",
+      "following_url": "https://api.github.com/users/dabutvin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/dabutvin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/dabutvin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/dabutvin/subscriptions",
+      "organizations_url": "https://api.github.com/users/dabutvin/orgs",
+      "repos_url": "https://api.github.com/users/dabutvin/repos",
+      "events_url": "https://api.github.com/users/dabutvin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/dabutvin/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "repository_selection": "all",
+    "access_tokens_url": "https://api.github.com/installations/49158/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/settings/installations/49158",
+    "app_id": 6074,
+    "target_id": 5168796,
+    "target_type": "User",
+    "permissions": {
+      "pull_requests": "write",
+      "contents": "write",
+      "metadata": "read"
+    },
+    "events": [
+      "push"
+    ],
+    "created_at": "2017-08-29T07:45:35.000Z",
+    "updated_at": "2018-08-30T05:45:19.000Z",
+    "single_file_name": null
+  },
+  "repository_selection": "all",
+  "repositories_added": [
+
+  ],
+  "repositories_removed": [
+    {
+      "id": 146701018,
+      "name": "testing",
+      "full_name": "dabutvin/testing",
+      "private": false
+    }
+  ],
+  "sender": {
+    "login": "dabutvin",
+    "id": 5168796,
+    "node_id": "MDQ6VXNlcjUxNjg3OTY=",
+    "avatar_url": "https://avatars2.githubusercontent.com/u/5168796?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/dabutvin",
+    "html_url": "https://github.com/dabutvin",
+    "followers_url": "https://api.github.com/users/dabutvin/followers",
+    "following_url": "https://api.github.com/users/dabutvin/following{/other_user}",
+    "gists_url": "https://api.github.com/users/dabutvin/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/dabutvin/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/dabutvin/subscriptions",
+    "organizations_url": "https://api.github.com/users/dabutvin/orgs",
+    "repos_url": "https://api.github.com/users/dabutvin/repos",
+    "events_url": "https://api.github.com/users/dabutvin/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/dabutvin/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}

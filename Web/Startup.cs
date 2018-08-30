@@ -1,5 +1,4 @@
 ﻿using Common.Mediation;
-using Common.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -45,8 +44,6 @@ namespace Web
             });
 
             services.AddScoped<IMediator, QueueMediator>();
-            services.AddScoped<IRepository, TableRepository>();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

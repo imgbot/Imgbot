@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,25 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="data\a.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\b.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\c.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\folder\deep\nested\deepimage.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\folder\item1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\folder\item2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\folder\item3.jpg">
+    <None Update="data\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -41,6 +24,7 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\CompressImagesFunction\CompressImagesFunction.csproj" />
     <ProjectReference Include="..\OpenPrFunction\OpenPrFunction.csproj" />
+    <ProjectReference Include="..\WebHook\WebHook.csproj" />
   </ItemGroup>
 
   <Import Project="../ImgBot.targets" />

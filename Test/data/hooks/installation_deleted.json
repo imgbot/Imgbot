@@ -1,0 +1,64 @@
+﻿{
+  "action": "deleted",
+  "installation": {
+    "id": 654321,
+    "account": {
+      "login": "tester",
+      "id": 15002222,
+      "node_id": "MDS1AXNlcjIwMTAyMjg4",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15002222?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/tester",
+      "html_url": "https://github.com/tester",
+      "followers_url": "https://api.github.com/users/tester/followers",
+      "following_url": "https://api.github.com/users/tester/following{/other_user}",
+      "gists_url": "https://api.github.com/users/tester/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/tester/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/tester/subscriptions",
+      "organizations_url": "https://api.github.com/users/tester/orgs",
+      "repos_url": "https://api.github.com/users/tester/repos",
+      "events_url": "https://api.github.com/users/tester/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/tester/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "repository_selection": "selected",
+    "access_tokens_url": "https://api.github.com/installations/654321/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/settings/installations/654321",
+    "app_id": 4706,
+    "target_id": 15002222,
+    "target_type": "User",
+    "permissions": {
+      "contents": "write",
+      "pull_requests": "write",
+      "metadata": "read"
+    },
+    "events": [
+      "push"
+    ],
+    "created_at": "2018-08-31T12:31:50.000Z",
+    "updated_at": "2018-08-31T12:31:50.000Z",
+    "single_file_name": null
+  },
+  "sender": {
+    "login": "tester",
+    "id": 15002222,
+    "node_id": "MDS1AXNlcjIwMTAyMjg4",
+    "avatar_url": "https://avatars1.githubusercontent.com/u/15002222?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/tester",
+    "html_url": "https://github.com/tester",
+    "followers_url": "https://api.github.com/users/tester/followers",
+    "following_url": "https://api.github.com/users/tester/following{/other_user}",
+    "gists_url": "https://api.github.com/users/tester/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/tester/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/tester/subscriptions",
+    "organizations_url": "https://api.github.com/users/tester/orgs",
+    "repos_url": "https://api.github.com/users/tester/repos",
+    "events_url": "https://api.github.com/users/tester/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/tester/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
