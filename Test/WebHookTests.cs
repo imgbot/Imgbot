@@ -192,9 +192,9 @@ namespace Test
             routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
                           x.InstallationId == 541 &&
                           x.AccessTokensUrl == "https://api.github.com/installations/541/access_tokens" &&
-                          x.CloneUrl == "https://github.com/dabut/myrepo" &&
-                          x.Owner == "dabut" &&
-                         x.RepoName == "myrepo"));
+                          x.CloneUrl == "https://github.com/dabutvin/myrepo" &&
+                          x.Owner == "dabutvin" &&
+                          x.RepoName == "myrepo"));
 
             // No messages sent to OpenPr
             openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
