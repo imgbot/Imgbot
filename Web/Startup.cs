@@ -1,5 +1,4 @@
-﻿using Common.Mediation;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,22 +27,6 @@ namespace Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddSingleton(_ =>
-            {
-                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudBlobClient();
-            });
-
-            services.AddSingleton(_ =>
-            {
-                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudQueueClient();
-            });
-
-            services.AddSingleton(_ =>
-            {
-                return CloudStorageAccount.Parse(Configuration.GetSection("Storage")["ConnectionString"]).CreateCloudTableClient();
-            });
-
-            services.AddScoped<IMediator, QueueMediator>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
