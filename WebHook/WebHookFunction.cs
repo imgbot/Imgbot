@@ -152,7 +152,7 @@ namespace WebHook
 
                     return "purchased";
                 case "cancelled":
-                    await marketplaceTable.DropRow(hook.marketplace_purchase.account.id.ToString(), hook.marketplace_purchase.account.login);
+                    await marketplaceTable.DropRow(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login);
                     return "cancelled";
                 default:
                     return hook.action;

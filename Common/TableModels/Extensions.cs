@@ -39,5 +39,10 @@ namespace Common.TableModels
 
             return true;
         }
+
+        public static Task<bool> DropRow(this CloudTable table, int partitionKey, string rowKey)
+        {
+            return table.DropRow(partitionKey.ToString(), rowKey);
+        }
     }
 }
