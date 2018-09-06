@@ -63,7 +63,7 @@ namespace PrPoisonHandler
 
                     var installationTokenParameters = new InstallationTokenParameters
                     {
-                        AccessTokensUrl = installation.AccessTokensUrl,
+                        AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, topMessage.InstallationId),
                         AppId = KnownGitHubs.AppId,
                     };
 
