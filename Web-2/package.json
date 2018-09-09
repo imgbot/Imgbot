@@ -19,7 +19,7 @@
     "grunt-contrib-less": "^2.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-devserver": "^0.6.0",
-    "grunt-markdown": "^0.7.0",
+    "grunt-markdown": "github:dabutvin/grunt-markdown#marked",
     "jquery": "^3.3.1"
   }
 }

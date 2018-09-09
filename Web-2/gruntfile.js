@@ -11,22 +11,24 @@ module.exports = function(grunt) {
       all: {
         files: [
           {
+            cwd: 'src',
             expand: true,
-            flatten: true,
-            src: 'src/*.md',
+            src: '**/*.md',
             dest: 'dist/.',
             ext: '.html'
           },
           {
+            cwd: 'src',
             expand: true,
-            flatten: true,
-            src: 'src/*.html',
+            src: '**/*.html',
             dest: 'dist/.',
             ext: '.html'
           }
         ],
         options: {
-          template: 'src/layout.jst'
+          template: 'src/layout.jst',
+          headerIds: false,
+          gfm: true
         }
       }
     },
