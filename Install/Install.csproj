@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.2" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.3" />
   </ItemGroup>
 
   <Import Project="../ImgBot.targets" />
