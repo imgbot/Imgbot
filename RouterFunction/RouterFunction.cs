@@ -20,7 +20,6 @@ namespace RouterFunction
             {
                 installations.Add(new Installation(routerMessage.InstallationId, routerMessage.RepoName)
                 {
-                    AccessTokensUrl = routerMessage.AccessTokensUrl,
                     CloneUrl = routerMessage.CloneUrl,
                     Owner = routerMessage.Owner,
                 });
@@ -35,7 +34,6 @@ namespace RouterFunction
 
             compressImagesMessages.Add(new CompressImagesMessage
             {
-                AccessTokensUrl = routerMessage.AccessTokensUrl,
                 CloneUrl = routerMessage.CloneUrl,
                 InstallationId = routerMessage.InstallationId,
                 Owner = routerMessage.Owner,

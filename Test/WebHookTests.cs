@@ -126,7 +126,6 @@ namespace Test
             routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
                 x.InstallationId == 23199 &&
                 x.Owner == "dabutvin" &&
-                x.AccessTokensUrl == "https://api.github.com/installations/23199/access_tokens" &&
                 x.RepoName == "test" &&
                 x.CloneUrl == "https://github.com/dabutvin/test"));
 
@@ -158,7 +157,6 @@ namespace Test
             // 1 message sent to Router
             routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
                           x.InstallationId == 554 &&
-                          x.AccessTokensUrl == "https://api.github.com/installations/5xxx54/access_tokens" &&
                           x.CloneUrl == "https://github.com/dabutvin/testing" &&
                           x.Owner == "dabutvin" &&
                          x.RepoName == "testing"));
@@ -191,7 +189,6 @@ namespace Test
             // 1 message sent to Router
             routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
                           x.InstallationId == 541 &&
-                          x.AccessTokensUrl == "https://api.github.com/installations/541/access_tokens" &&
                           x.CloneUrl == "https://github.com/dabutvin/myrepo" &&
                           x.Owner == "dabutvin" &&
                           x.RepoName == "myrepo"));

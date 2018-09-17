@@ -82,7 +82,6 @@ namespace WebHook
             {
                 InstallationId = hook.installation.id,
                 Owner = hook.repository.owner.login,
-                AccessTokensUrl = $"https://api.github.com/installations/{hook.installation.id}/access_tokens", // access_tokens url not available from this hook :(
                 RepoName = hook.repository.name,
                 CloneUrl = $"https://github.com/{hook.repository.full_name}",
             });
@@ -101,7 +100,6 @@ namespace WebHook
                         {
                             InstallationId = hook.installation.id,
                             Owner = hook.installation.account.login,
-                            AccessTokensUrl = hook.installation.access_tokens_url,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });
@@ -115,7 +113,6 @@ namespace WebHook
                         {
                             InstallationId = hook.installation.id,
                             Owner = hook.installation.account.login,
-                            AccessTokensUrl = hook.installation.access_tokens_url,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });

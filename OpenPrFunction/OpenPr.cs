@@ -27,7 +27,7 @@ namespace OpenPrFunction
 
             var installationTokenParameters = new InstallationTokenParameters
             {
-                AccessTokensUrl = installation.AccessTokensUrl,
+                AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, installation.InstallationId),
                 AppId = KnownGitHubs.AppId,
             };
 

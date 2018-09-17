@@ -19,5 +19,10 @@
         public const string Username = "x-access-token";
 
         public const string BranchName = "imgbot";
+
+        /// <remarks>
+        /// {0} = installation_id
+        /// </remarks>
+        public const string AccessTokensUrlFormat = "https://api.github.com/app/installations/{0}/access_tokens";
     }
 }

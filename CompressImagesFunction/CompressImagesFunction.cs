@@ -20,7 +20,7 @@ namespace CompressImagesFunction
         {
             var installationTokenParameters = new InstallationTokenParameters
             {
-                AccessTokensUrl = compressImagesMessage.AccessTokensUrl,
+                AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, compressImagesMessage.InstallationId),
                 AppId = KnownGitHubs.AppId,
             };
 
