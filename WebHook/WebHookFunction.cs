@@ -8,7 +8,7 @@ using Common.TableModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using WebHook.Model;
@@ -24,7 +24,7 @@ namespace WebHook
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             [Table("installation")] CloudTable installationTable,
             [Table("marketplace")] CloudTable marketplaceTable,
-            TraceWriter log)
+            ILogger logger)
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
             var hook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
@@ -37,20 +37,20 @@ namespace WebHook
                 case "installation":
                 case "integration_installation_repositories":
                 case "integration_installation":
-                    result = await ProcessInstallationAsync(hook, routerMessages, installationTable);
+                    result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger);
                     break;
                 case "push":
-                    result = ProcessPush(hook, routerMessages, openPrMessages);
+                    result = ProcessPush(hook, routerMessages, openPrMessages, logger);
                     break;
                 case "marketplace_purchase":
-                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable);
+                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger);
                     break;
             }
 
             return new OkObjectResult(new HookResponse { Result = result });
         }
 
-        private static string ProcessPush(Hook hook, ICollector<RouterMessage> routerMessages, ICollector<OpenPrMessage> openPrMessages)
+        private static string ProcessPush(Hook hook, ICollector<RouterMessage> routerMessages, ICollector<OpenPrMessage> openPrMessages, ILogger logger)
         {
             if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}")
             {
@@ -60,6 +60,8 @@ namespace WebHook
                     RepoName = hook.repository.name,
                     CloneUrl = $"https://github.com/{hook.repository.full_name}",
                 });
+
+                logger.LogInformation("ProcessPush: Added OpenPrMessage for {Owner}/{RepoName}", hook.repository.owner, hook.repository.name);
 
                 return "imgbot push";
             }
@@ -86,10 +88,12 @@ namespace WebHook
                 CloneUrl = $"https://github.com/{hook.repository.full_name}",
             });
 
+            logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner, hook.repository.name);
+
             return "truth";
         }
 
-        private static async Task<string> ProcessInstallationAsync(Hook hook, ICollector<RouterMessage> routerMessages, CloudTable installationTable)
+        private static async Task<string> ProcessInstallationAsync(Hook hook, ICollector<RouterMessage> routerMessages, CloudTable installationTable, ILogger logger)
         {
             switch (hook.action)
             {
@@ -103,6 +107,8 @@ namespace WebHook
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });
+
+                        logger.LogInformation("ProcessInstallationAsync/created: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
                     }
 
                     break;
@@ -116,6 +122,8 @@ namespace WebHook
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         });
+
+                        logger.LogInformation("ProcessInstallationAsync/added: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
                     }
 
                     break;
@@ -123,18 +131,20 @@ namespace WebHook
                     foreach (var repo in hook.repositories_removed)
                     {
                         await installationTable.DropRow(hook.installation.id.ToString(), repo.name);
+                        logger.LogInformation("ProcessInstallationAsync/removed: DropRow for {InstallationId} :: {RepoName}", hook.installation.id, repo.name);
                     }
 
                     break;
                 case "deleted":
                     await installationTable.DropPartitionAsync(hook.installation.id.ToString());
+                    logger.LogInformation("ProcessInstallationAsync/deleted: DropPartition for {InstallationId}", hook.installation.id);
                     break;
             }
 
             return "truth";
         }
 
-        private static async Task<string> ProcessMarketplacePurchaseAsync(Hook hook, CloudTable marketplaceTable)
+        private static async Task<string> ProcessMarketplacePurchaseAsync(Hook hook, CloudTable marketplaceTable, ILogger logger)
         {
             switch (hook.action)
             {
@@ -147,9 +157,12 @@ namespace WebHook
                         SenderLogin = hook.sender.login,
                     }));
 
+                    logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased for {Owner}", hook.marketplace_purchase.account.login);
+
                     return "purchased";
                 case "cancelled":
                     await marketplaceTable.DropRow(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login);
+                    logger.LogInformation("ProcessMarketplacePurchaseAsync/cancelled for {Owner}", hook.marketplace_purchase.account.login);
                     return "cancelled";
                 default:
                     return hook.action;

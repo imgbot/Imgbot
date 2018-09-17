@@ -1,8 +1,7 @@
-using System;
 using Common.Messages;
 using Common.TableModels;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 
 namespace RouterFunction
 {
@@ -14,7 +13,7 @@ namespace RouterFunction
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
             [Table("installation")] ICollector<Installation> installations,
             [Queue("compressimagesmessage")] ICollector<CompressImagesMessage> compressImagesMessages,
-            TraceWriter log)
+            ILogger logger)
         {
             if (installation == null)
             {
@@ -30,8 +29,6 @@ namespace RouterFunction
              *        https://github.com/dabutvin/ImgBot/issues/98
              */
 
-            log.Info($"Routing {routerMessage.CloneUrl} to {nameof(compressImagesMessages)}.");
-
             compressImagesMessages.Add(new CompressImagesMessage
             {
                 CloneUrl = routerMessage.CloneUrl,
@@ -39,6 +36,8 @@ namespace RouterFunction
                 Owner = routerMessage.Owner,
                 RepoName = routerMessage.RepoName,
             });
+
+            logger.LogInformation("RouterFunction: Added CompressImagesMessage for {Owner}/{RepoName}", routerMessage.Owner, routerMessage.RepoName);
         }
     }
 }
