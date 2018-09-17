@@ -6,7 +6,7 @@ using Common.Messages;
 using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 
 namespace OpenPrFunction
 {
@@ -17,11 +17,12 @@ namespace OpenPrFunction
         public static async Task Run(
             [QueueTrigger("openprmessage")]OpenPrMessage openPrMessage,
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
-            TraceWriter log,
+            ILogger logger,
             ExecutionContext context)
         {
             if (installation == null)
             {
+                logger.LogError("No installation found for {InstallationId}", installation.InstallationId);
                 throw new Exception($"No installation found for InstallationId: {installation.InstallationId}");
             }
 
@@ -35,12 +36,18 @@ namespace OpenPrFunction
                 installationTokenParameters,
                 File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 
-            await PullRequest.OpenAsync(new PullRequestParameters
+            logger.LogInformation("OpenPrFunction: Opening pull request for {Owner}/{RepoName}", installation.Owner, installation.RepoName);
+            var id = await PullRequest.OpenAsync(new PullRequestParameters
             {
                 Password = installationToken.Token,
                 RepoName = installation.RepoName,
                 RepoOwner = installation.Owner,
             });
+
+            if (id > 0)
+            {
+                logger.LogInformation("OpenPrFunction: Successfully opened pull request (#{PullRequestId}) for {Owner}/{RepoName}", id, installation.Owner, installation.RepoName);
+            }
         }
     }
 }

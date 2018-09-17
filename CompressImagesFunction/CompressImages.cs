@@ -7,13 +7,14 @@ using Common;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
 {
     public static class CompressImages
     {
-        public static bool Run(CompressimagesParameters parameters)
+        public static bool Run(CompressimagesParameters parameters, ILogger logger)
         {
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
@@ -34,14 +35,21 @@ namespace CompressImagesFunction
             try
             {
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any() == false)
+                {
+                    logger.LogInformation("CompressImagesFunction: no references found for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                     return false;
+                }
 
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{KnownGitHubs.BranchName}"))
+                {
+                    logger.LogInformation("CompressImagesFunction: branch already exists for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                     return false;
+                }
             }
-            catch
+            catch (Exception e)
             {
-                // ignore
+                // log + ignore
+                logger.LogWarning(e, "CompressImagesFunction: issue checking for existing branch or empty repo for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
             }
 
             var repoConfiguration = new RepoConfiguration();
@@ -61,7 +69,10 @@ namespace CompressImagesFunction
             }
 
             if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
+            {
+                logger.LogInformation("CompressImagesFunction: skipping optimization due to schedule for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                 return false;
+            }
 
             // check out the branch
             repo.CreateBranch(KnownGitHubs.BranchName);
@@ -72,7 +83,7 @@ namespace CompressImagesFunction
 
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
-            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths);
+            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger);
             if (optimizedImages.Length == 0)
                 return false;
 
@@ -112,7 +123,7 @@ namespace CompressImagesFunction
             return true;
         }
 
-        private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths)
+        private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger)
         {
             var optimizedImages = new List<CompressionResult>();
 
@@ -143,9 +154,11 @@ namespace CompressImagesFunction
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    logger.LogError(ex, $"Compression issue with {image}");
                 }
             });
 
+            logger.LogInformation("Compressed {NumImages}", optimizedImages.Count);
             return optimizedImages.ToArray();
         }
     }

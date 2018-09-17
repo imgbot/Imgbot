@@ -5,7 +5,7 @@ using Common;
 using Common.Messages;
 using Install;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 
 namespace CompressImagesFunction
 {
@@ -15,9 +15,10 @@ namespace CompressImagesFunction
         public static async Task Run(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
-            TraceWriter log,
+            ILogger logger,
             ExecutionContext context)
         {
+            logger.LogInformation("CompressImagesFunction: starting run for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
             var installationTokenParameters = new InstallationTokenParameters
             {
                 AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, compressImagesMessage.InstallationId),
@@ -39,11 +40,11 @@ namespace CompressImagesFunction
                 PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPasswordFilename}"))
             };
 
-            var didCompress = CompressImages.Run(compressImagesParameters);
+            var didCompress = CompressImages.Run(compressImagesParameters, logger);
 
             if (didCompress)
             {
-                log.Info("Compressed images; Route to OpenPR");
+                logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 openPrMessages.Add(new OpenPrMessage
                 {
                     InstallationId = compressImagesMessage.InstallationId,
@@ -52,7 +53,7 @@ namespace CompressImagesFunction
                 });
             }
 
-            log.Info("Completed run");
+            logger.LogInformation("CompressImagesFunction: finished run for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
         }
     }
 }

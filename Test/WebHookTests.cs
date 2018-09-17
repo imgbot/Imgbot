@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -9,7 +8,7 @@ using Common.Messages;
 using Common.TableModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.WindowsAzure.Storage.Table;
 using NSubstitute;
@@ -388,7 +387,7 @@ namespace Test
             openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
             installationsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/installation"));
             marketplaceTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/marketplace"));
-            var logger = Substitute.For<TraceWriter>(TraceLevel.Error);
+            var logger = Substitute.For<ILogger>();
 
             request.Headers.Add("X-GitHub-Event", new[] { githubEvent });
             request.Content = new StringContent(File.ReadAllText(payload));
