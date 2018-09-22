@@ -76,11 +76,11 @@ namespace Test
         }
 
         [TestMethod]
-        public async Task GivenCommitToImgBotBranch_ShouldReturnOkQueueToOpenPr()
+        public async Task GivenCommitToImgBotBranchByImgbot_ShouldReturnOkQueueToOpenPr()
         {
             var result = await ExecuteHookAsync(
                 githubEvent: "push",
-                payload: "data/hooks/commit-imgbotbranch.json",
+                payload: "data/hooks/commit-imgbotbranch-byimgbot.json",
                 out var routerMessages,
                 out var openPrMessages,
                 out var installationsTable,
@@ -98,6 +98,34 @@ namespace Test
                                              x.InstallationId == 23199 &&
                                              x.RepoName == "test" &&
                                              x.CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenCommitToImgBotBranchByOthers_ShouldReturnOkDoNothing()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/commit-imgbotbranch-byothers.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var installationsTable,
+                out var marketplaceTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("Commit to non default branch", response.Result);
+
+            // No messages sent to Router
+            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+
+            // No messages sent to OpenPr
+            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());

@@ -52,7 +52,7 @@ namespace WebHook
 
         private static string ProcessPush(Hook hook, ICollector<RouterMessage> routerMessages, ICollector<OpenPrMessage> openPrMessages, ILogger logger)
         {
-            if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}")
+            if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}" && hook.sender.login == "imgbot[bot]")
             {
                 openPrMessages.Add(new OpenPrMessage
                 {
