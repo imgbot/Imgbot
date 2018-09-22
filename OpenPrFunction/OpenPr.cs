@@ -22,8 +22,8 @@ namespace OpenPrFunction
         {
             if (installation == null)
             {
-                logger.LogError("No installation found for {InstallationId}", installation.InstallationId);
-                throw new Exception($"No installation found for InstallationId: {installation.InstallationId}");
+                logger.LogError("No installation found for {InstallationId}", openPrMessage.InstallationId);
+                throw new Exception($"No installation found for InstallationId: {openPrMessage.InstallationId}");
             }
 
             var installationTokenParameters = new InstallationTokenParameters
