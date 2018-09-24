@@ -41,6 +41,32 @@ to ImgBotHelp@gmail.com
 
 Find out more: https://imgbot.net/docs
 
+## License
+
+The project is published under the **MIT license**.
+
+The tools that are being used are:
+
+### octokit
+
+https://github.com/octokit (**MIT License**)
+
+### ImageMagick
+
+Source Code: https://github.com/dlemstra/Magick.NET </br>Wikipedia: https://de.wikipedia.org/wiki/ImageMagick </br>License: https://imagemagick.org/script/license.php
+
+Before we get to the text of the license, lets just review what the license says in simple terms:
+It allows you to: </br>
+```
+freely download and use ImageMagick software, in whole or in part, for personal, company internal, or commercial purposes;
+use ImageMagick software in packages or distributions that you create;
+link against a library under a different license;
+link code under a different license against a library under this license;
+merge code into a work under a different license;
+extend patent grants to any code using code under this license;
+and extend patent protection.
+```
+
 ## Contributing
 
 All the code for ImgBot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation. This is where you can find out how to get set up to run locally as well as detailed information on exactly how ImgBot works.
