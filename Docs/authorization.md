@@ -5,7 +5,7 @@ This *Installation Token* is valid for 10 minutes at a time and provides the per
 
 ImgBot specifically uses this *Installation Token* to clone the repo, create a branch, push a commit to the branch, and open pull requests. These actions are performed on behalf of the installation with a username of 'x-access-token' and a password set to the value of the *Installation Token*.
 
-The author and committer for these acctions are set to `ImgBotApp<ImgBotHelp@gmail.com>`. 
+The author and committer for these actions are set to `ImgBotApp<ImgBotHelp@gmail.com>`. 
 
 Furthermore, the commits pushed by ImgBot are digitally signed with a secure and registered PGP private key and password and verified against a public key registered with GitHub. This verification provides an extra level of security to ensure that commits that come into your repo are in fact coming from the authentic ImgBot. And you get the nice green verified badge in the PR.
 
