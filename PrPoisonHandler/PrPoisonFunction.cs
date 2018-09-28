@@ -7,7 +7,7 @@ using Common.Messages;
 using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -30,7 +30,7 @@ namespace PrPoisonHandler
             [Table("installation")] CloudTable installationTable,
             [Queue("openprmessage")] CloudQueue openPrQueue,
             [Queue("openprmessage-poison")] CloudQueue openPrPoisonQueue,
-            TraceWriter log,
+            ILogger logger,
             ExecutionContext context)
         {
             for (var i = 0; i < 100; i++)
@@ -55,11 +55,11 @@ namespace PrPoisonHandler
 
                     if (installation == null)
                     {
-                        log.Info("Not listed in installation table");
+                        logger.LogInformation("Not listed in installation table");
                         continue;
                     }
 
-                    log.Info($"https://github.com/{installation.Owner}/{installation.RepoName}");
+                    logger.LogInformation($"https://github.com/{installation.Owner}/{installation.RepoName}");
 
                     var installationTokenParameters = new InstallationTokenParameters
                     {
@@ -78,8 +78,8 @@ namespace PrPoisonHandler
 
                     var limits = await appClient.Miscellaneous.GetRateLimits();
 
-                    log.Info("Ratelimits:\n");
-                    log.Info(JsonConvert.SerializeObject(limits));
+                    logger.LogInformation("Ratelimits:\n");
+                    logger.LogInformation(JsonConvert.SerializeObject(limits));
 
                     // check if an 'imgbot' branch is open
                     var branches = await appClient.Repository.Branch.GetAll(installation.Owner, installation.RepoName);
@@ -92,7 +92,7 @@ namespace PrPoisonHandler
                     }
                     else
                     {
-                        log.Info("Open 'imgbot' branch found");
+                        logger.LogInformation("Open 'imgbot' branch found");
                     }
 
                     // check for ImgBot PRs
@@ -106,7 +106,7 @@ namespace PrPoisonHandler
                     }
                     else
                     {
-                        log.Info("Open 'imgbot' PR not found, do we need to open one?");
+                        logger.LogInformation("Open 'imgbot' PR not found, do we need to open one?");
                     }
 
                     // query for closed ImgBot PRs
@@ -140,7 +140,7 @@ namespace PrPoisonHandler
                 }
                 catch (Exception e)
                 {
-                    log.Error("ERROR!", e);
+                    logger.LogError(e, "ERROR!");
 
                     // add it back to the poison queue
                     await openPrPoisonQueue.AddMessageAsync(topQueueMessage);
