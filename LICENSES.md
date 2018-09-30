@@ -1,5 +1,7 @@
 # Licenses:
 
+**ImgBot** is published under the **MIT license**.
+
 *\*This is a list of all Licenses from the libraries that are being used in ImgBot.*
 
 - **Magick.NET (Apache License)** (https://github.com/dlemstra/Magick.NET)
