@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using WebHook.Model;
@@ -18,12 +20,25 @@ namespace WebHook
     public static class WebHookFunction
     {
         [FunctionName("WebHookFunction")]
+        public static Task<IActionResult> Hook(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "hook")]HttpRequestMessage req,
+        ILogger logger)
+        {
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var routerQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("routermessage");
+            var openPrQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage");
+            var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
+            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
+
+            return Run(req, routerQueue, openPrQueue, installationTable, marketplaceTable, logger);
+        }
+
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "hook")]HttpRequestMessage req,
-            [Queue("routermessage")] ICollector<RouterMessage> routerMessages,
-            [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
-            [Table("installation")] CloudTable installationTable,
-            [Table("marketplace")] CloudTable marketplaceTable,
+            HttpRequestMessage req,
+            CloudQueue routerMessages,
+            CloudQueue openPrMessages,
+            CloudTable installationTable,
+            CloudTable marketplaceTable,
             ILogger logger)
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
@@ -40,7 +55,7 @@ namespace WebHook
                     result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger);
                     break;
                 case "push":
-                    result = ProcessPush(hook, routerMessages, openPrMessages, logger);
+                    result = await ProcessPushAsync(hook, routerMessages, openPrMessages, logger);
                     break;
                 case "marketplace_purchase":
                     result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger);
@@ -50,16 +65,16 @@ namespace WebHook
             return new OkObjectResult(new HookResponse { Result = result });
         }
 
-        private static string ProcessPush(Hook hook, ICollector<RouterMessage> routerMessages, ICollector<OpenPrMessage> openPrMessages, ILogger logger)
+        private static async Task<string> ProcessPushAsync(Hook hook, CloudQueue routerMessages, CloudQueue openPrMessages, ILogger logger)
         {
             if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}" && hook.sender.login == "imgbot[bot]")
             {
-                openPrMessages.Add(new OpenPrMessage
+                await openPrMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new OpenPrMessage
                 {
                     InstallationId = hook.installation.id,
                     RepoName = hook.repository.name,
                     CloneUrl = $"https://github.com/{hook.repository.full_name}",
-                });
+                })));
 
                 logger.LogInformation("ProcessPush: Added OpenPrMessage for {Owner}/{RepoName}", hook.repository.owner, hook.repository.name);
 
@@ -80,33 +95,33 @@ namespace WebHook
                 return "No image files touched";
             }
 
-            routerMessages.Add(new RouterMessage
+            await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
             {
                 InstallationId = hook.installation.id,
                 Owner = hook.repository.owner.login,
                 RepoName = hook.repository.name,
                 CloneUrl = $"https://github.com/{hook.repository.full_name}",
-            });
+            })));
 
             logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner, hook.repository.name);
 
             return "truth";
         }
 
-        private static async Task<string> ProcessInstallationAsync(Hook hook, ICollector<RouterMessage> routerMessages, CloudTable installationTable, ILogger logger)
+        private static async Task<string> ProcessInstallationAsync(Hook hook, CloudQueue routerMessages, CloudTable installationTable, ILogger logger)
         {
             switch (hook.action)
             {
                 case "created":
                     foreach (var repo in hook.repositories)
                     {
-                        routerMessages.Add(new RouterMessage
+                        await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
                         {
                             InstallationId = hook.installation.id,
                             Owner = hook.installation.account.login,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
-                        });
+                        })));
 
                         logger.LogInformation("ProcessInstallationAsync/created: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
                     }
@@ -115,13 +130,13 @@ namespace WebHook
                 case "added":
                     foreach (var repo in hook.repositories_added)
                     {
-                        routerMessages.Add(new RouterMessage
+                        await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
                         {
                             InstallationId = hook.installation.id,
                             Owner = hook.installation.account.login,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
-                        });
+                        })));
 
                         logger.LogInformation("ProcessInstallationAsync/added: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
                     }
