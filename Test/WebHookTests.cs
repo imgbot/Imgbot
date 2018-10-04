@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 using NSubstitute;
 using WebHook.Model;
 
@@ -35,10 +37,10 @@ namespace Test
             Assert.AreEqual("Commit to non default branch", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -63,10 +65,10 @@ namespace Test
             Assert.AreEqual("No image files touched", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -91,13 +93,13 @@ namespace Test
             Assert.AreEqual("imgbot push", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // One message sent to OpenPr
-            openPrMessages.Received(1).Add(Arg.Is<OpenPrMessage>(x =>
-                                             x.InstallationId == 23199 &&
-                                             x.RepoName == "test" &&
-                                             x.CloneUrl == "https://github.com/dabutvin/test"));
+            await openPrMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                       JsonConvert.DeserializeObject<OpenPrMessage>(x.AsString).InstallationId == 23199 &&
+                       JsonConvert.DeserializeObject<OpenPrMessage>(x.AsString).RepoName == "test" &&
+                       JsonConvert.DeserializeObject<OpenPrMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -122,10 +124,10 @@ namespace Test
             Assert.AreEqual("Commit to non default branch", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -150,14 +152,14 @@ namespace Test
             Assert.AreEqual("truth", response.Result);
 
             // 1 message sent to Router
-            routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
-                x.InstallationId == 23199 &&
-                x.Owner == "dabutvin" &&
-                x.RepoName == "test" &&
-                x.CloneUrl == "https://github.com/dabutvin/test"));
+            await routerMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -182,14 +184,14 @@ namespace Test
             Assert.AreEqual("truth", response.Result);
 
             // 1 message sent to Router
-            routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
-                          x.InstallationId == 554 &&
-                          x.CloneUrl == "https://github.com/dabutvin/testing" &&
-                          x.Owner == "dabutvin" &&
-                         x.RepoName == "testing"));
+            await routerMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                         JsonConvert.DeserializeObject<RouterMessage>(x.AsString).InstallationId == 554 &&
+                         JsonConvert.DeserializeObject<RouterMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/testing" &&
+                         JsonConvert.DeserializeObject<RouterMessage>(x.AsString).Owner == "dabutvin" &&
+                         JsonConvert.DeserializeObject<RouterMessage>(x.AsString).RepoName == "testing"));
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -214,14 +216,14 @@ namespace Test
             Assert.AreEqual("truth", response.Result);
 
             // 1 message sent to Router
-            routerMessages.Received(1).Add(Arg.Is<RouterMessage>(x =>
-                          x.InstallationId == 541 &&
-                          x.CloneUrl == "https://github.com/dabutvin/myrepo" &&
-                          x.Owner == "dabutvin" &&
-                          x.RepoName == "myrepo"));
+            await routerMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                          JsonConvert.DeserializeObject<RouterMessage>(x.AsString).InstallationId == 541 &&
+                          JsonConvert.DeserializeObject<RouterMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/myrepo" &&
+                          JsonConvert.DeserializeObject<RouterMessage>(x.AsString).Owner == "dabutvin" &&
+                          JsonConvert.DeserializeObject<RouterMessage>(x.AsString).RepoName == "myrepo"));
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -234,8 +236,8 @@ namespace Test
         public async Task GivenInstallationRemoved_ShouldReturnOkDropRow()
         {
             void ExtraSetup(
-                ICollector<RouterMessage> extraRouterMessages,
-                ICollector<OpenPrMessage> extraOpenPrMessages,
+                CloudQueue extraRouterMessages,
+                CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
                 CloudTable extraMarketplaceTable) =>
             extraInstallationsTable
@@ -264,10 +266,10 @@ namespace Test
             Assert.AreEqual("truth", response.Result);
 
             // 0 messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // 1 call to InstallationTable
             await installationsTable.Received(1).ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Delete));
@@ -291,8 +293,8 @@ namespace Test
                 .Invoke(new object[] { mockIntallations });
 
             void ExtraSetup(
-                ICollector<RouterMessage> extraRouterMessages,
-                ICollector<OpenPrMessage> extraOpenPrMessages,
+                CloudQueue extraRouterMessages,
+                CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
                 CloudTable extraMarketplaceTable) =>
             extraInstallationsTable
@@ -313,10 +315,10 @@ namespace Test
             Assert.AreEqual("truth", response.Result);
 
             // 0 message sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // 2 call to InstallationTable to delete
             await installationsTable.Received(2).ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Delete));
@@ -341,10 +343,10 @@ namespace Test
             Assert.AreEqual("purchased", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -358,8 +360,8 @@ namespace Test
         public async Task GivenMarketplaceCancellation_ShouldReturnOkDeleteRow()
         {
             void ExtraSetup(
-                ICollector<RouterMessage> extraRouterMessages,
-                ICollector<OpenPrMessage> extraOpenPrMessages,
+                CloudQueue extraRouterMessages,
+                CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
                 CloudTable extraMarketplaceTable) =>
             extraMarketplaceTable
@@ -388,10 +390,10 @@ namespace Test
             Assert.AreEqual("cancelled", response.Result);
 
             // No messages sent to Router
-            routerMessages.DidNotReceive().Add(Arg.Any<RouterMessage>());
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No messages sent to OpenPr
-            openPrMessages.DidNotReceive().Add(Arg.Any<OpenPrMessage>());
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -404,15 +406,15 @@ namespace Test
         private Task<IActionResult> ExecuteHookAsync(
             string githubEvent,
             string payload,
-            out ICollector<RouterMessage> routerMessages,
-            out ICollector<OpenPrMessage> openPrMessages,
+            out CloudQueue routerMessages,
+            out CloudQueue openPrMessages,
             out CloudTable installationsTable,
             out CloudTable marketplaceTable,
-            Action<ICollector<RouterMessage>, ICollector<OpenPrMessage>, CloudTable, CloudTable> extraSetup = null)
+            Action<CloudQueue, CloudQueue, CloudTable, CloudTable> extraSetup = null)
         {
             var request = Substitute.For<HttpRequestMessage>();
-            routerMessages = Substitute.For<ICollector<RouterMessage>>();
-            openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
+            routerMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/routermessage"));
+            openPrMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/openprmessage"));
             installationsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/installation"));
             marketplaceTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/marketplace"));
             var logger = Substitute.For<ILogger>();
