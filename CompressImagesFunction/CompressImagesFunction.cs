@@ -13,9 +13,20 @@ namespace CompressImagesFunction
     {
         [Singleton("{RepoName}")] // https://github.com/Azure/azure-webjobs-sdk/wiki/Singleton#scenarios
         [FunctionName("CompressImagesFunction")]
-        public static async Task Run(
+        public static Task Trigger(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            ILogger logger,
+            ExecutionContext context)
+        {
+            var installationTokenProvider = new InstallationTokenProvider();
+            return RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, logger, context);
+        }
+
+        public static async Task RunAsync(
+            IInstallationTokenProvider installationTokenProvider,
+            CompressImagesMessage compressImagesMessage,
+            ICollector<OpenPrMessage> openPrMessages,
             ILogger logger,
             ExecutionContext context)
         {
@@ -26,7 +37,7 @@ namespace CompressImagesFunction
                 AppId = KnownGitHubs.AppId,
             };
 
-            var installationToken = await InstallationToken.GenerateAsync(
+            var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
                 File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 

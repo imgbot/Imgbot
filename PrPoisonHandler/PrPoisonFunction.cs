@@ -25,11 +25,23 @@ namespace PrPoisonHandler
     {
         [Singleton]
         [FunctionName("PrPoison")]
-        public static async Task Run(
+        public static Task Trigger(
             [TimerTrigger("0 */30 * * * *", RunOnStartup = true)]TimerInfo timerInfo,
             [Table("installation")] CloudTable installationTable,
             [Queue("openprmessage")] CloudQueue openPrQueue,
             [Queue("openprmessage-poison")] CloudQueue openPrPoisonQueue,
+            ILogger logger,
+            ExecutionContext context)
+        {
+            var installationTokenProvider = new InstallationTokenProvider();
+            return RunAsync(installationTokenProvider, installationTable, openPrQueue, openPrPoisonQueue, logger, context);
+        }
+
+        public static async Task RunAsync(
+            IInstallationTokenProvider installationTokenProvider,
+            CloudTable installationTable,
+            CloudQueue openPrQueue,
+            CloudQueue openPrPoisonQueue,
             ILogger logger,
             ExecutionContext context)
         {
@@ -67,7 +79,7 @@ namespace PrPoisonHandler
                         AppId = KnownGitHubs.AppId,
                     };
 
-                    var installationToken = await InstallationToken.GenerateAsync(
+                    var installationToken = await installationTokenProvider.GenerateAsync(
                         installationTokenParameters,
                         File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 

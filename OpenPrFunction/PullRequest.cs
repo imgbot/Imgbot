@@ -5,9 +5,9 @@ using Octokit.Internal;
 
 namespace OpenPrFunction
 {
-    public static class PullRequest
+    public class PullRequest : IPullRequest
     {
-        public static async Task<long> OpenAsync(PullRequestParameters parameters)
+        public async Task<long> OpenAsync(PullRequestParameters parameters)
         {
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Credentials(KnownGitHubs.Username, parameters.Password));
 
