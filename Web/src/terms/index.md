@@ -1,3 +1,5 @@
+<!-- @@@title: ImgBot - Terms of Service@@@ -->
+
 <div class="container container-plain">
 
 # IMGBOT TERMS OF SERVICE
@@ -98,7 +100,7 @@ Upon receipt of the Notice as described below, ImgBot will take whatever action,
 - Provide your mailing address, telephone number, and, if available, e-mail address.
 - Include both of the following statements in the body of the Notice: (a) "I hereby state that I have a good faith belief that the disputed use of the copyrighted material is not authorized by the copyright owner, its agent or the law (e.g., as a fair use)"; and (b) "I hereby state that the information in this Notice is accurate and, under penalty of perjury, that I am the owner, or authorized to act on behalf of the owner, of the copyright or of an exclusive right under the copyright that is allegedly infringed."
 - Provide your full legal name and your electronic or physical signature.
-- Deliver this Notice, with all items completed, to ImgBot by email ImgBotHelp@gmail.com
+- Deliver this Notice, with all items completed, to ImgBot by email help@imgbot.net
 
 If you believe a copyright notice was submitted in error regarding your content, or if you contest the removal of allegedly infringing content, you may submit a counter-notice to ImgBot setting forth your good faith belief that such content was removed in error. In accordance with Sections 512(g)(2) and (3) of the DMCA, such counter-notice must set forth: (a) your full legal name, mailing address, telephone number and electronic or physical signature; (b) identification of the disputed material and its location on the Site or in the Services before removal; (c) a statement under penalty of perjury that the material was removed by mistake or misidentification; and (d) a statement that you consent to the jurisdiction of the Federal District Court where your address is located if your address is located in the U.S. or of the \[Insert applicable Federal District Court\] if you are located outside the U.S., and that you will accept service process from the person who provided the original complaint. ImgBot will process any counter-notices in accordance with DMCA requirements and its own internal policies and procedures.
 
@@ -110,7 +112,7 @@ You and ImgBot agree to arbitrate any dispute arising from these Terms or your u
 
 You and ImgBot agree (a) to attempt informal resolution prior to any demand for arbitration; (b) that any arbitration will occur in King County, Washington; (c) that arbitration will be conducted confidentially by a single arbitrator in accordance with the rules of JAMS; and (d) that the state or federal courts in King County, Washington have exclusive jurisdiction over any appeals of an arbitration award and over any suit between the parties not subject to arbitration. Other than class procedures and remedies discussed below, the arbitrator has the authority to grant any remedy that would otherwise be available in court. Any dispute between the parties will be governed by this Agreement and the laws of the State of Washington and applicable United States law, without giving effect to any conflict of laws principles that may provide for the application of the law of another jurisdiction. Whether the dispute is heard in arbitration or in court, you and ImgBot will not commence against the other a class action, class arbitration or other representative action or proceeding.
 
-You can choose to reject this Agreement to Arbitrate (“opt-out”) by mailing us a written opt-out notice (“Opt-Out Notice”) through email at ImgBotHelp@gmail.com within 30 after the date you accept these Terms for the first time. The Opt-Out Notice must state that you do not agree to this Agreement to Arbitrate and must include your name, address, phone number and the GitHub username used to log into your account. You must sign the Opt-Out Notice for it to be effective. This procedure is the only way you can opt-out of the Agreement to Arbitrate. If you opt-out of the Agreement to Arbitrate, all other parts of these Terms will continue to apply.
+You can choose to reject this Agreement to Arbitrate (“opt-out”) by mailing us a written opt-out notice (“Opt-Out Notice”) through email at help@imgbot.net within 30 after the date you accept these Terms for the first time. The Opt-Out Notice must state that you do not agree to this Agreement to Arbitrate and must include your name, address, phone number and the GitHub username used to log into your account. You must sign the Opt-Out Notice for it to be effective. This procedure is the only way you can opt-out of the Agreement to Arbitrate. If you opt-out of the Agreement to Arbitrate, all other parts of these Terms will continue to apply.
 
 ## General
 
@@ -120,6 +122,6 @@ If any provision of these Terms is be deemed unlawful, void or for any reason un
 
 ## Questions & Contact Information
 
-If you have any questions, concerns, complaints or comments in any way related to your use of the Services, please contact us at ImgBotHelp@gmail.com.
+If you have any questions, concerns, complaints or comments in any way related to your use of the Services, please contact us at help@imgbot.net
 
 </div>

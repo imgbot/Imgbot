@@ -30,6 +30,7 @@ module.exports = function(grunt) {
         ],
         options: {
           template: 'src/layout.jst',
+          contextBinder: true,
           headerIds: false,
           gfm: true
         }

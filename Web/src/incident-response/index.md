@@ -1,3 +1,5 @@
+<!-- @@@title: ImgBot - Incident Response Policy@@@ -->
+
 <div class="container container-plain">
 
 # ImgBot Data Breach Response Policy
@@ -14,7 +16,7 @@ ImgBot Information Security's intentions for publishing a Data Breach Response P
 
 ## 1.1 Background
 
-This policy mandates that any individual who suspects that a theft, breach or exposure of ImgBot Protected data or ImgBot Sensitive data has occurred must immediately provide a description of what occurred via e-mail to [ImgBotHelp@gmail.com](mailto:ImgBotHelp@gmail.com). This e-mail address is monitored by ImgBot’s Information Security Administrator ([@dabutvin](https://github.com/dabutvin)). ImgBot will investigate all reported thefts, data breaches and exposures to confirm if a theft, breach or exposure has occurred. If a theft, breach or exposure has occurred, the Information Security Administrator will follow the appropriate procedure in place.
+This policy mandates that any individual who suspects that a theft, breach or exposure of ImgBot Protected data or ImgBot Sensitive data has occurred must immediately provide a description of what occurred via e-mail to [help@imgbot.net](mailto:help@imgbot.net). This e-mail address is monitored by ImgBot’s Information Security Administrator ([@dabutvin](https://github.com/dabutvin)). ImgBot will investigate all reported thefts, data breaches and exposures to confirm if a theft, breach or exposure has occurred. If a theft, breach or exposure has occurred, the Information Security Administrator will follow the appropriate procedure in place.
 
 ## 2.0 Scope
 

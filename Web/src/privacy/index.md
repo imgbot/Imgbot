@@ -1,3 +1,5 @@
+<!-- @@@title: ImgBot - Privacy Policy@@@ -->
+
 <div class="container container-plain">
 
 # ImgBot Privacy Policy
@@ -45,7 +47,7 @@ ImgBot uses third party vendors and hosting partners to provide the necessary ha
 
 We always put security at the forefront of our services. We cannot, however, ensure or warrant the security of any information you transmit to ImgBot, and you do so at your own risk. We cannot guarantee that such information may not be accessed, disclosed, altered, or destroyed by breach of any of our safeguards, however, we make industry reasonable efforts to ensure the security of our systems.
 
-If you find a vulnerability, please report it to us immediately at [imgbothelp@gmail.com.com](mailto:imgbothelp@gmail.com.com). We ask that you do not publicly share the issue until it has been resolved.
+If you find a vulnerability, please report it to us immediately at [help@imgbot.net](mailto:help@imgbot.net). We ask that you do not publicly share the issue until it has been resolved.
 
 ## Disclosure
 
@@ -59,6 +61,6 @@ We will notify you about significant changes in the way we treat personal inform
 
 ## Questions
 
-Any questions about the Privacy Policy should be addressed to [imgbothelp@gmail.com.com](mailto:imgbothelp@gmail.com.com).
+Any questions about the Privacy Policy should be addressed to [help@imgbot.net](mailto:help@imgbot.net).
 
 </div>
