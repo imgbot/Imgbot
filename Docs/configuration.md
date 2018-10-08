@@ -4,7 +4,7 @@ This is not a required step to using ImgBot and is only for more advanced scenar
 This file should be placed in the root of the repository and set to your liking.
 See [this past issue](https://github.com/dabutvin/ImgBot/issues/49) for details about the location for this file.
 
-Here is an example .imgbotconfig setup that shows some of the options. 
+Here is an example .imgbotconfig setup that shows some of the options.
 
 ```
 {
@@ -19,4 +19,4 @@ Here is an example .imgbotconfig setup that shows some of the options.
 
 If there are any configuration settings you would like to see supported,
 please feel free to [open an issue](https://github.com/dabutvin/ImgBot/issues/new) in the repo or shoot an email over
-to ImgBotHelp@gmail.com
+to help@imgbot.net
