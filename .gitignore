@@ -5,6 +5,7 @@ packages
 pgp_private_key.txt
 pgp_password.txt
 *.pem
+!Test/**/*.pem
 *.pubxml
 *.pubxml.user
 *.csproj.user
