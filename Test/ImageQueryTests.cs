@@ -24,6 +24,16 @@ namespace Test
         }
 
         [TestMethod]
+        public void GivenDefaultConfiguration_ShouldFindImagesWithUppercaseExtensionsToo()
+        {
+            var images = ImageQuery.FindImages("data", new RepoConfiguration());
+
+            Assert.AreEqual(9, images.Length, $"Images found {string.Join("; ", images)}.");
+            images.Contains("a.JPG");
+            images.Contains("b.PNG");
+        }
+
+        [TestMethod]
         public void GivenFullIgnoreFullPath_ShouldIgnoreImage()
         {
             var images = ImageQuery.FindImages("data", new RepoConfiguration
