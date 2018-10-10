@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Common;
@@ -10,8 +11,9 @@ namespace CompressImagesFunction
         public static string[] FindImages(string localPath, RepoConfiguration repoConfiguration)
         {
             var images = KnownImgPatterns.ImgPatterns
-                .AsParallel()
-                .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories));
+                
+                .SelectMany(pattern => Directory.EnumerateFiles(localPath, "*.*", SearchOption.AllDirectories) 
+                .Where(fn => pattern.Contains(Path.GetExtension(fn).ToLower())));
 
             if (repoConfiguration.IgnoredFiles != null)
             {
