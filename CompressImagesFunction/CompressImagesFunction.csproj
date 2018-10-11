@@ -76,7 +76,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.22" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
+    <PackageReference Include="LibGit2Sharp" Version="0.25.3" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.8.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.0" />
   </ItemGroup>
