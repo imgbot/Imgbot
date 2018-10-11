@@ -24,11 +24,14 @@ namespace Test
         }
 
         [TestMethod]
-        public void GivenDefaultConfiguration_ShouldFindImagesWithUppercaseExtensionsToo()
+        public void GivenDefaultConfiguration_ShouldFindImagesWithUppercaseExtensions()
         {
-            var images = ImageQuery.FindImages("data", new RepoConfiguration());
+            string searchPath = "cased-data";
+            var images = ImageQuery.FindImages(searchPath, new RepoConfiguration());
 
-            Assert.AreEqual(9, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.IsTrue(images.Contains($@"{searchPath}/uppercase-jpg.JPG"));
+            Assert.IsTrue(images.Contains($@"{searchPath}/uppercase-png.PNG"));
         }
 
         [TestMethod]
