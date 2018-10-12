@@ -11,7 +11,6 @@ namespace CompressImagesFunction
         public static string[] FindImages(string localPath, RepoConfiguration repoConfiguration)
         {
             var images = KnownImgPatterns.ImgPatterns
-                
                 .SelectMany(pattern => Directory.EnumerateFiles(localPath, "*.*", SearchOption.AllDirectories) 
                 .Where(fn => pattern.Contains(Path.GetExtension(fn).ToLower())));
 
