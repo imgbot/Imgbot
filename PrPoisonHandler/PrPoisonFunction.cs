@@ -8,6 +8,7 @@ using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -27,13 +28,15 @@ namespace PrPoisonHandler
         [FunctionName("PrPoison")]
         public static Task Trigger(
             [TimerTrigger("0 */30 * * * *", RunOnStartup = true)]TimerInfo timerInfo,
-            [Table("installation")] CloudTable installationTable,
-            [Queue("openprmessage")] CloudQueue openPrQueue,
-            [Queue("openprmessage-poison")] CloudQueue openPrPoisonQueue,
             ILogger logger,
             ExecutionContext context)
         {
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
+            var openPrQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage");
+            var openPrPoisonQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage-poison");
             var installationTokenProvider = new InstallationTokenProvider();
+
             return RunAsync(installationTokenProvider, installationTable, openPrQueue, openPrPoisonQueue, logger, context);
         }
 
