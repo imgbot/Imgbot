@@ -13,7 +13,10 @@ You can either get the tools [integrated with Visual Studio](https://blogs.msdn.
 or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run ImgBot.Function`.
 If you are using Visual Studio for Mac there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
 
-Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage/AzureWebJobsDashboard` filled out.
+We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code in order to compile and get intellisense. 
+Each function has a task you can execute that will clean + build + run the process. To start one open the prompt with `cmd/ctrl + shift + p` and select `Run task`. From there you will see all the tasks checked into `.vscode/tasks.json`. Choose a function to run such as `Run CompressImagesFunction` and it will build and start up. To attach to this process choose the `Debug a function` configuration from the debug tab to see the running processes. Type `func` into the picker to see your running function and select it. It's a two-step process, the debugger and the function process. When you kill the debugger, the process will still be running. You can kill the function host by bringing up the prompt again with `cmd/ctrl + shift + p` and select `Kill the active terminal instance`.
+
+Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage` filled out and `FUNCTIONS_WORKER_RUNTIME` set to `dotnet`.
 
 You can see the schema of this file in [the doc](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#local-settings-file)
 

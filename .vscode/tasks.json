@@ -1,0 +1,99 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "clean",
+        "command": "dotnet clean",
+        "type": "shell",
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "build",
+        "command": "dotnet build",
+        "type": "shell",
+        "dependsOn": "clean",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "Run CompressImagesFunction",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/CompressImagesFunction/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run OpenPrFunction",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/OpenPrFunction/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run PrPoisonHandler",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/PrPoisonHandler/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run RouterFunction",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/RouterFunction/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run WebHook",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/WebHook/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
+      }
+    ]
+  }
+  
