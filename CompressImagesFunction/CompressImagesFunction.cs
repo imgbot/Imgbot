@@ -16,11 +16,11 @@ namespace CompressImagesFunction
         public static Task Trigger(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
-            IRepoChecks repoChecks,
             ILogger logger,
             ExecutionContext context)
         {
             var installationTokenProvider = new InstallationTokenProvider();
+            var repoChecks = new RepoChecks();
             return RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
         }
 
