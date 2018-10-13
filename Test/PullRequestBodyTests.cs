@@ -20,7 +20,7 @@ namespace Test
         [TestMethod]
         public void GivenMultiImageCommitMessage_ShouldFormatMarkdownTable()
         {
-            var commitMessage = "[ImgBot] optimizes images" + Environment.NewLine +
+            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "*Total -- 854.23kb -> 308.28kb (63.91%)" + Environment.NewLine +
                          Environment.NewLine +
@@ -54,7 +54,7 @@ namespace Test
         [TestMethod]
         public void GivenZeroPercentReductionCommitMessage_ShouldOmitPercentage()
         {
-            var commitMessage = "[ImgBot] optimizes images" + Environment.NewLine +
+            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "/featured-marketplace.png -- 163.11kb -> 160.11kb (0.02%)" + Environment.NewLine;
 
@@ -80,7 +80,7 @@ namespace Test
         [TestMethod]
         public void GivenSingleImageCommitMessage_ShouldFormatMarkdownTable()
         {
-            var commitMessage = "[ImgBot] optimizes images" + Environment.NewLine +
+            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "/featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)" + Environment.NewLine;
 
