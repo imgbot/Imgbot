@@ -9,11 +9,11 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-6311e88.dylib ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x86/native/git2-6311e88.dll ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
@@ -32,11 +32,11 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-6311e88.dylib ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x86/native/git2-6311e88.dll ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
@@ -55,11 +55,11 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-6311e88.dylib ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x86/native/git2-6311e88.dll ${TargetDir}/bin/</command>
+          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
         </Command>
         <Command>
           <type>AfterBuild</type>
