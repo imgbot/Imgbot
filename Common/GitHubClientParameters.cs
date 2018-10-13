@@ -1,6 +1,6 @@
-﻿namespace OpenPrFunction
+﻿namespace Common
 {
-    public class PullRequestParameters
+    public class GitHubClientParameters
     {
         public string RepoOwner { get; set; }
 

@@ -16,17 +16,19 @@ namespace CompressImagesFunction
         public static Task Trigger(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            IRepoChecks repoChecks,
             ILogger logger,
             ExecutionContext context)
         {
             var installationTokenProvider = new InstallationTokenProvider();
-            return RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, logger, context);
+            return RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
         }
 
         public static async Task RunAsync(
             IInstallationTokenProvider installationTokenProvider,
             CompressImagesMessage compressImagesMessage,
             ICollector<OpenPrMessage> openPrMessages,
+            IRepoChecks repoChecks,
             ILogger logger,
             ExecutionContext context)
         {
@@ -40,6 +42,20 @@ namespace CompressImagesFunction
             var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
                 File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+
+            // check if repo is archived before starting work
+            var isArchived = await repoChecks.IsArchived(new GitHubClientParameters
+            {
+                Password = installationToken.Token,
+                RepoName = compressImagesMessage.RepoName,
+                RepoOwner = compressImagesMessage.Owner
+            });
+
+            if (isArchived)
+            {
+                logger.LogInformation("CompressImagesFunction: skipping archived repo {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
+                return;
+            }
 
             var compressImagesParameters = new CompressimagesParameters
             {

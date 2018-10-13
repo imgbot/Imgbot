@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Common;
 using Common.Messages;
 using Common.TableModels;
 using Install;
@@ -121,7 +122,7 @@ namespace Test
                  }));
 
             var pullRequest = Substitute.For<IPullRequest>();
-            pullRequest.OpenAsync(Arg.Any<PullRequestParameters>()).Returns(x => Task.FromResult(prId));
+            pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>()).Returns(x => Task.FromResult(prId));
 
             return OpenPr.RunAsync(openPrMessage, installation, installationTokenProvider, pullRequest, logger, context);
         }

@@ -48,7 +48,7 @@ namespace OpenPrFunction
                 File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 
             logger.LogInformation("OpenPrFunction: Opening pull request for {Owner}/{RepoName}", installation.Owner, installation.RepoName);
-            var id = await pullRequest.OpenAsync(new PullRequestParameters
+            var id = await pullRequest.OpenAsync(new GitHubClientParameters
             {
                 Password = installationToken.Token,
                 RepoName = installation.RepoName,

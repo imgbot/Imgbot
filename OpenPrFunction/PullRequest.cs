@@ -7,7 +7,7 @@ namespace OpenPrFunction
 {
     public class PullRequest : IPullRequest
     {
-        public async Task<long> OpenAsync(PullRequestParameters parameters)
+        public async Task<long> OpenAsync(GitHubClientParameters parameters)
         {
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Credentials(KnownGitHubs.Username, parameters.Password));
 
