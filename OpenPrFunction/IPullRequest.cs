@@ -1,5 +1,5 @@
-﻿using Common;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Common;
 
 namespace OpenPrFunction
 {
