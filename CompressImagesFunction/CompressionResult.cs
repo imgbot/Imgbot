@@ -4,6 +4,8 @@
     {
         public string Title { get; set; }
 
+        public string OriginalPath { get; set; }
+
         public double SizeBefore { get; set; }
 
         public double SizeAfter { get; set; }
