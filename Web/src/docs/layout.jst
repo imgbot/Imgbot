@@ -1,0 +1,25 @@
+<div class="docs-container">
+  <div class="docs-hero">
+    <a class="home" href="/"><img alt="ImgBot" src="/images/imgbot.svg" /></a>
+    <a class="install" href="https://github.com/marketplace/imgbot">Install now</a>
+  </div>
+  <nav class="docs-sidebar">
+    <ul>
+      <% _.forEach(docs, function(doc) { %>
+        <li><a href="#<%- doc.slug %>"><%- doc.title %></a></li>
+      <% }) %>
+    </ul>
+  </nav>
+  <div class="docs-content">
+    <% _.forEach(docs, function(doc, index) { %>
+      <div class="article">
+        <% if (index === 0) { %>
+          <h1><a href="#<%- doc.slug %>" id="<%- doc.slug %>"><%- doc.title %></a></h1>
+        <% } else { %>
+          <h2><a href="#<%- doc.slug %>" id="<%- doc.slug %>"><%- doc.title %></a></h2>
+        <% } %>
+        <%= doc.html %>
+      </div>
+    <% }) %>
+  </div>
+</div>

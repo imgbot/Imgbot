@@ -7,13 +7,13 @@ The following is where you can find out how to get set up to run locally as well
 
 The core of ImgBot runs on a serverless stack called [Azure Functions](https://azure.microsoft.com/en-us/services/functions/).
 The Function apps are running the image compression, pushing the commits, and opening the Pull Requests.
-Once you get the tools you need to work with Azure functions you can run the apps locally. 
+Once you get the tools you need to work with Azure functions you can run the apps locally.
 
-You can either get the tools [integrated with Visual Studio](https://blogs.msdn.microsoft.com/webdev/2017/05/10/azure-function-tools-for-visual-studio-2017/) and use `F5` 
+You can either get the tools [integrated with Visual Studio](https://blogs.msdn.microsoft.com/webdev/2017/05/10/azure-function-tools-for-visual-studio-2017/) and use `F5`
 or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run ImgBot.Function`.
 If you are using Visual Studio for Mac there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
 
-Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage/AzureWebJobsDashboard` filled out. 
+Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage/AzureWebJobsDashboard` filled out.
 
 You can see the schema of this file in [the doc](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#local-settings-file)
 
@@ -23,22 +23,23 @@ Alternatively, running `func init` from the function directory will stamp out ev
 
 Now that you are running the service locally, within the root of the repo you will see the following directories:
 
- - `CompressImagesFunction` - The function that does the work of cloning, compressing, and pushing commits
- - `Install` - The shared library to provide Installation Tokens to the functions
- - `OpenPrFunction` - The function that opens Pull Requests
- - `RouterFunction` - The orchestration layer
-
+- `CompressImagesFunction` - The function that does the work of cloning, compressing, and pushing commits
+- `Install` - The shared library to provide Installation Tokens to the functions
+- `OpenPrFunction` - The function that opens Pull Requests
+- `RouterFunction` - The orchestration layer
+- `WebHook` - The function that is triggered from GitHub activity
 
 The following file locations may be helpful if you are looking for specific functionality:
 
- - `CommitMessage.cs` - generation of commit message compression report
- - `CompressImages.cs` - clones the repo, compresses the images, pushes the commit
- - `CommitSignature.cs` - uses a pgp private key and password to sign a commit message
- - `ImageQuery.cs` - searches and extracts all the images out of the repo to be optimized
- - `InstallationToken.cs` - uses a pem file and the GitHub API to get access to repos
- - `LocalPath.cs` - generates the location to clone from
- - `PullRequest.cs` - opens the pull request and sets the title and description
- - `Schedule.cs` - logic to limit the frequency of ImgBot PRs
+- `CommitMessage.cs` - generation of commit message compression report
+- `CompressImages.cs` - clones the repo, compresses the images, pushes the commit
+- `CommitSignature.cs` - uses a pgp private key and password to sign a commit message
+- `ImageQuery.cs` - searches and extracts all the images out of the repo to be optimized
+- `InstallationToken.cs` - uses a pem file and the GitHub API to get access to repos
+- `LocalPath.cs` - generates the location to clone from
+- `PullRequest.cs` - opens the pull request and sets the title and description
+- `Schedule.cs` - logic to limit the frequency of ImgBot PRs
+- `WebHookFunction.cs` - reads the GitHub hook messages and kicks off tasks
 
 #### Triggers
 
@@ -46,19 +47,19 @@ ImgBot uses [QueueTriggers](https://github.com/Azure/azure-webjobs-sdk/wiki/Queu
 
 The triggers in place today are `routermessage`, `openprmessage`, `compressimagesmessage`.
 
-Triggers are the entry points for the service.
+ImgBot also uses an HttpTrigger as the entry point for the service.
 
 #### Compression workflow
 
-ImgBot uses [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) to perform all the git operations. 
+ImgBot uses [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) to perform all the git operations.
 
 The following is the high-level workflow for the `CompressImagesFunction`:
 
- 1. Clone the repo
- 2. Create the 'imgbot' branch
- 3. Run the optimize routine 
- 4. Commit the changes
- 5. Push the 'imgbot' branch to the remote
+1.  Clone the repo
+2.  Create the 'imgbot' branch
+3.  Run the optimize routine
+4.  Commit the changes
+5.  Push the 'imgbot' branch to the remote
 
 The clone directory is read from environment variable `%TMP%` or falls back to `/private/tmp/` if this environment variable is not set.
 
@@ -78,7 +79,7 @@ The username to accompany the installation token password is `x-access-token`.
 
 For security reasons we cannot provide contributors with a pem file as this is a secret that delegates permissions in GitHub. You can run every part of the function except parts where authentication is required without this secret. If you are working on a part of the function that requires this secret then you can generate one for yourself to test with. [Register a GitHub app](https://github.com/settings/apps/new) for development purpose and install this app into the repo you are using to test with. Set the AppId in the code and you should be good to go.
 
- If there is a part of this process that isn't clear or you have any questions at all feel free to open an issue in this repo and we'll work it out :)
+If there is a part of this process that isn't clear or you have any questions at all feel free to open an issue in this repo and we'll work it out :)
 
 #### Schedules
 
@@ -109,81 +110,50 @@ For each execution, ImgBot generates the folder for the git operations to take p
 
 Today this is done by combining the name of the repo with a random number.
 
+#### Webhooks
+
+The 2 main events we deal with through webhooks are installation events and push events.
+Each time a repo has ImgBot installed, GitHub fires a hook to `WebHookFunction.cs` and we start the installation workflow.
+
+Each time a repo that already has ImgBot installed gets pushed to, GitHub fires a hook to `WebHookFunction.cs` and, if the commit contains an image update, we start the compression worflow.
+
 ### ImgBot website
 
-The frontend that drives https://imgbot.net/ is a lightweight web app running on [ASP.NET Core](https://github.com/aspnet/Home). This framework runs on all operating systems :)
+The frontend that drives https://imgbot.net/ is a generated static web app built with Grunt and a little bit of JavaScript. This static site is generated to be completely stand alone and hosted on a CDN for caching worldwide. The grid system for the ImgBot site is bootstrap 4. The purpose of this website is to run the landing page and docs for ImgBot.
 
-The purpose of this website is to run the landing page and docs for ImgBot as well as an endpoint for the webhooks from GitHub for installed repos.
+You will find the `package.json` file for the website in the `Web/` directory of the repo. From here the input files live in the `src/` directory and the generated site is output to the `dist/` directory and git-ignored.
 
-The website uses bootstrap for a grid. To copy the lib files out of node_modules we use grunt (one time only).
-
-```
-npm run copy-libs
-```
-
-Within the Web directory you will see the following key files
-
- - `Views/Home/Index.cshtml` - the landing page markup
- - `Views/Home/Docs.cshtml` - the docs page markup
- - `Views/Shared/_Layout.cshtml` - the layout for the landing page
- - `wwwroot/css/site.less` - the landing page stylesheet
- - `Controllers/HookController.cs` - the route for the webhooks
- - `Controllers/HomeController.cs` - the routes for the landing page and the docs
- 
-The stylesheet is compiled using a grunt task mapped in the `package.json`.
+To kick off the generation
 
 ```
-npm run compile-less
+npm run gen
 ```
 
-The stylesheet can be compiled on save through grunt as well.
+To start a lightweight dev server at `http://localhost:8888`
+
+```
+npm run serve
+```
+
+To compile the site on save
 
 ```
 npm run watch
 ```
 
-The 2 main events we deal with through webhooks are installation events and push events.
-Each time a repo has ImgBot installed, GitHub fires a hook to `HookController.cs` and we start the installation workflow.
+Within the `Web/` directory you will see the following key files
 
-Each time a repo that already has ImgBot installed gets pushed to, GitHub fires a hook to `HookController.cs` and, if the commit contains an image update, we start the compression worflow.
-
-You need to make a connection to a real storage account to run the website. To do this you can add the `appsettings.json` locally with the following format. Note: this should be the same storage account as the service is using for Azure Functions to enable message passing from the website to the service.
-
-```
-{
-  "Logging": {
-    "IncludeScopes": false,
-    "LogLevel": {
-      "Default": "Warning"
-    }
-  },
-    "Storage": {
-        "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ACCOUNT_NAME;AccountKey=ACCOUNT_KEY;EndpointSuffix=core.windows.net"
-    }
-}
-
-```
+- `src/index.html` - the landing page markup
+- `src/docs/layout.jst` - the docs page template
+- `src/layout.jst` - the layout for the landing pages
+- `src/css/site.less` - the landing page stylesheet
+- `gruntfile.js` - the task configuration for generating and serving the site
 
 ### ImgBot Docs
 
 The docs are published from checked in markdown files to the [ImgBot website](https://imgbot.net/docs) to view in a browser. Alternatively, the docs can be browsed and edited [within GitHub](https://github.com/dabutvin/ImgBot/tree/master/Docs).
 
-To work on the docs within the context of the website locally ImgBot uses a [gruntjs task](https://github.com/treasonx/grunt-markdown) to compile the markdown into HTML. To compile the docs locally run the following npm commands.
-
-```
-npm install
-npm run compile-docs
-``` 
-
-To compile the markdown automatically on save
-
-```
-npm run watch
-```
-
-Check out the [gruntfile.js](https://github.com/dabutvin/ImgBot/tree/master/ImgBot.Web/gruntfile.js) and [package.json](https://github.com/dabutvin/ImgBot/tree/master/ImgBot.Web/package.json) to see how it is configured.
-
-When the docs are compiled to HTML they are copied into the Web/Docs directory. In this directory there is a `metadata.json` file that will define the order and title of the doc. For example:
+When the docs are compiled to HTML they use the layout and metadata found in the `Web/src/docs` directory. The `metadata.json` file here will define the order and title of each doc. For example:
 
 ```
 {
@@ -194,9 +164,9 @@ When the docs are compiled to HTML they are copied into the Web/Docs directory. 
 
 The slug matches the name of the markdown file and also drives the URL segment to browse this doc.
 
-This metadata file is read within the [HomeController.cs](https://github.com/dabutvin/ImgBot/tree/master/Web/Controllers/HomeController.cs) file.  The controller arranges all the documentation in memory in preparation for rendering.
+This metadata file is read within the [Web/tasks/compile-docs.js](https://github.com/dabutvin/ImgBot/tree/master/Web/tasks/compile-docs.js) file. This is a custom grunt task that arranges all the documentation.
 
-The template that renders the documentation is [Docs.cshtml](https://github.com/dabutvin/ImgBot/tree/master/Web/Views/Home/Docs.cshtml). This is a razor file that renders the documentation navigation and content as HTML.
+The template that renders the documentation is [Web/src/docs/layout.jst](https://github.com/dabutvin/ImgBot/tree/master/Web/src/docs/layout.jst). This is a template file that renders the documentation navigation and content as HTML.
 
 ### Tests
 

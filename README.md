@@ -25,19 +25,21 @@ This file should be placed in the root of the repository and set to your liking.
 The following are the currently supported parameters.
 If there are any configuration settings you would like to see supported,
 please feel free to open an issue here in the repo or shoot an email over
-to ImgBotHelp@gmail.com
+to help@imgbot.net
 
- - schedule
-    - optional
-    - Accepts: daily|weekly|monthly
-    - Limits the PRs from ImgBot to once a day, once a week, or once a month respectively
-    - The default behavior is to receive ImgBot PRs as images require optimization
- - ignoredFiles
- 	- optional
- 	- Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
- 	- Limits the images optimized by ImgBot by esentially ignoring them
- 	- When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
+**schedule**
 
+- optional
+- Accepts: daily|weekly|monthly
+- Limits the PRs from ImgBot to once a day, once a week, or once a month respectively
+- The default behavior is to receive ImgBot PRs as images require optimization
+
+**ignoredFiles**
+
+- optional
+- Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
+- Limits the images optimized by ImgBot by esentially ignoring them
+- When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
 
 Find out more: https://imgbot.net/docs
 
