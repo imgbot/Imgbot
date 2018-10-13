@@ -1,17 +1,14 @@
-﻿using Install;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Common;
+using Common.Messages;
+using CompressImagesFunction;
+using Install;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using CompressImagesFunction;
-using Common;
-using Common.Messages;
-using Common.TableModels;
-using Microsoft.Azure.WebJobs;
 
 namespace Test
 {

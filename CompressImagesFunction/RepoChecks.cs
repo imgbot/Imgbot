@@ -1,7 +1,7 @@
-﻿using Common;
+﻿using System.Threading.Tasks;
+using Common;
 using Octokit;
 using Octokit.Internal;
-using System.Threading.Tasks;
 
 namespace CompressImagesFunction
 {
