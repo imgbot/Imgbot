@@ -88,7 +88,7 @@ namespace WebHook
 
             var files = hook.commits.SelectMany(x => x.added)
                 .Concat(hook.commits.SelectMany(x => x.modified))
-                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.EndsWith(extension, StringComparison.Ordinal)));
+                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.ToLower().EndsWith(extension, StringComparison.Ordinal)));
 
             if (files.Any() == false)
             {
