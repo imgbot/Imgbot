@@ -18,7 +18,7 @@
     <None Update="data\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cased-data\*.*">
+    <None Update="cased-data\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
