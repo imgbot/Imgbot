@@ -14,13 +14,16 @@ namespace Test
             var images = ImageQuery.FindImages("data", new RepoConfiguration());
 
             Assert.AreEqual(7, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("item2.png");
-            images.Contains("item3.jpg");
-            images.Contains("deepimage.png");
+
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
         }
 
         [TestMethod]
@@ -35,12 +38,12 @@ namespace Test
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("item3.jpg");
-            images.Contains("deepimage.png");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
         }
 
         [TestMethod]
@@ -55,9 +58,9 @@ namespace Test
             });
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
         }
 
         [TestMethod]
@@ -72,9 +75,9 @@ namespace Test
             });
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
         }
 
         [TestMethod]
@@ -89,8 +92,8 @@ namespace Test
             });
 
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("item3.jpg");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
         }
 
         [TestMethod]
@@ -120,11 +123,11 @@ namespace Test
             });
 
             Assert.AreEqual(5, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("deepimage.png");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
         }
 
         [TestMethod]
@@ -139,12 +142,12 @@ namespace Test
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("item2.png");
-            images.Contains("item3.jpg");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
         }
 
         [TestMethod]
@@ -159,12 +162,12 @@ namespace Test
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("item2.png");
-            images.Contains("item3.jpg");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
         }
 
         [TestMethod]
@@ -179,12 +182,12 @@ namespace Test
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            images.Contains("a.jpg");
-            images.Contains("b.png");
-            images.Contains("c.png");
-            images.Contains("item1.png");
-            images.Contains("item2.png");
-            images.Contains("item3.jpg");
+            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
+            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
+            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
         }
     }
 }
