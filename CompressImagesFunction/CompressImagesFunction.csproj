@@ -4,74 +4,15 @@
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x64/native/Magick.NET-Q16-x64.Native.dll ${TargetDir}/bin/</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x64/native/Magick.NET-Q16-x64.Native.dll ${TargetDir}/bin/</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx/native/libgit2-8e0b172.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win-x86/native/git2-8e0b172.dll ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib ${TargetDir}/bin/</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp ${TargetDir}/bin/runtimes/win7-x64/native/Magick.NET-Q16-x64.Native.dll ${TargetDir}/bin/</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
+  <Target Name="CopyNativeBinaries" AfterTargets="Build">
+    <ItemGroup>
+      <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-8e0b172.dylib" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-8e0b172.dll" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/win7-x64/native/Magick.NET-Q16-x64.Native.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NativeBinary)" DestinationFiles="@(NativeBinary->'$(TargetDir)bin/%(Filename)%(Extension)')" /> 
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.23" />

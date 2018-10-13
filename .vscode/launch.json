@@ -1,0 +1,14 @@
+{
+   "//1": "Use IntelliSense to find out which attributes exist for C# debugging",
+   "//2": "Use hover for the description of the existing attributes",
+   "//3": "For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md",
+   "version": "0.2.0",
+   "configurations": [
+        {
+            "name": "Debug a function",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        }
+    ,]
+}
