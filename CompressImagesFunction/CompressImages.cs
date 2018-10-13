@@ -88,6 +88,11 @@ namespace CompressImagesFunction
                 return false;
 
             // create commit message based on optimizations
+            foreach (var image in optimizedImages)
+            {
+                Commands.Stage(repo, image.OriginalPath);
+            }
+
             var commitMessage = CommitMessage.Create(optimizedImages);
 
             // commit
@@ -126,7 +131,6 @@ namespace CompressImagesFunction
         private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger)
         {
             var optimizedImages = new List<CompressionResult>();
-
             ImageOptimizer imageOptimizer = new ImageOptimizer
             {
                 OptimalCompression = true
@@ -144,11 +148,10 @@ namespace CompressImagesFunction
                         optimizedImages.Add(new CompressionResult
                         {
                             Title = image.Substring(localPath.Length),
+                            OriginalPath = image,
                             SizeBefore = before / 1024d,
                             SizeAfter = file.Length / 1024d,
                         });
-
-                        Commands.Stage(repo, image);
                     }
                 }
                 catch (Exception ex)
