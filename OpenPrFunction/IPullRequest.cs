@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Common;
+using System.Threading.Tasks;
 
 namespace OpenPrFunction
 {
     public interface IPullRequest
     {
-        Task<long> OpenAsync(PullRequestParameters parameters);
+        Task<long> OpenAsync(GitHubClientParameters parameters);
     }
 }
