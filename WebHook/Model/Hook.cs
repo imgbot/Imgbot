@@ -89,6 +89,7 @@ namespace WebHook.Model
             public string name { get; set; }
             public string full_name { get; set; }
             public string default_branch { get; set; }
+            public bool @private { get; set; }
             public Account owner { get; set; }
         }
 
