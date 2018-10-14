@@ -163,6 +163,7 @@ namespace WebHook
         {
             switch (hook.action)
             {
+                case "changed":
                 case "purchased":
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
                     {
@@ -174,7 +175,7 @@ namespace WebHook
 
                     logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased for {Owner}", hook.marketplace_purchase.account.login);
 
-                    return "purchased";
+                    return hook.action;
                 case "cancelled":
                     await marketplaceTable.DropRow(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login);
                     logger.LogInformation("ProcessMarketplacePurchaseAsync/cancelled for {Owner}", hook.marketplace_purchase.account.login);
