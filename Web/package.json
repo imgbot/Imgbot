@@ -20,7 +20,7 @@
     "grunt-devserver": "^0.6.0",
     "grunt-markdown": "github:dabutvin/grunt-markdown#marked",
     "jquery": "^3.3.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "marked": "^0.5.1"
   }
 }
