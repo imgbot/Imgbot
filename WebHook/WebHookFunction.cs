@@ -50,8 +50,6 @@ namespace WebHook
             {
                 case "installation_repositories":
                 case "installation":
-                case "integration_installation_repositories":
-                case "integration_installation":
                     result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger);
                     break;
                 case "push":
