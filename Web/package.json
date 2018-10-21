@@ -4,11 +4,15 @@
   "scripts": {
     "gen": "grunt gen",
     "watch": "grunt watch",
+    "prod": "grunt gen && grunt webpack:prod",
     "serve": "grunt devserver:dist"
   },
   "author": "dabutvin",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "babel-loader": "^8.0.4",
+    "babel-preset-es2015": "^6.24.1",
     "bootstrap": "^4.1.3",
     "eslint": "^5.5.0",
     "grunt": "^1.0.3",
@@ -19,8 +23,17 @@
     "grunt-contrib-watch": "^1.1.0",
     "grunt-devserver": "^0.6.0",
     "grunt-markdown": "github:dabutvin/grunt-markdown#marked",
+    "grunt-webpack": "^3.1.3",
     "jquery": "^3.3.1",
     "lodash": "^4.17.10",
-    "marked": "^0.5.0"
+    "marked": "^0.5.0",
+    "vue": "^2.5.17",
+    "vue-hot-reload-api": "^2.3.1",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.4.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.2"
   }
 }
