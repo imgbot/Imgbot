@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Auth.Extensions;
 using Auth.Model;
 using Common.TableModels;
 using Microsoft.Azure.WebJobs;
@@ -22,15 +24,14 @@ namespace Auth
         [FunctionName("SetupFunction")]
         public static HttpResponseMessage Setup(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "setup")]HttpRequestMessage req,
-            ExecutionContext executionContext,
-            ILogger logger)
+            ExecutionContext executionContext)
         {
             var secrets = Secrets.Get(executionContext);
             var state = Guid.NewGuid();
             var response = req.CreateResponse();
-            response.StatusCode = HttpStatusCode.Redirect;
-            response.Headers.Add("location", $"https://github.com/login/oauth/authorize?client_id={secrets.ClientId}&redirect_uri={secrets.RedirectUri}&state={state}");
-            response.Headers.Add("set-cookie", $"state={state}");
+            response
+                .SetCookie("state", state.ToString())
+                .SetRedirect($"https://github.com/login/oauth/authorize?client_id={secrets.ClientId}&redirect_uri={secrets.RedirectUri}&state={state}");
             return response;
         }
 
@@ -46,10 +47,7 @@ namespace Auth
                 var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
                 var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
 
-                var stateCookie = req.Headers.GetCookies()
-                    ?.FirstOrDefault()
-                    ?.Cookies.FirstOrDefault(x => x.Name == "state")
-                    ?.Value;
+                var stateCookie = req.ReadCookie("state");
 
                 if (string.IsNullOrEmpty(stateCookie))
                 {
@@ -108,6 +106,8 @@ namespace Auth
                     await marketplaceTable.CreateIfNotExistsAsync();
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(marketplaceRow));
                 }
+
+                return Winning(req, token);
             }
             catch (Exception e)
             {
@@ -117,11 +117,39 @@ namespace Auth
             return Winning(req);
         }
 
-        public static HttpResponseMessage Winning(HttpRequestMessage req)
+        public static HttpResponseMessage Winning(HttpRequestMessage req, string token = null)
         {
             var response = req.CreateResponse();
-            response.StatusCode = HttpStatusCode.Redirect;
-            response.Headers.Add("location", $"https://imgbot.net/winning");
+            if (token != null)
+            {
+                response.SetCookie("token", token);
+            }
+
+            response.SetRedirect("http://localhost:8888/app");
+            return response;
+        }
+
+        [FunctionName("IsAuthenticatedFunction")]
+        public static HttpResponseMessage IsAuthenticated(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "isauthenticated")]HttpRequestMessage req)
+        {
+            var tokenCookie = req.ReadCookie("token");
+            var response = req.CreateResponse();
+            response.StatusCode = HttpStatusCode.OK;
+            response
+                .SetJson(new { result = !string.IsNullOrEmpty(tokenCookie) })
+                .EnableCors();
+            return response;
+        }
+
+        [FunctionName("SignoutFunction")]
+        public static HttpResponseMessage Signout(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "signout")]HttpRequestMessage req)
+        {
+            var response = req
+                .CreateResponse()
+                .SetCookie("token", "rubbish", new DateTime(1970, 1, 1))
+                .SetRedirect("http://localhost:8888/app");
             return response;
         }
     }
