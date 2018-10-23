@@ -11,8 +11,7 @@
       <repository
         v-for="repository in repositories"
         v-bind:key="repository.id"
-        v-bind:id="repository.id"
-        v-bind:html_url="repository.html_url"
+        v-bind:repository="repository"
       ></repository>
     </div>
   </div>

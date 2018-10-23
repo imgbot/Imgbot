@@ -66,6 +66,8 @@ namespace Auth
                 throw new Exception("missing authentication");
             }
 
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
             var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
             repositoriesRequest.Headers.Add("User-Agent", "IMGBOT");
             repositoriesRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
@@ -73,11 +75,17 @@ namespace Auth
             var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
             var repositoriesData = JsonConvert.DeserializeObject<Repositories>(repositoriesJson);
 
-            var repositories = repositoriesData.repositories.Select(x => new
+            var repositories = await Task.WhenAll(repositoriesData.repositories.Select(async x =>
             {
-                x.id,
-                x.html_url,
-            });
+                var installation = await installationTable.ExecuteAsync(
+                    TableOperation.Retrieve<Common.TableModels.Installation>(installationid, x.name));
+                return new
+                {
+                    x.id,
+                    x.html_url,
+                    lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
+                };
+            }));
 
             var response = req.CreateResponse();
             response
