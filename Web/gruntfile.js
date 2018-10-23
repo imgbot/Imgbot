@@ -59,7 +59,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'node_modules',
-            src: ['bootstrap/dist/**', 'jquery/dist/**'],
+            src: ['bootstrap/dist/**', 'jquery/dist/**', 'axios/dist/**', 'vue/dist/**'],
             dest: 'dist/lib/'
           },
           {
