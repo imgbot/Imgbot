@@ -2,24 +2,33 @@
     <div id="app">
         <div class="container">
             <nav role="navigation">
+                <InstallationPicker v-bind:installations="installations"></InstallationPicker>
                 <button v-if="!isauthenticated" v-on:click="signin">Sign in</button>
                 <button v-if="isauthenticated" v-on:click="signout">Sign out</button>
             </nav>
-            <ul>
-                <li v-for="installation in installations" v-bind:key="installation.id">
-                    {{ installation.id }}
-                    {{ installation.html_url }}
-                </li>
-            </ul>
+            <div>
+                <installation
+                    v-for="installation in installations"
+                    v-bind:key="installation.id"
+                    v-bind:id="installation.id"
+                    v-bind:html_url="installation.html_url"
+                ></installation>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import { settings } from './settings'
+import InstallationPicker from './components/InstallationPicker'
+import Installation from './components/Installation'
 
 export default {
   name: 'app',
+  components: {
+    InstallationPicker,
+    Installation
+  },
   data() {
     return {
       installations: [],
@@ -43,15 +52,13 @@ export default {
       .then(response => {
         vm.isauthenticated = response.data.result
         if (vm.isauthenticated) {
-            axios
-              .get(`${settings.authhost}/api/installations`, {
-                withCredentials: true
-              })
-              .then(response => {
-                  vm.installations = response.data.installations
-              })
-
-            
+          axios
+            .get(`${settings.authhost}/api/installations`, {
+              withCredentials: true
+            })
+            .then(response => {
+              vm.installations = response.data.installations
+            })
         }
       })
   }

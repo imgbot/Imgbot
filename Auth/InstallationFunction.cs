@@ -51,5 +51,37 @@ namespace Auth
               .EnableCors();
             return response;
         }
+
+        [FunctionName("ListInstallationRepositoriesFunction")]
+        public static async Task<HttpResponseMessage> ListRepositoriesAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}")]HttpRequestMessage req,
+            string installationid,
+            ExecutionContext executionContext)
+        {
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
+            repositoriesRequest.Headers.Add("User-Agent", "IMGBOT");
+            repositoriesRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
+            var repositoriesResponse = await httpClient.SendAsync(repositoriesRequest);
+            var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
+            var repositoriesData = JsonConvert.DeserializeObject<Repositories>(repositoriesJson);
+
+            var repositories = repositoriesData.repositories.Select(x => new
+            {
+                x.id,
+                x.html_url,
+            });
+
+            var response = req.CreateResponse();
+            response
+              .SetJson(new { repositories })
+              .EnableCors();
+            return response;
+        }
     }
 }
