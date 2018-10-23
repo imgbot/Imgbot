@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
@@ -30,5 +31,5 @@ module.exports = {
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
-  plugins: [new VueLoaderPlugin()]
+  plugins: [new VueLoaderPlugin(), new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)]
 }

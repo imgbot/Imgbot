@@ -17,7 +17,7 @@ namespace Auth.Model
         public string node_id { get; set; }
         public string name { get; set; }
         public string full_name { get; set; }
-        //public Owner owner { get; set; }
+        public Account owner { get; set; }
         public bool @private { get; set; }
         public string html_url { get; set; }
         public string description { get; set; }

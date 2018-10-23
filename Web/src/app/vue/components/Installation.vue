@@ -12,6 +12,7 @@
         v-for="repository in repositories"
         v-bind:key="repository.id"
         v-bind:repository="repository"
+        v-bind:installationid="installation.id"
       ></repository>
     </div>
   </div>

@@ -1,17 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Auth.Extensions;
 using Auth.Model;
-using Common.TableModels;
+using Common.Messages;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
@@ -83,6 +80,7 @@ namespace Auth
                 {
                     x.id,
                     x.html_url,
+                    x.name,
                     lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
                 };
             }));
@@ -90,6 +88,98 @@ namespace Auth
             var response = req.CreateResponse();
             response
               .SetJson(new { repositories })
+              .EnableCors();
+            return response;
+        }
+
+        [FunctionName("RepositoryFunction")]
+        public static async Task<HttpResponseMessage> RepositoryAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            string installationid,
+            string repositoryid,
+            ExecutionContext executionContext)
+        {
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
+            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
+            repositoriesRequest.Headers.Add("User-Agent", "IMGBOT");
+            repositoriesRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
+            var repositoriesResponse = await httpClient.SendAsync(repositoriesRequest);
+            var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
+            var repositoriesData = JsonConvert.DeserializeObject<Repositories>(repositoriesJson);
+
+            var repository = repositoriesData.repositories.FirstOrDefault(x => x.id.ToString() == repositoryid);
+
+            if (repository == null)
+            {
+                throw new Exception("repository request mismatch");
+            }
+
+            var installation = await installationTable.ExecuteAsync(
+                    TableOperation.Retrieve<Common.TableModels.Installation>(installationid, repository.name));
+
+            var response = req.CreateResponse();
+            response
+              .SetJson(new
+              {
+                  repository = new
+                  {
+                      repository.id,
+                      repository.html_url,
+                      repository.name,
+                      lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
+                  }
+              })
+              .EnableCors();
+            return response;
+        }
+
+        [FunctionName("RequestRepositoryCheckFunction")]
+        public static async Task<HttpResponseMessage> RequestRepositoryCheckAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/check/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            string installationid,
+            string repositoryid,
+            ExecutionContext executionContext)
+        {
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var routerQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("routermessage");
+            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
+            repositoriesRequest.Headers.Add("User-Agent", "IMGBOT");
+            repositoriesRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
+            var repositoriesResponse = await httpClient.SendAsync(repositoriesRequest);
+            var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
+            var repositoriesData = JsonConvert.DeserializeObject<Repositories>(repositoriesJson);
+
+            var repository = repositoriesData.repositories.FirstOrDefault(x => x.id.ToString() == repositoryid);
+
+            if (repository == null)
+            {
+                throw new Exception("repository request mismatch");
+            }
+
+            await routerQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
+            {
+                CloneUrl = repository.html_url,
+                InstallationId = Convert.ToInt32(installationid),
+                Owner = repository.owner.login,
+                RepoName = repository.name,
+            })));
+
+            var response = req.CreateResponse();
+            response
+              .SetJson(new { status = "OK" })
               .EnableCors();
             return response;
         }
