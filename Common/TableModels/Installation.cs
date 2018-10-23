@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
+﻿using System;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Common.TableModels
 {
@@ -24,5 +25,7 @@ namespace Common.TableModels
         public string CloneUrl { get; set; }
 
         public string Owner { get; set; }
+
+        public DateTime? LastChecked { get; set; }
     }
 }
