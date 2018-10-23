@@ -1,3 +1,4 @@
+using System;
 using Common.Messages;
 using Common.TableModels;
 using Microsoft.Azure.WebJobs;
@@ -21,7 +22,12 @@ namespace RouterFunction
                 {
                     CloneUrl = routerMessage.CloneUrl,
                     Owner = routerMessage.Owner,
+                    LastChecked = DateTime.UtcNow
                 });
+            }
+            else
+            {
+                installation.LastChecked = DateTime.UtcNow;
             }
 
             /*
