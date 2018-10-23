@@ -236,7 +236,7 @@ namespace Test
         public async Task GivenNewInstallationCreated_ShouldReturnOkQueueRouter()
         {
             var result = await ExecuteHookAsync(
-                githubEvent: "integration_installation",
+                githubEvent: "installation",
                 payload: "data/hooks/installation_repositories_created.json",
                 out var routerMessages,
                 out var openPrMessages,
@@ -285,7 +285,7 @@ namespace Test
                 }));
 
             var result = await ExecuteHookAsync(
-                githubEvent: "integration_installation_repositories",
+                githubEvent: "installation_repositories",
                 payload: "data/hooks/installation_repositories_removed.json",
                 out var routerMessages,
                 out var openPrMessages,

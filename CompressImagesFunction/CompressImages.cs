@@ -133,7 +133,8 @@ namespace CompressImagesFunction
             var optimizedImages = new List<CompressionResult>();
             ImageOptimizer imageOptimizer = new ImageOptimizer
             {
-                OptimalCompression = true
+                OptimalCompression = true,
+                IgnoreUnsupportedFormats = true,
             };
 
             Parallel.ForEach(imagePaths, image =>

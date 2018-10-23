@@ -57,7 +57,7 @@ namespace OpenPrFunction
                 sb.AppendLine("## Beep boop. Your images are optimized!");
                 sb.AppendLine();
 
-                if (Math.Round(imageStats[0].Percent) == 0)
+                if (Math.Round(imageStats[0].Percent) < 5)
                 {
                     sb.AppendLine("Your image file size has been reduced!");
                 }
