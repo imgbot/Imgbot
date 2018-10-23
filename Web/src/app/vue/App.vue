@@ -6,12 +6,12 @@
                 <button v-if="!isauthenticated" v-on:click="signin">Sign in</button>
                 <button v-if="isauthenticated" v-on:click="signout">Sign out</button>
             </nav>
+            <h2>ImgBot installations</h2>
             <div>
                 <installation
                     v-for="installation in installations"
                     v-bind:key="installation.id"
-                    v-bind:id="installation.id"
-                    v-bind:html_url="installation.html_url"
+                    v-bind:installation="installation"
                 ></installation>
             </div>
         </div>

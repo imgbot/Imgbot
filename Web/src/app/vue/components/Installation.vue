@@ -1,8 +1,11 @@
 <template>
   <div>
     <div>
-      <div>{{ id }}</div>
-      <a :href="html_url">Manage</a>
+      <h3 class="text-left">
+        <img class="rounded-circle" width="50" :src="installation.avatar_url" alt="">
+        {{ installation.login }}
+        </h3>
+      <a target="_blank" :href="installation.html_url">Manage repos</a>
     </div>
     <div>
       <repository
@@ -21,7 +24,7 @@ import Repository from './Repository'
 
 export default {
   name: 'Installation',
-  props: ['id', 'html_url'],
+  props: ['installation'],
   components: {
     Repository
   },
@@ -33,7 +36,7 @@ export default {
   mounted() {
     var vm = this
     axios
-      .get(`${settings.authhost}/api/repositories/${vm.id}`, {
+      .get(`${settings.authhost}/api/repositories/${vm.installation.id}`, {
         withCredentials: true
       })
       .then(response => {

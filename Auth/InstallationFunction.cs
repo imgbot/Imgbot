@@ -43,6 +43,8 @@ namespace Auth
             {
                 x.id,
                 x.html_url,
+                login = x.account.login,
+                avatar_url = x.account.avatar_url
             });
 
             var response = req.CreateResponse();

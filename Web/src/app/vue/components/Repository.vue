@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div>{{ id }}</div>
-    <div>{{ html_url }}</div>
+  <div class="card my-4">
+    <h5 class="card-title">{{ id }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{ html_url }}</h6>
   </div>
 </template>
 
