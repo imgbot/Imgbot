@@ -2,14 +2,13 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
-              <a class="navbar-brand" href="#"><img width="100" alt="ImgBot" src="/images/imgbot.svg" /></a>
+              <a class="navbar-brand" href="/"><img width="100" alt="ImgBot" src="/images/imgbot.svg" /></a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
 
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                  <InstallationPicker v-bind:installations="installations"></InstallationPicker>
                   <li class="nav-item">
                     <a class="nav-link" href="/docs">Docs</a>
                   </li>
@@ -20,10 +19,24 @@
             </div>
         </nav>
         <div class="container" style="min-height: 250px">
-            <h2>ImgBot installations</h2>
+            <h2 class="mb-5">ImgBot installations</h2>
+            <div>
+              <button v-on:click="select('all')"
+                v-bind:class="{ active: this.selectedFilter === 'all' }"
+                class="btn btn-outline-secondary">All</button>
+              <button v-on:click="select(installation.id)"
+                v-bind:class="{ active: selectedFilter === installation.id }"
+                class="btn btn-outline-secondary ml-2"
+                v-for="installation in installations"
+                v-bind:key="installation.id">
+                {{ installation.login }}
+              </button>
+              <a target="_blank" style="background-color: #eae9e9; border-color: #c5c5c5;" class="btn btn-light ml-2" href="https://github.com/marketplace/imgbot">+</a>
+            </div>
+            <hr>
             <div>
                 <installation
-                    v-for="installation in installations"
+                    v-for="installation in filteredInstallations"
                     v-bind:key="installation.id"
                     v-bind:installation="installation"
                 ></installation>
@@ -50,19 +63,18 @@
 
 <script>
 import { settings } from './settings'
-import InstallationPicker from './components/InstallationPicker'
 import Installation from './components/Installation'
 
 export default {
   name: 'app',
   components: {
-    InstallationPicker,
     Installation
   },
   data() {
     return {
       installations: [],
-      isauthenticated: false
+      isauthenticated: false,
+      selectedFilter: 'all'
     }
   },
   methods: {
@@ -71,6 +83,9 @@ export default {
     },
     signout: function(event) {
       window.location = `${settings.authhost}/api/signout`
+    },
+    select: function(value) {
+      this.selectedFilter = value
     }
   },
   mounted() {
@@ -91,6 +106,14 @@ export default {
             })
         }
       })
+  },
+  computed: {
+    filteredInstallations: function () {
+      return this.installations.filter(x => {
+        if (this.selectedFilter === 'all') return true
+        return this.selectedFilter === x.id
+      })
+    }
   }
 }
 </script>

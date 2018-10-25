@@ -29,6 +29,8 @@ namespace Auth
                 throw new Exception("missing authentication");
             }
 
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
             var installationsRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/installations?access_token=" + token);
             installationsRequest.Headers.Add("User-Agent", "IMGBOT");
             installationsRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
@@ -36,13 +38,20 @@ namespace Auth
             var installationsJson = await installationsResponse.Content.ReadAsStringAsync();
             var installationsData = JsonConvert.DeserializeObject<Installations>(installationsJson);
 
-            var installations = installationsData.installations.Select(x => new
+            var installations = await Task.WhenAll(installationsData.installations.Select(async x =>
             {
-                x.id,
-                x.html_url,
-                login = x.account.login,
-                avatar_url = x.account.avatar_url
-            });
+                var mktplc = await marketplaceTable.ExecuteAsync(
+                    TableOperation.Retrieve<Common.TableModels.Marketplace>(x.account.id.ToString(), x.account.login));
+                
+                return new
+                {
+                    x.id,
+                    x.html_url,
+                    login = x.account.login,
+                    avatar_url = x.account.avatar_url,
+                    planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId
+                };
+            }));
 
             var response = req.CreateResponse();
             response

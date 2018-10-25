@@ -4,6 +4,7 @@
       <h3 class="text-left" style="text-transform: none" :id="installation.login">
         <img class="rounded-circle" width="50" :src="installation.avatar_url" alt="">
         {{ installation.login }}
+        {{ installation.planId }}
         </h3>
       <a target="_blank" :href="installation.html_url">Manage repos</a>
     </div>
@@ -34,6 +35,13 @@ export default {
       repositories: []
     }
   },
+  // computed: {
+  //   plan: function () {
+  //     switch(this.installation.planId) {
+  //       case 781
+  //     }
+  //   }
+  // },
   mounted() {
     var vm = this
     axios
