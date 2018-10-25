@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h3 class="text-left">
+      <h3 class="text-left" style="text-transform: none" :id="installation.login">
         <img class="rounded-circle" width="50" :src="installation.avatar_url" alt="">
         {{ installation.login }}
         </h3>
@@ -15,6 +15,7 @@
         v-bind:installationid="installation.id"
       ></repository>
     </div>
+    <hr>
   </div>
 </template>
 

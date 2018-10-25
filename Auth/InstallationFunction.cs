@@ -81,6 +81,7 @@ namespace Auth
                     x.id,
                     x.html_url,
                     x.name,
+                    x.fork,
                     lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
                 };
             }));
@@ -133,6 +134,7 @@ namespace Auth
                       repository.id,
                       repository.html_url,
                       repository.name,
+                      repository.fork,
                       lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
                   }
               })

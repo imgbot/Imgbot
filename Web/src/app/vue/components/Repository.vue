@@ -2,7 +2,8 @@
   <div class="card my-4">
     <div class="card-body">
       <h5 class="card-title">
-        <octicon name="repo"></octicon>
+        <octicon v-if="repository.fork" name="repo-forked"></octicon>
+        <octicon v-if="!repository.fork" name="repo"></octicon>
         <a target="_blank" :href="current.html_url">{{ current.name }}</a>
       </h5>
       <div class="card-text">{{ lastchecked }}</div>
@@ -19,6 +20,7 @@ import { settings } from '../settings'
 import moment from 'moment'
 import Octicon from 'vue-octicon/components/Octicon.vue'
 import 'vue-octicon/icons/repo'
+import 'vue-octicon/icons/repo-forked'
 
 export default {
   name: 'Repository',
