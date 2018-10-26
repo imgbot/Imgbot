@@ -20,7 +20,7 @@
         </nav>
         <div class="container" style="min-height: 250px">
             <h2 class="mb-5">ImgBot installations</h2>
-            <div>
+            <div v-if="installations.length > 1">
               <button v-on:click="select('all')"
                 v-bind:class="{ active: this.selectedFilter === 'all' }"
                 class="btn btn-outline-secondary">All</button>
@@ -31,7 +31,7 @@
                 v-bind:key="installation.id">
                 {{ installation.login }}
               </button>
-              <a target="_blank" style="background-color: #eae9e9; border-color: #c5c5c5;" class="btn btn-light ml-2" href="https://github.com/marketplace/imgbot">+</a>
+              <a target="_blank" class="btn btn-light border border-secondary ml-2" href="https://github.com/marketplace/imgbot">+</a>
             </div>
             <hr>
             <div>
