@@ -83,7 +83,7 @@ namespace CompressImagesFunction
 
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
-            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger);
+            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
                 return false;
 
@@ -128,7 +128,7 @@ namespace CompressImagesFunction
             return true;
         }
 
-        private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger)
+        private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger, bool aggressiveCompression)
         {
             var optimizedImages = new List<CompressionResult>();
             ImageOptimizer imageOptimizer = new ImageOptimizer
@@ -144,7 +144,7 @@ namespace CompressImagesFunction
                     Console.WriteLine(image);
                     FileInfo file = new FileInfo(image);
                     double before = file.Length;
-                    if (imageOptimizer.LosslessCompress(file))
+                    if (aggressiveCompression ? imageOptimizer.Compress(file) : imageOptimizer.LosslessCompress(file))
                     {
                         optimizedImages.Add(new CompressionResult
                         {
