@@ -13,7 +13,8 @@ Here is an example .imgbotconfig setup that shows some of the options.
         "*.jpg",                   // ignore by extension
         "image1.png",              // ignore by filename
         "public/special_images/*", // ignore by folderpath
-    ]
+    ],
+    "aggressiveCompression": "true" // true|false
 }
 ```
 

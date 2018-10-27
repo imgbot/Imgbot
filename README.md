@@ -18,7 +18,8 @@ This file should be placed in the root of the repository and set to your liking.
     	"*.jpg",                   // by extension
     	"image1.png",              // by filename
     	"public/special_images/*", // by folderpath
-    ]
+    ],
+    "aggressiveCompression": "true" // true|false
 }
 ```
 
@@ -40,6 +41,13 @@ to help@imgbot.net
 - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
 - Limits the images optimized by ImgBot by esentially ignoring them
 - When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
+
+**aggressiveCompression**
+
+- optional
+- Accepts: true|false
+- Opt in to use lossy compression algorithms
+- The default behavior without this setting is lossless compression
 
 Find out more: https://imgbot.net/docs
 
