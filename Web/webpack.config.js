@@ -31,5 +31,8 @@ module.exports = {
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
-  plugins: [new VueLoaderPlugin(), new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)]
+  plugins: [
+    new VueLoaderPlugin(),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ]
 }

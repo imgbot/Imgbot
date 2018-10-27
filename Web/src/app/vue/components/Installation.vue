@@ -7,13 +7,14 @@
       </h3>
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
       <div><a target="_blank" :href="installation.html_url">Manage repos</a></div>
-      <div class="mt-4" v-if="repositories.length > 1">
+      <div class="mt-4" v-if="repositories.length > 2">
         <input placeholder="Search" class="w-25" type="text" v-model="repofilter">
         <button style="margin-left: -36px"><octicon name="search"></octicon></button>
       </div>
     </div>
     <div>
-      <p class="mt-4" v-if="filteredRepositories.length < 1">No repos found</p>
+      <p class="mt-4" v-if="loaded && filteredRepositories.length < 1">No repos found</p>
+      <loader v-if="!loaded"></loader>
       <repository
         v-for="repository in filteredRepositories"
         v-bind:key="repository.id"
@@ -28,6 +29,7 @@
 <script>
 import { settings } from '../settings'
 import Repository from './Repository'
+import Loader from './Loader'
 import Octicon from 'vue-octicon/components/Octicon.vue'
 import 'vue-octicon/icons/search'
 
@@ -36,12 +38,14 @@ export default {
   props: ['installation'],
   components: {
     Repository,
-    Octicon
+    Octicon,
+    Loader
   },
   data() {
     return {
       repositories: [],
-      repofilter: ''
+      repofilter: '',
+      loaded: false
     }
   },
   computed: {
@@ -69,6 +73,7 @@ export default {
         withCredentials: true
       })
       .then(response => {
+        this.loaded = true
         vm.repositories = response.data.repositories
       })
   }

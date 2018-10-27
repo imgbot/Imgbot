@@ -20,8 +20,13 @@
         </nav>
         <div class="container" style="min-height: 250px">
             <h2 class="mb-5">ImgBot installations</h2>
-            <div v-if="installations.length > 1">
+            <div v-if="loaded && installations.length === 0">
+              <h3>No installations found</h3>
+              <a class="btn btn-light border border-secondary" href="https://github.com/marketplace/imgbot">Install now</a>
+            </div>
+            <div>
               <button v-on:click="select('all')"
+                v-if="installations.length > 1"
                 v-bind:class="{ active: this.selectedFilter === 'all' }"
                 class="btn btn-outline-secondary">All</button>
               <button v-on:click="select(installation.id)"
@@ -35,6 +40,8 @@
             </div>
             <hr>
             <div>
+                <loader v-if="!loaded"></loader>
+                <button class="btn btn-success" v-if="loaded && !isauthenticated" v-on:click="signin">Sign in</button>
                 <installation
                     v-for="installation in filteredInstallations"
                     v-bind:key="installation.id"
@@ -64,17 +71,20 @@
 <script>
 import { settings } from './settings'
 import Installation from './components/Installation'
+import Loader from './components/Loader'
 
 export default {
   name: 'app',
   components: {
-    Installation
+    Installation,
+    Loader
   },
   data() {
     return {
       installations: [],
       isauthenticated: false,
-      selectedFilter: 'all'
+      selectedFilter: 'all',
+      loaded: false
     }
   },
   methods: {
@@ -102,8 +112,11 @@ export default {
               withCredentials: true
             })
             .then(response => {
+              this.loaded = true
               vm.installations = response.data.installations
             })
+        } else {
+          this.loaded = true
         }
       })
   },
