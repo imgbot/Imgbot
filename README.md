@@ -19,7 +19,7 @@ This file should be placed in the root of the repository and set to your liking.
     	"image1.png",              // by filename
     	"public/special_images/*", // by folderpath
     ],
-    "aggressiveCompression": "true" // true|false
+    "aggressiveCompression": true // true|false
 }
 ```
 
