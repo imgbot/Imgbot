@@ -46,7 +46,7 @@ namespace WebHook
 
             var result = "no action";
 
-            if (hook.repository.@private)
+            if (hook.repository?.@private == true)
             {
                 var query = new TableQuery<Marketplace>().Where(
                     $"AccountLogin eq '{hook.repository.owner.login}' and (PlanId eq 1624 or PlanId eq 781)");
