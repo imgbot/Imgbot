@@ -35,6 +35,7 @@ namespace Auth.Extensions
         {
             res.Headers.Add("Access-Control-Allow-Credentials", "true");
             res.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            res.Headers.Add("Access-Control-Allow-Origin", AuthFunction.Webhost);
             return res;
         }
 
