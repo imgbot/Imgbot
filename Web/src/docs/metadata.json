@@ -24,6 +24,10 @@
     "title": "Ignoring images"
   },
   {
+    "slug": "aggressive-compression",
+    "title": "Aggressive compression"
+  },
+  {
     "slug": "authorization",
     "title": "Authorization"
   },
