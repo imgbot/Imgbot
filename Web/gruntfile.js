@@ -59,7 +59,12 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'node_modules',
-            src: ['bootstrap/dist/**', 'jquery/dist/**', 'axios/dist/**', 'vue/dist/**'],
+            src: [
+              'bootstrap/dist/**',
+              'jquery/dist/**',
+              'axios/dist/**',
+              'vue/dist/**'
+            ],
             dest: 'dist/lib/'
           },
           {
@@ -76,9 +81,16 @@ module.exports = function(grunt) {
       dev: Object.assign({ watch: true, mode: 'development' }, webpackConfig)
     },
     watch: {
-      scripts: {
+      site: {
         files: ['src/**/*.*'],
-        tasks: ['gen', 'webpack:dev'],
+        tasks: ['gen'],
+        options: {
+          spawn: false
+        }
+      },
+      webpack: {
+        files: ['src/app/**/*.*'],
+        tasks: ['webpack:dev'],
         options: {
           spawn: false
         }

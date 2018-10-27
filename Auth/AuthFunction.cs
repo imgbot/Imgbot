@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Auth.Extensions;
 using Auth.Model;
@@ -19,7 +16,8 @@ namespace Auth
 {
     public static class AuthFunction
     {
-        private static HttpClient httpClient = new HttpClient();
+        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly string Webhost = "http://localhost:8888";
 
         [FunctionName("SetupFunction")]
         public static HttpResponseMessage Setup(
@@ -27,10 +25,16 @@ namespace Auth
             ExecutionContext executionContext)
         {
             var secrets = Secrets.Get(executionContext);
-            var state = Guid.NewGuid();
+            var state = Guid.NewGuid().ToString();
+            var from = req.RequestUri.ParseQueryString().Get("from");
+            if (from == "app")
+            {
+                state += ",fromapp";
+            }
+
             var response = req.CreateResponse();
             response
-                .SetCookie("state", state.ToString())
+                .SetCookie("state", state)
                 .SetRedirect($"https://github.com/login/oauth/authorize?client_id={secrets.ClientId}&redirect_uri={secrets.RedirectUri}&state={state}");
             return response;
         }
@@ -71,11 +75,11 @@ namespace Auth
                     return Winning(req);
                 }
 
-                var tokenResponse = await httpClient.PostAsJsonAsync("https://github.com/login/oauth/access_token", new
+                var tokenResponse = await HttpClient.PostAsJsonAsync("https://github.com/login/oauth/access_token", new
                 {
                     client_id = secrets.ClientId,
                     client_secret = secrets.ClientSecret,
-                    code = code,
+                    code,
                     redirect_uri = secrets.RedirectUri,
                     state = stateQuery
                 });
@@ -91,7 +95,7 @@ namespace Auth
 
                 var mktplcRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/marketplace_purchases?access_token=" + token);
                 mktplcRequest.Headers.Add("User-Agent", "IMGBOT");
-                var mktplcResponse = await httpClient.SendAsync(mktplcRequest);
+                var mktplcResponse = await HttpClient.SendAsync(mktplcRequest);
 
                 var planDataJson = await mktplcResponse.Content.ReadAsStringAsync();
                 var planData = JsonConvert.DeserializeObject<PlanData[]>(planDataJson);
@@ -107,7 +111,7 @@ namespace Auth
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(marketplaceRow));
                 }
 
-                return Winning(req, token);
+                return Winning(req, token, stateQuery);
             }
             catch (Exception e)
             {
@@ -117,7 +121,7 @@ namespace Auth
             return Winning(req);
         }
 
-        public static HttpResponseMessage Winning(HttpRequestMessage req, string token = null)
+        public static HttpResponseMessage Winning(HttpRequestMessage req, string token = null, string state = null)
         {
             var response = req.CreateResponse();
             if (token != null)
@@ -125,7 +129,15 @@ namespace Auth
                 response.SetCookie("token", token);
             }
 
-            response.SetRedirect("http://localhost:8888/app");
+            if (state != null && state.Contains(",") && state.Split(',')[1] == "fromapp")
+            {
+                response.SetRedirect(Webhost + "/app");
+            }
+            else
+            {
+                response.SetRedirect(Webhost + "/winning");
+            }
+
             return response;
         }
 
@@ -149,7 +161,7 @@ namespace Auth
             var response = req
                 .CreateResponse()
                 .SetCookie("token", "rubbish", new DateTime(1970, 1, 1))
-                .SetRedirect("http://localhost:8888/app");
+                .SetRedirect(Webhost + "/app");
             return response;
         }
     }

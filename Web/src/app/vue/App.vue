@@ -20,11 +20,11 @@
         </nav>
         <div class="container" style="min-height: 250px">
             <h2 class="mb-5">ImgBot installations</h2>
-            <div v-if="loaded && installations.length === 0">
+            <div v-if="isauthenticated && loaded && installations.length === 0">
               <h3>No installations found</h3>
               <a class="btn btn-light border border-secondary" href="https://github.com/marketplace/imgbot">Install now</a>
             </div>
-            <div>
+            <div v-if="isauthenticated">
               <button v-on:click="select('all')"
                 v-if="installations.length > 1"
                 v-bind:class="{ active: this.selectedFilter === 'all' }"
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     signin: function(event) {
-      window.location = `${settings.authhost}/api/setup`
+      window.location = `${settings.authhost}/api/setup?from=app`
     },
     signout: function(event) {
       window.location = `${settings.authhost}/api/signout`

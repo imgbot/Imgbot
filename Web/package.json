@@ -3,7 +3,8 @@
   "version": "3.0.0",
   "scripts": {
     "gen": "grunt gen",
-    "watch": "grunt watch",
+    "watch": "grunt watch:site",
+    "watchpack": "grunt watch:webpack",
     "prod": "grunt gen && grunt webpack:prod",
     "serve": "grunt devserver:dist"
   },
