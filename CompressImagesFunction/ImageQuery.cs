@@ -19,7 +19,18 @@ namespace CompressImagesFunction
                 var ignoredFiles = repoConfiguration.IgnoredFiles
                     .Select(x => x.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar))
                     .AsParallel()
-                    .SelectMany(pattern => Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories));
+                    .SelectMany(pattern =>
+                    {
+                        try
+                        {
+                            return Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories);
+                        }
+                        catch
+                        {
+                            // ignore issues enumerating files
+                            return Enumerable.Empty<string>();
+                        }
+                    });
 
                 images = images.Except(ignoredFiles);
             }
