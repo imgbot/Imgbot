@@ -1,6 +1,6 @@
 {
     "ignoredFiles": [
-    	"ImgBot.Test/*"
+    	"Test/*"
     ],
     "aggressiveCompression": true
 }
