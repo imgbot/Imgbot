@@ -1,3 +1,5 @@
+const webpackConfig = require('./webpack.config')
+
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-markdown')
@@ -6,6 +8,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-devserver')
   grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-webpack')
   grunt.loadTasks('./tasks')
 
   grunt.initConfig({
@@ -56,7 +59,12 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'node_modules',
-            src: ['bootstrap/dist/**', 'jquery/dist/**'],
+            src: [
+              'bootstrap/dist/**',
+              'jquery/dist/**',
+              'axios/dist/**',
+              'vue/dist/**'
+            ],
             dest: 'dist/lib/'
           },
           {
@@ -68,10 +76,21 @@ module.exports = function(grunt) {
         ]
       }
     },
+    webpack: {
+      prod: Object.assign({ mode: 'production' }, webpackConfig),
+      dev: Object.assign({ watch: true, mode: 'development' }, webpackConfig)
+    },
     watch: {
-      scripts: {
+      site: {
         files: ['src/**/*.*'],
         tasks: ['gen'],
+        options: {
+          spawn: false
+        }
+      },
+      webpack: {
+        files: ['src/app/**/*.*'],
+        tasks: ['webpack:dev'],
         options: {
           spawn: false
         }

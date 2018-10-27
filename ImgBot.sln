@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrPoisonHandler", "PrPoison
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHook", "WebHook\WebHook.csproj", "{87E56493-AEB9-4257-90C0-FB7CE65C2816}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,5 +57,9 @@ Global
 		{87E56493-AEB9-4257-90C0-FB7CE65C2816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87E56493-AEB9-4257-90C0-FB7CE65C2816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87E56493-AEB9-4257-90C0-FB7CE65C2816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

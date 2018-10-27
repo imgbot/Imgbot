@@ -46,6 +46,18 @@ namespace WebHook
 
             var result = "no action";
 
+            if (hook.repository.@private)
+            {
+                var query = new TableQuery<Marketplace>().Where(
+                    $"AccountLogin eq '{hook.repository.owner.login}' and (PlanId eq 1624 or PlanId eq 781)");
+                var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
+                if (rows.Count() == 0)
+                {
+                    logger.LogError("ProcessPush: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
+                    throw new Exception("Plan mismatch");
+                }
+            }
+
             switch (hookEvent)
             {
                 case "installation_repositories":
@@ -101,7 +113,7 @@ namespace WebHook
                 CloneUrl = $"https://github.com/{hook.repository.full_name}",
             })));
 
-            logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner, hook.repository.name);
+            logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
 
             return "truth";
         }

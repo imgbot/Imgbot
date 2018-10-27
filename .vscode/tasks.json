@@ -93,6 +93,20 @@
           "reveal": "always"
         },
         "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run Auth",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/Auth/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start --useHttps",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
       }
     ]
   }
