@@ -66,13 +66,16 @@ export default {
               .get(
                 `${settings.authhost}/api/repositories/${
                   vm.installationid
-                }/${repositoryid}`,
+                }/repository/${repositoryid}`,
                 {
                   withCredentials: true
                 }
               )
               .then(response => {
-                if (vm.current.lastchecked !== response.data.repository.lastchecked) {
+                if (
+                  vm.current.lastchecked !==
+                  response.data.repository.lastchecked
+                ) {
                   clearInterval(interval)
                   vm.current = response.data.repository
                   vm.checking = false
