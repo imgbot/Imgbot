@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Auth.Extensions;
 using Microsoft.Azure.WebJobs;
@@ -27,7 +29,8 @@ namespace Auth
             }
 
             var marketplaceTable = GetTable("marketplace");
-            var installationsRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/installations?access_token=" + token);
+            var installationsRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/installations");
+            installationsRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
             installationsRequest.AddGithubHeaders();
             var installationsResponse = await HttpClient.SendAsync(installationsRequest);
             var installationsJson = await installationsResponse.Content.ReadAsStringAsync();
@@ -57,8 +60,9 @@ namespace Auth
 
         [FunctionName("ListInstallationRepositoriesFunction")]
         public static async Task<HttpResponseMessage> ListRepositoriesAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}")]HttpRequestMessage req,
-            string installationid)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/{page:int}")]HttpRequestMessage req,
+            string installationid,
+            int page)
         {
             var token = req.ReadCookie("token");
             if (token == null)
@@ -67,7 +71,14 @@ namespace Auth
             }
 
             var installationTable = GetTable("installation");
-            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
+            var url = $"https://api.github.com/user/installations/{installationid}/repositories";
+            if (page > 1)
+            {
+                url += "?page=" + page;
+            }
+
+            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, url);
+            repositoriesRequest.Headers.Add("Authorization", "token " + token);
             repositoriesRequest.AddGithubHeaders();
             var repositoriesResponse = await HttpClient.SendAsync(repositoriesRequest);
             var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
@@ -76,16 +87,17 @@ namespace Auth
             var repositories = await Task.WhenAll(repositoriesData.repositories.Select(x =>
                 RepositoryResponse(x, installationTable, installationid)));
 
+            var next = ParseNextHeader(repositoriesResponse);
             var response = req.CreateResponse();
             response
-              .SetJson(new { repositories })
+              .SetJson(new { repositories, next })
               .EnableCors();
             return response;
         }
 
         [FunctionName("RepositoryFunction")]
         public static async Task<HttpResponseMessage> RepositoryAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/repository/{repositoryid}")]HttpRequestMessage req,
             string installationid,
             string repositoryid)
         {
@@ -96,14 +108,7 @@ namespace Auth
             }
 
             var installationTable = GetTable("installation");
-            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
-            repositoriesRequest.AddGithubHeaders();
-            var repositoriesResponse = await HttpClient.SendAsync(repositoriesRequest);
-            var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
-            var repositoriesData = JsonConvert.DeserializeObject<Model.Repositories>(repositoriesJson);
-
-            var repository = repositoriesData.repositories.FirstOrDefault(x => x.id.ToString() == repositoryid);
-
+            var repository = await GetRepository(installationid, token, repositoryid);
             if (repository == null)
             {
                 throw new Exception("repository request mismatch");
@@ -131,16 +136,9 @@ namespace Auth
                 throw new Exception("missing authentication");
             }
 
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
-            var routerQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("routermessage");
-            var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/user/installations/{installationid}/repositories?access_token=" + token);
-            repositoriesRequest.Headers.Add("User-Agent", "IMGBOT");
-            repositoriesRequest.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
-            var repositoriesResponse = await HttpClient.SendAsync(repositoriesRequest);
-            var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
-            var repositoriesData = JsonConvert.DeserializeObject<Model.Repositories>(repositoriesJson);
+            var routerQueue = GetQueue("routermessage");
 
-            var repository = repositoriesData.repositories.FirstOrDefault(x => x.id.ToString() == repositoryid);
+            var repository = await GetRepository(installationid, token, repositoryid);
 
             if (repository == null)
             {
@@ -168,6 +166,12 @@ namespace Auth
             return storageAccount.CreateCloudTableClient().GetTableReference(tableName);
         }
 
+        private static CloudQueue GetQueue(string queueName)
+        {
+            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            return storageAccount.CreateCloudQueueClient().GetQueueReference(queueName);
+        }
+
         private static async Task<object> RepositoryResponse(Model.Repository ghRepository, CloudTable installationsTable, string installationid)
         {
             var installation = await installationsTable.ExecuteAsync(
@@ -181,6 +185,51 @@ namespace Auth
                 ghRepository.fork,
                 lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
             };
+        }
+
+        private static string ParseNextHeader(HttpResponseMessage response)
+        {
+            var linkHeader = response.Headers
+                .FirstOrDefault(x => x.Key == "Link")
+                .Value?.FirstOrDefault();
+
+            if (linkHeader != null)
+            {
+                var match = Regex.Match(linkHeader, @"<https:\/\/api\.github\.com\/user\/installations\/.*\/repositories\?page=(.*)>; rel=""next""");
+                if (match.Success)
+                {
+                    return match.Groups[1].Value as string;
+                }
+            }
+
+            return null;
+        }
+
+        private static async Task<Model.Repository> GetRepository(string installationid, string token, string repositoryid)
+        {
+            Model.Repository repository = null;
+            string next = null;
+
+            do
+            {
+                var url = $"https://api.github.com/user/installations/{installationid}/repositories";
+                if (next != null)
+                {
+                    url += "?page=" + next;
+                }
+
+                var repositoriesRequest = new HttpRequestMessage(HttpMethod.Get, url);
+                repositoriesRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
+                repositoriesRequest.AddGithubHeaders();
+                var repositoriesResponse = await HttpClient.SendAsync(repositoriesRequest);
+                next = ParseNextHeader(repositoriesResponse);
+                var repositoriesJson = await repositoriesResponse.Content.ReadAsStringAsync();
+                var repositoriesData = JsonConvert.DeserializeObject<Model.Repositories>(repositoriesJson);
+                repository = repositoriesData.repositories.FirstOrDefault(x => x.id.ToString() == repositoryid);
+            }
+            while (repository == null && next != null);
+
+            return repository;
         }
     }
 }

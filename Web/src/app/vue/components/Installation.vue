@@ -68,14 +68,25 @@ export default {
   },
   mounted() {
     var vm = this
-    axios
-      .get(`${settings.authhost}/api/repositories/${vm.installation.id}`, {
-        withCredentials: true
-      })
-      .then(response => {
-        this.loaded = true
-        vm.repositories = response.data.repositories
-      })
+
+    function fetchRepos(page) {
+      axios
+        .get(
+          `${settings.authhost}/api/repositories/${vm.installation.id}/${page}`,
+          {
+            withCredentials: true
+          }
+        )
+        .then(response => {
+          vm.loaded = true
+          vm.repositories = vm.repositories.concat(response.data.repositories)
+          if (response.data.next) {
+            fetchRepos(response.data.next)
+          }
+        })
+    }
+
+    fetchRepos(1)
   }
 }
 </script>
