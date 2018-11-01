@@ -23,6 +23,7 @@ h2 {
   font-size: 50px;
   margin-top: 20px;
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 h3 {
@@ -80,6 +81,10 @@ ol {
     right: 20px;
   }
 
+  & + div {
+    border-top: 2px solid @green;
+  }
+
   @media only screen and (max-width: @medium) {
     text-align: center;
   }
@@ -124,8 +129,37 @@ ol {
   }
 }
 
-.container-how {
-  border-top: 2px solid @green;
+h2 {
+  color: @green;
+}
+
+.container-light {
+  background-color: lighten(@green, 30%);
+  //background-color: #e6f5f0;
+  h2 {
+    color: #000;
+  }
+}
+
+footer {
+  padding: 20px 20px;
+  background-color: @green;
+  color: #fff;
+
+  a {
+    color: #fff;
+  }
+
+  .copyright {
+    background-color: #fff;
+    border-radius: 11px;
+    padding: 6px 8px;
+  }
+
+  ul {
+    margin-left: 24px;
+    text-decoration: underline;
+  }
 }
 
 .docs-hero {
@@ -177,6 +211,13 @@ ol {
   }
 }
 
+.screen {
+  margin: 30px 0;
+  border-radius: 30px;
+  padding: 25px 40px 25px 20px;
+  background: #fff;
+}
+
 .docs-content {
   position: absolute;
   right: 28%;
@@ -187,6 +228,7 @@ ol {
   h1,
   h2 {
     font-family: 'Playfair Display', serif;
+    font-weight: normal;
   }
 
   h1 {
