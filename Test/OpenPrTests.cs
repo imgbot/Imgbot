@@ -22,7 +22,7 @@ namespace Test
         [TestMethod]
         public async Task ShouldOpenPrAndLog()
         {
-            await ExecuteRunAsync(12345, "dabutvin", "test", 150, out var logger);
+            await ExecuteRunAsync(12345, "dabutvin", "test", 150, out var logger).ConfigureAwait(false);
 
             logger.AssertCallCount(2);
 
@@ -43,7 +43,7 @@ namespace Test
         [TestMethod]
         public async Task ShouldNotLog_GivenPrIdUnder1()
         {
-            await ExecuteRunAsync(12345, "dabutvin", "test", 0, out var logger);
+            await ExecuteRunAsync(12345, "dabutvin", "test", 0, out var logger).ConfigureAwait(false);
 
             logger.AssertCallCount(1);
 
@@ -60,7 +60,7 @@ namespace Test
             ILogger logger = null;
             try
             {
-                await ExecuteRunAsync(
+                await ExecuteRunAsync.ConfigureAwait(false)(
                     new OpenPrMessage
                     {
                         CloneUrl = "https://github.com/dabutvin/test",
