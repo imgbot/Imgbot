@@ -18,7 +18,7 @@ namespace Test
         [TestMethod]
         public async Task GivenArchivedRepo_ShouldSkip()
         {
-            await ExecuteRunAsync(12345, "dabutvin", "test", 150, out var logger);.ConfigureAwait(false)
+            await ExecuteRunAsync(12345, "dabutvin", "test", 150, out var logger).ConfigureAwait(false);
 
             logger.AssertCallCount(2);
             logger.SecondCall().AssertLogLevel(LogLevel.Information);
