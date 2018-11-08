@@ -60,7 +60,7 @@ namespace Test
             ILogger logger = null;
             try
             {
-                await ExecuteRunAsync.ConfigureAwait(false)(
+                await ExecuteRunAsync(
                     new OpenPrMessage
                     {
                         CloneUrl = "https://github.com/dabutvin/test",
