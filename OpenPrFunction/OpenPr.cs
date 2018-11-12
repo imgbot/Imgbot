@@ -22,7 +22,7 @@ namespace OpenPrFunction
         {
             var installationTokenProvider = new InstallationTokenProvider();
             var pullRequest = new PullRequest();
-            await RunAsync(openPrMessage, installation, installationTokenProvider, pullRequest, logger, context);
+            await RunAsync(openPrMessage, installation, installationTokenProvider, pullRequest, logger, context).ConfigureAwait(false);
         }
 
         public static async Task RunAsync(

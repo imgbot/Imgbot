@@ -62,13 +62,13 @@ namespace WebHook
             {
                 case "installation_repositories":
                 case "installation":
-                    result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger);
+                    result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    result = await ProcessPushAsync(hook, routerMessages, openPrMessages, logger);
+                    result = await ProcessPushAsync(hook, routerMessages, openPrMessages, logger).ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
-                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger);
+                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
                     break;
             }
 

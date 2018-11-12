@@ -108,7 +108,7 @@ namespace Auth
             }
 
             var installationTable = GetTable("installation");
-            var repository = await GetRepository(installationid, token, repositoryid);
+            var repository = await GetRepository(installationid, token, repositoryid).ConfigureAwait(false);
             if (repository == null)
             {
                 throw new Exception("repository request mismatch");
@@ -118,7 +118,7 @@ namespace Auth
             response
               .SetJson(new
               {
-                  repository = await RepositoryResponse(repository, installationTable, installationid)
+                  repository = await RepositoryResponse(repository, installationTable, installationid).ConfigureAwait(false)
               })
               .EnableCors();
             return response;
