@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHook", "WebHook\WebHook.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceSyncFunction", "MarketplaceSyncFunction\MarketplaceSyncFunction.csproj", "{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,5 +63,9 @@ Global
 		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
