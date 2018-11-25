@@ -14,7 +14,7 @@ namespace Install
 {
     public class InstallationTokenProvider : IInstallationTokenProvider
     {
-        public async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader)
+        public string GenerateJWT(InstallationTokenParameters input, StreamReader privateKeyReader)
         {
             var jwtPayload = new
             {
@@ -48,8 +48,12 @@ namespace Install
             var sigBytes = signer.GenerateSignature();
             segments.Add(Base64UrlEncode(sigBytes));
 
-            var jwttoken = string.Join(".", segments);
+            return string.Join(".", segments);
+        }
 
+        public async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader)
+        {
+            var jwttoken = GenerateJWT(input, privateKeyReader);
             using (var http = new HttpClient())
             {
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.github.machine-man-preview+json");
