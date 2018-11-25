@@ -6,7 +6,10 @@
         {{ installation.login }}
       </h3>
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
-      <div><a target="_blank" :href="installation.html_url">Manage repos</a></div>
+      <div>
+        <a class="btn btn-outline-secondary btn-sm" target="_blank" :href="installation.html_url">Manage repos</a>
+        <a class="btn btn-outline-secondary btn-sm" v-if="changePlan" target="_blank" :href="changePlanLink">{{ this.changePlan }}</a>
+      </div>
       <div class="mt-4" v-if="repositories.length > 2">
         <input placeholder="Search" class="w-25" type="text" v-model="repofilter">
         <button style="margin-left: -36px"><octicon name="search"></octicon></button>
@@ -53,10 +56,26 @@ export default {
       switch (this.installation.planId) {
         case 781:
           return 'Early adopter plan'
-        case 111:
+        case 1625:
           return 'Open source plan'
-        case 999:
-          return 'Private repos plan'
+        case 1628:
+          return 'Premium plan'
+      }
+    },
+    changePlan: function() {
+      switch (this.installation.planId) {
+        case 1625:
+          return 'Upgrade plan'
+        case 1628:
+          return 'Downgrade plan'
+      }
+    },
+    changePlanLink: function() {
+      switch (this.installation.planId) {
+        case 1625:
+          return `https://github.com/marketplace/imgbot/upgrade/4/${this.installation.accountid}`
+        case 1628:
+          return `https://github.com/marketplace/imgbot/upgrade/1/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {

@@ -13,8 +13,8 @@
                     <a class="nav-link" href="/docs">Docs</a>
                   </li>
                 </ul>
-              <button class="btn btn-outline-success" v-if="!isauthenticated" v-on:click="signin">Sign in</button>
-              <button class="btn btn-outline-secondary" v-if="isauthenticated" v-on:click="signout">Sign out</button>
+              <button class="btn btn-outline-success" v-if="loaded && !isauthenticated" v-on:click="signin">Sign in</button>
+              <button class="btn btn-outline-secondary" v-if="loaded && isauthenticated" v-on:click="signout">Sign out</button>
               </div>
             </div>
         </nav>
@@ -36,7 +36,10 @@
                 v-bind:key="installation.id">
                 {{ installation.login }}
               </button>
-              <a target="_blank" class="btn btn-light border border-secondary ml-2" href="https://github.com/marketplace/imgbot">+</a>
+              <a v-if="installations.length > 0"
+                 target="_blank"
+                 class="btn btn-light border border-secondary ml-2"
+                 href="https://github.com/marketplace/imgbot">+</a>
             </div>
             <hr>
             <div>
@@ -121,7 +124,7 @@ export default {
       })
   },
   computed: {
-    filteredInstallations: function () {
+    filteredInstallations: function() {
       return this.installations.filter(x => {
         if (this.selectedFilter === 'all') return true
         return this.selectedFilter === x.id
