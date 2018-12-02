@@ -49,7 +49,7 @@ namespace WebHook
             if (hook.repository?.@private == true)
             {
                 var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{hook.repository.owner.login}' and (PlanId eq 1624 or PlanId eq 781)");
+                    $"AccountLogin eq '{hook.repository.owner.login}' and (PlanId eq 1750 or PlanId eq 781)");
                 var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
                 if (rows.Count() == 0)
                 {

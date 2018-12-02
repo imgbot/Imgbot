@@ -45,7 +45,7 @@ namespace MarketplaceSyncFunction
                 },
                 File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
 
-            foreach (var planId in new[] { 1625, 1628 })
+            foreach (var planId in new[] { 1749, 1750 })
             {
                 var planRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/marketplace_listing/plans/{planId}/accounts");
                 planRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);

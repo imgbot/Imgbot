@@ -56,26 +56,26 @@ export default {
       switch (this.installation.planId) {
         case 781:
           return 'Early adopter plan'
-        case 1625:
+        case 1749:
           return 'Open source plan'
-        case 1628:
+        case 1750:
           return 'Premium plan'
       }
     },
     changePlan: function() {
       switch (this.installation.planId) {
-        case 1625:
+        case 1749:
           return 'Upgrade plan'
-        case 1628:
+        case 1750:
           return 'Downgrade plan'
       }
     },
     changePlanLink: function() {
       switch (this.installation.planId) {
-        case 1625:
-          return `https://github.com/marketplace/imgbot/upgrade/4/${this.installation.accountid}`
-        case 1628:
-          return `https://github.com/marketplace/imgbot/upgrade/1/${this.installation.accountid}`
+        case 1749:
+          return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
+        case 1750:
+          return `https://github.com/marketplace/imgbot/upgrade/3/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {
