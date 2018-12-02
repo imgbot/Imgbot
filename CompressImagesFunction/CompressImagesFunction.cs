@@ -13,15 +13,28 @@ namespace CompressImagesFunction
     {
         [Singleton("{RepoName}")] // https://github.com/Azure/azure-webjobs-sdk/wiki/Singleton#scenarios
         [FunctionName("CompressImagesFunction")]
-        public static Task Trigger(
+        public static async Task Trigger(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
+            [Queue("longrunningcompressmessage")] ICollector<CompressImagesMessage> longRunningCompressMessages,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             ILogger logger,
             ExecutionContext context)
         {
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            return RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            using (var cancellation = new System.Threading.CancellationTokenSource())
+            {
+                try
+                {
+                    cancellation.CancelAfter(570000);
+                    await RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+                }
+                catch (OperationCanceledException)
+                {
+                    logger.LogInformation($"Time out exceeded!");
+                    longRunningCompressMessages.Add(compressImagesMessage);
+                }
+            }
         }
 
         public static async Task RunAsync(
