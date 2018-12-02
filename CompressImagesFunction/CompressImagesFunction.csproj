@@ -6,18 +6,18 @@
 
   <Target Name="CopyNativeBinaries" AfterTargets="Build">
     <ItemGroup>
-      <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-8e0b172.dylib" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-8e0b172.dll" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-4aecb64.dylib" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-4aecb64.dll" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/win-x64/native/Magick.NET-Q16-x64.Native.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativeBinary)" DestinationFiles="@(NativeBinary->'$(TargetDir)bin/%(Filename)%(Extension)')" /> 
+    <Copy SourceFiles="@(NativeBinary)" DestinationFiles="@(NativeBinary->'$(TargetDir)bin/%(Filename)%(Extension)')" />
   </Target>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="LibGit2Sharp" Version="0.25.3" />
+    <PackageReference Include="LibGit2Sharp" Version="0.25.4" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.9.0.2" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.1" />
     <PackageReference Include="Octokit" Version="0.32.0" />
