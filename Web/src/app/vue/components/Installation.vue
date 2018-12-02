@@ -73,9 +73,9 @@ export default {
     changePlanLink: function() {
       switch (this.installation.planId) {
         case 1749:
-          return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
-        case 1750:
           return `https://github.com/marketplace/imgbot/upgrade/3/${this.installation.accountid}`
+        case 1750:
+          return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {
