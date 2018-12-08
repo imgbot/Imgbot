@@ -22,18 +22,15 @@ namespace CompressImagesFunction
         {
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            using (var cancellation = new System.Threading.CancellationTokenSource())
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            if (await Task.WhenAny(task, Task.Delay(570000)) == task)
             {
-                try
-                {
-                    cancellation.CancelAfter(570000);
-                    await RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
-                }
-                catch (OperationCanceledException)
-                {
-                    logger.LogInformation($"Time out exceeded!");
-                    longRunningCompressMessages.Add(compressImagesMessage);
-                }
+                await task;
+            }
+            else
+            {
+                logger.LogInformation($"Time out exceeded!");
+                longRunningCompressMessages.Add(compressImagesMessage);
             }
         }
 
