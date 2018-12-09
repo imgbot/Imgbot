@@ -17,7 +17,7 @@
     <None Update="local.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="shadow-imgbot.2018-10-13.private-key.pem">
+    <None Update="imgbot.2017-08-23.private-key.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
