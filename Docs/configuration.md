@@ -8,7 +8,7 @@ Here is an example .imgbotconfig setup that shows some of the options.
 
 ```
 {
-    "schedule": "daily" // daily|weekly|monthly
+    "schedule": "daily", // daily|weekly|monthly
     "ignoredFiles": [
         "*.jpg",                   // ignore by extension
         "image1.png",              // ignore by filename

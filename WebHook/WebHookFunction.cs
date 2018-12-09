@@ -43,29 +43,15 @@ namespace WebHook
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
             var hook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
-
             var result = "no action";
-
-            if (hook.repository?.@private == true)
-            {
-                var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{hook.repository.owner.login}' and (PlanId eq 1624 or PlanId eq 781)");
-                var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
-                if (rows.Count() == 0)
-                {
-                    logger.LogError("ProcessPush: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
-                    throw new Exception("Plan mismatch");
-                }
-            }
-
             switch (hookEvent)
             {
                 case "installation_repositories":
                 case "installation":
-                    result = await ProcessInstallationAsync(hook, routerMessages, installationTable, logger).ConfigureAwait(false);
+                    result = await ProcessInstallationAsync(hook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    result = await ProcessPushAsync(hook, routerMessages, openPrMessages, logger).ConfigureAwait(false);
+                    result = await ProcessPushAsync(hook, marketplaceTable, routerMessages, openPrMessages, logger).ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
                     result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
@@ -75,8 +61,18 @@ namespace WebHook
             return new OkObjectResult(new HookResponse { Result = result });
         }
 
-        private static async Task<string> ProcessPushAsync(Hook hook, CloudQueue routerMessages, CloudQueue openPrMessages, ILogger logger)
+        private static async Task<string> ProcessPushAsync(Hook hook, CloudTable marketplaceTable, CloudQueue routerMessages, CloudQueue openPrMessages, ILogger logger)
         {
+            if (hook.repository?.@private == true)
+            {
+                var isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.repository.owner.login);
+                if (!isPrivateEligible)
+                {
+                    logger.LogError("ProcessPush: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
+                    throw new Exception("Plan mismatch");
+                }
+            }
+
             if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}" && hook.sender.login == "imgbot[bot]")
             {
                 await openPrMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new OpenPrMessage
@@ -118,13 +114,25 @@ namespace WebHook
             return "truth";
         }
 
-        private static async Task<string> ProcessInstallationAsync(Hook hook, CloudQueue routerMessages, CloudTable installationTable, ILogger logger)
+        private static async Task<string> ProcessInstallationAsync(Hook hook, CloudTable marketplaceTable, CloudQueue routerMessages, CloudTable installationTable, ILogger logger)
         {
+            var isPrivateEligible = false;
+            if (hook.repositories?.Any(x => x.@private) == true || hook.repositories_added?.Any(x => x.@private) == true)
+            {
+                isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.installation.account.login);
+            }
+
             switch (hook.action)
             {
                 case "created":
                     foreach (var repo in hook.repositories)
                     {
+                        if (repo.@private && !isPrivateEligible)
+                        {
+                            logger.LogError("ProcessInstallationAsync/added: Plan mismatch for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
+                            continue;
+                        }
+
                         await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
                         {
                             InstallationId = hook.installation.id,
@@ -133,13 +141,19 @@ namespace WebHook
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         })));
 
-                        logger.LogInformation("ProcessInstallationAsync/created: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
+                        logger.LogInformation("ProcessInstallationAsync/created: Added RouterMessage for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
                     }
 
                     break;
                 case "added":
                     foreach (var repo in hook.repositories_added)
                     {
+                        if (repo.@private && !isPrivateEligible)
+                        {
+                            logger.LogError("ProcessInstallationAsync/added: Plan mismatch for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
+                            continue;
+                        }
+
                         await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
                         {
                             InstallationId = hook.installation.id,
@@ -148,7 +162,7 @@ namespace WebHook
                             CloneUrl = $"https://github.com/{repo.full_name}",
                         })));
 
-                        logger.LogInformation("ProcessInstallationAsync/added: Added RouterMessage for {Owner}/{RepoName}", repo.owner, repo.name);
+                        logger.LogInformation("ProcessInstallationAsync/added: Added RouterMessage for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
                     }
 
                     break;
@@ -193,6 +207,14 @@ namespace WebHook
                 default:
                     return hook.action;
             }
+        }
+
+        private static async Task<bool> IsPrivateEligible(CloudTable marketplaceTable, string ownerLogin)
+        {
+            var query = new TableQuery<Marketplace>().Where(
+                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 1750 or PlanId eq 781)");
+            var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
+            return rows.Count() != 0;
         }
     }
 }

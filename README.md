@@ -13,7 +13,7 @@ This file should be placed in the root of the repository and set to your liking.
 
 ```
 {
-    "schedule": "daily" // daily|weekly|monthly
+    "schedule": "daily", // daily|weekly|monthly
     "ignoredFiles": [
     	"*.jpg",                   // by extension
     	"image1.png",              // by filename
