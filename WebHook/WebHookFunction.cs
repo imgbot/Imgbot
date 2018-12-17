@@ -92,13 +92,14 @@ namespace WebHook
                 return "Commit to non default branch";
             }
 
-            var files = hook.commits.SelectMany(x => x.added)
-                .Concat(hook.commits.SelectMany(x => x.modified))
-                .Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.ToLower().EndsWith(extension, StringComparison.Ordinal)));
+            var relevantFiles = hook.commits.SelectMany(x => x.added)
+                .Concat(hook.commits.SelectMany(x => x.modified));
+            var imageFiles = relevantFiles.Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.ToLower().EndsWith(extension, StringComparison.Ordinal)));
+            var configFile = relevantFiles.Where(file => file.ToLower() == ".imgbotconfig");
 
-            if (files.Any() == false)
+            if (!imageFiles.Any() && !configFile.Any())
             {
-                return "No image files touched";
+                return "No relevant files touched";
             }
 
             await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
