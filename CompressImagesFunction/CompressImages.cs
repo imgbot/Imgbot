@@ -24,7 +24,7 @@ namespace CompressImagesFunction
             // clone
             var authCloneUrl = parameters.CloneUrl
                 .Replace("https://github.com", $"https://{KnownGitHubs.Username}:{parameters.Password}@github.com");
-            var cloneArgs = new []
+            var cloneArgs = new[]
             {
                 "clone",
                 "--depth 1",
@@ -138,7 +138,7 @@ namespace CompressImagesFunction
             repo.Reset(ResetMode.Hard, commitToKeep.Sha);
 
             // push to GitHub
-            var pushArgs = new []
+            var pushArgs = new[]
             {
                 "push",
                 remote.Name,
