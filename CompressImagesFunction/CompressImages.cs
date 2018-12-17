@@ -15,8 +15,16 @@ namespace CompressImagesFunction
 {
     public static class CompressImages
     {
+        private static string azGitPath = "D:\\Program Files\\Git\\bin\\git.exe";
+
         public static bool Run(CompressimagesParameters parameters, ILogger logger)
         {
+            var gitPath = azGitPath;
+            if (File.Exists(gitPath) == false)
+            {
+                gitPath = "git"; // rely on $PATH
+            }
+
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
                 new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
@@ -35,7 +43,7 @@ namespace CompressImagesFunction
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "git",
+                    FileName = gitPath,
                     Arguments = string.Join(" ", cloneArgs),
                 }
             };
@@ -149,7 +157,7 @@ namespace CompressImagesFunction
                 StartInfo = new ProcessStartInfo
                 {
                     WorkingDirectory = parameters.LocalPath,
-                    FileName = "git",
+                    FileName = gitPath,
                     Arguments = string.Join(" ", pushArgs),
                 }
             };
