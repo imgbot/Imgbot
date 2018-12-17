@@ -62,7 +62,7 @@ namespace Test
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
-            Assert.AreEqual("No image files touched", response.Result);
+            Assert.AreEqual("No relevant files touched", response.Result);
 
             // No messages sent to Router
             await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
@@ -142,6 +142,38 @@ namespace Test
             var result = await ExecuteHookAsync(
                 githubEvent: "push",
                 payload: "data/hooks/commit-defaultbranch-images.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var installationsTable,
+                out var marketplaceTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("truth", response.Result);
+
+            // 1 message sent to Router
+            await routerMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenCommitToDefaultBranchWithConfig_ShouldReturnOkQueueToRouter()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/commit-defaultbranch-config.json",
                 out var routerMessages,
                 out var openPrMessages,
                 out var installationsTable,
