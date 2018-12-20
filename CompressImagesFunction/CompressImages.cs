@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,40 +14,20 @@ namespace CompressImagesFunction
 {
     public static class CompressImages
     {
-        private static string azGitPath = "D:\\Program Files\\Git\\bin\\git.exe";
-
         public static bool Run(CompressimagesParameters parameters, ILogger logger)
         {
-            var gitPath = azGitPath;
-            if (File.Exists(gitPath) == false)
-            {
-                gitPath = "git"; // rely on $PATH
-            }
-
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
                 new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
 
             // clone
-            var authCloneUrl = parameters.CloneUrl
-                .Replace("https://github.com", $"https://{KnownGitHubs.Username}:{parameters.Password}@github.com");
-            var cloneArgs = new[]
+            var cloneOptions = new CloneOptions
             {
-                "clone",
-                "--depth 1",
-                authCloneUrl,
-                parameters.LocalPath
+                CredentialsProvider = credentialsProvider,
             };
-            var gitClone = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = gitPath,
-                    Arguments = string.Join(" ", cloneArgs),
-                }
-            };
-            gitClone.Start();
-            gitClone.WaitForExit();
+
+            Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
+
             var repo = new Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
 
@@ -95,9 +74,6 @@ namespace CompressImagesFunction
                 return false;
             }
 
-            // save a pointer to the tip
-            var tipSha = repo.Head.Tip.Sha;
-
             // check out the branch
             repo.CreateBranch(KnownGitHubs.BranchName);
             var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
@@ -109,16 +85,14 @@ namespace CompressImagesFunction
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
-            {
                 return false;
-            }
 
+            // create commit message based on optimizations
             foreach (var image in optimizedImages)
             {
                 Commands.Stage(repo, image.OriginalPath);
             }
 
-            // create commit message based on optimizations
             var commitMessage = CommitMessage.Create(optimizedImages);
 
             // commit
@@ -138,7 +112,7 @@ namespace CompressImagesFunction
 
             var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKeyStream, parameters.PgPPassword);
 
-            repo.Reset(ResetMode.Soft, tipSha);
+            repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
             var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);
 
             repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
@@ -146,23 +120,10 @@ namespace CompressImagesFunction
             repo.Reset(ResetMode.Hard, commitToKeep.Sha);
 
             // push to GitHub
-            var pushArgs = new[]
+            repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
             {
-                "push",
-                remote.Name,
-                KnownGitHubs.BranchName,
-            };
-            var gitpush = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    WorkingDirectory = parameters.LocalPath,
-                    FileName = gitPath,
-                    Arguments = string.Join(" ", pushArgs),
-                }
-            };
-            gitpush.Start();
-            gitpush.WaitForExit();
+                CredentialsProvider = credentialsProvider,
+            });
 
             return true;
         }
