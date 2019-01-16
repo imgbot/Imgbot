@@ -123,7 +123,7 @@ namespace CompressImagesFunction
             {
                 foreach (var image in optimizedImages)
                 {
-                    new MagickImage(image.OriginalPath);
+                    new MagickImage(image.OriginalPath).Dispose();
                 }
             }
             catch (MagickCorruptImageErrorException)
