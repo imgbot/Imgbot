@@ -15,10 +15,16 @@ namespace CompressImagesFunction
             var githubClient = new GitHubClient(
                 new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
-            var repo = await githubClient.Repository.Get(
-                parameters.RepoOwner, parameters.RepoName);
-
-            return repo.Archived;
+            try
+            {
+                var repo = await githubClient.Repository.Get(
+                    parameters.RepoOwner, parameters.RepoName);
+                return repo.Archived;
+            }
+            catch (NotFoundException)
+            {
+                return true; // not found can be treated the same as archived
+            }
         }
     }
 }
