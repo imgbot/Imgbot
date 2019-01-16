@@ -94,8 +94,6 @@ namespace CompressImagesFunction
             }
 
             var commitMessage = CommitMessage.Create(optimizedImages);
-
-            // commit
             var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
 
@@ -118,6 +116,21 @@ namespace CompressImagesFunction
             repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
             var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
             repo.Reset(ResetMode.Hard, commitToKeep.Sha);
+
+            // verify images are not corrupted by reading from git
+            // see https://github.com/dabutvin/ImgBot/issues/273
+            try
+            {
+                foreach (var image in optimizedImages)
+                {
+                    new MagickImage(image.OriginalPath);
+                }
+            }
+            catch (MagickCorruptImageErrorException)
+            {
+                logger.LogError("Corrupt images after reset!");
+                return false;
+            }
 
             // push to GitHub
             repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
