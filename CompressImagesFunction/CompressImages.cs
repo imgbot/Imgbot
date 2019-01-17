@@ -126,7 +126,7 @@ namespace CompressImagesFunction
                     new MagickImage(image.OriginalPath).Dispose();
                 }
             }
-            catch (MagickCorruptImageErrorException)
+            catch (MagickErrorException)
             {
                 logger.LogError("Corrupt images after reset!");
                 return false;
