@@ -75,10 +75,11 @@ namespace CompressImagesFunction
                 RepoName = compressImagesMessage.RepoName,
                 RepoOwner = compressImagesMessage.Owner,
                 PgpPrivateKeyStream = File.OpenRead(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPrivateKeyFilename}")),
-                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPasswordFilename}"))
+                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPasswordFilename}")),
+                CompressImagesMessage = compressImagesMessage,
             };
 
-            var didCompress = CompressImages.Run(compressImagesParameters, logger);
+            var didCompress = await CompressImages.RunAsync(compressImagesParameters, logger);
 
             if (didCompress)
             {

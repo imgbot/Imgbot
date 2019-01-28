@@ -4,17 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
+using Common.Messages;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
 {
     public static class CompressImages
     {
-        public static bool Run(CompressimagesParameters parameters, ILogger logger)
+        public static async Task<bool> RunAsync(CompressimagesParameters parameters, ILogger logger)
         {
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
@@ -26,7 +29,29 @@ namespace CompressImagesFunction
                 CredentialsProvider = credentialsProvider,
             };
 
-            Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
+            try
+            {
+                Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
+            }
+            catch (Exception)
+            {
+                // issue cloning, let's try to queue to the linux box to see if it can clone
+                // linux support is in preview github.com/Azure/Azure-Functions/wiki/Azure-Functions-on-Linux-Preview
+                var linuxConnectionString = Environment.GetEnvironmentVariable("linux-connectionstring");
+                if (string.IsNullOrEmpty(linuxConnectionString) == false && parameters.CompressImagesMessage != null)
+                {
+                    logger.LogInformation("bouncing to linux queue");
+                    var linuxQueue = CloudStorageAccount
+                        .Parse(linuxConnectionString)
+                        .CreateCloudQueueClient()
+                        .GetQueueReference("compressimagesmessage");
+                    await linuxQueue.CreateIfNotExistsAsync();
+                    await linuxQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(parameters.CompressImagesMessage)));
+                    return false;
+                }
+
+                throw;
+            }
 
             var repo = new Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
