@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Common.Messages;
 
 namespace CompressImagesFunction
 {
@@ -17,5 +18,7 @@ namespace CompressImagesFunction
         public Stream PgpPrivateKeyStream { get; set; }
 
         public string PgPPassword { get; set; }
-    }
+
+        public CompressImagesMessage CompressImagesMessage { get; set; }
+  }
 }
