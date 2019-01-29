@@ -3,10 +3,9 @@ Some users may want to keep some images from being optimized. There can be a var
 If this is something you need in your project, ImgBot offers an ignore option.
 
  - This configuration is optional and is only required if there are specific images or folders of images you do not want touched
- - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
+ - Accepts regex patterns and simple globbing
  - Limits the images optimized by ImgBot by essentially ignoring them
  - When ignoring by filename no path is necessary
- - When ignoring by folder name full path from root is necessary
 
 `.imgbotconfig`
 
@@ -35,3 +34,18 @@ Ignoring individual image files
 ]
 ```
 
+Ignoring nested folders
+
+```
+"ignoredFiles": [
+    "**/test_images/**"
+]
+```
+
+Ignoring paths that start with a pattern
+
+```
+"ignoredFiles": [
+    "path/to/prefix*"
+]
+```
