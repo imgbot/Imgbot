@@ -14,29 +14,38 @@ namespace Test
             var images = ImageQuery.FindImages("data", new RepoConfiguration());
 
             Assert.AreEqual(7, images.Length, $"Images found {string.Join("; ", images)}.");
-
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
         [TestMethod]
         public void GivenDefaultConfiguration_ShouldFindImagesWithUppercaseExtensions()
         {
-            string searchPath = "cased-data";
-            string fileNameJpg = "uppercase-jpg.JPG";
-            string fileNamePng = "uppercase-png.PNG";
-            var images = ImageQuery.FindImages(searchPath, new RepoConfiguration());
+            var images = ImageQuery.FindImages("cased-data", new RepoConfiguration());
 
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains(fileNameJpg)));
-            Assert.IsTrue(images.Any(s => s.Contains(fileNamePng)));
+            Assert.IsTrue(images.Any(s => s == "cased-data/uppercase-jpg.JPG"));
+            Assert.IsTrue(images.Any(s => s == "cased-data/uppercase-png.PNG"));
+        }
+
+        [TestMethod]
+        public void GivenWronglyCasedIgnore_ShouldIgnoreImages()
+        {
+            var images = ImageQuery.FindImages("cased-data", new RepoConfiguration
+            {
+                IgnoredFiles = new[]
+                {
+                    "uppercase-jpg.jpg"
+                }
+            });
+
+            Assert.AreEqual(1, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.IsTrue(images.Any(s => s == "cased-data/uppercase-png.PNG"));
         }
 
         [TestMethod]
@@ -46,17 +55,17 @@ namespace Test
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/item2.png"
+                    "data/folder/item2.png"
                 }
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
         [TestMethod]
@@ -66,14 +75,14 @@ namespace Test
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/"
+                    "data/folder/"
                 }
             });
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
         }
 
         [TestMethod]
@@ -83,14 +92,62 @@ namespace Test
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/*"
+                    "data/folder/*"
                 }
             });
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+        }
+
+        [TestMethod]
+        public void GivenFolderWildcardWithNoSlash_ShouldIgnoreImages()
+        {
+            var images = ImageQuery.FindImages("data", new RepoConfiguration
+            {
+                IgnoredFiles = new[]
+                {
+                    "data/folder*"
+                }
+            });
+
+            Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+        }
+
+        [TestMethod]
+        public void GivenNestedSameFolder_ShouldFindAllImages()
+        {
+            var images = ImageQuery.FindImages("data_samenested", new RepoConfiguration());
+
+            Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder1/f1_a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder1/test_images/f1_test_a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder2/f2_b.png"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder2/test_images/f2_test_b.png"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder3/f3_c.png"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder3/test_images/f3_test_c.png"));
+        }
+
+        [TestMethod]
+        public void GivenNestedIgnoreFolder_ShouldIgnoreImages()
+        {
+            var images = ImageQuery.FindImages("data_samenested", new RepoConfiguration
+            {
+                IgnoredFiles = new[]
+                {
+                    "**/test_images/**"
+                }
+            });
+
+            Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder1/f1_a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder2/f2_b.png"));
+            Assert.IsTrue(images.Any(s => s == "data_samenested/folder3/f3_c.png"));
         }
 
         [TestMethod]
@@ -105,8 +162,8 @@ namespace Test
             });
 
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
         }
 
         [TestMethod]
@@ -124,23 +181,37 @@ namespace Test
         }
 
         [TestMethod]
+        public void GivenRegexAll_ShouldIgnoreAllImages()
+        {
+            var images = ImageQuery.FindImages("data", new RepoConfiguration
+            {
+                IgnoredFiles = new[]
+                {
+                    ".*"
+                }
+            });
+
+            Assert.AreEqual(0, images.Length, $"Images found {string.Join("; ", images)}.");
+        }
+
+        [TestMethod]
         public void GivenDifferentSlashPath_ShouldIgnoreImages()
         {
             var images = ImageQuery.FindImages("data", new RepoConfiguration
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/item2.png",
-                    "folder\\item3.jpg"
+                    "data/folder/item2.png",
+                    "data\\folder\\item3.jpg"
                 }
             });
 
             Assert.AreEqual(5, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("deepimage.png")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
         [TestMethod]
@@ -155,12 +226,12 @@ namespace Test
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
         }
 
         [TestMethod]
@@ -170,17 +241,17 @@ namespace Test
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/deep/nested/*",
+                    "data/folder/deep/nested/*",
                 }
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
         }
 
         [TestMethod]
@@ -190,17 +261,17 @@ namespace Test
             {
                 IgnoredFiles = new[]
                 {
-                    "folder/deep/*",
+                    "data/folder/deep/*",
                 }
             });
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
-            Assert.IsTrue(images.Any(s => s.Contains("a.jpg")));
-            Assert.IsTrue(images.Any(s => s.Contains("b.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("c.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item1.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item2.png")));
-            Assert.IsTrue(images.Any(s => s.Contains("item3.jpg")));
+            Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/b.png"));
+            Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
         }
     }
 }

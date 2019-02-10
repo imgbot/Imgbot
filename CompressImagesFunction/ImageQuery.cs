@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Common;
 
 namespace CompressImagesFunction
@@ -11,31 +12,30 @@ namespace CompressImagesFunction
         public static string[] FindImages(string localPath, RepoConfiguration repoConfiguration)
         {
             var images = Directory.EnumerateFiles(localPath, "*.*", SearchOption.AllDirectories)
-                .Where(x => KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(x).ToLower()));
+                .Where(x => KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(x).ToLower()))
+                .Select(x => x.Replace("\\", "/"));
 
             if (repoConfiguration.IgnoredFiles != null)
             {
-                // find all the ignored files and exclude them from the found images
-                var ignoredFiles = repoConfiguration.IgnoredFiles
-                    .Select(x => x.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar))
-                    .AsParallel()
-                    .SelectMany(pattern =>
-                    {
-                        try
-                        {
-                            return Directory.EnumerateFiles(localPath, pattern, SearchOption.AllDirectories);
-                        }
-                        catch
-                        {
-                            // ignore issues enumerating files
-                            return Enumerable.Empty<string>();
-                        }
-                    });
-
-                images = images.Except(ignoredFiles);
+                foreach (var ignorePattern in repoConfiguration.IgnoredFiles)
+                {
+                    var pattern = new Regex(NormalizePattern(ignorePattern), RegexOptions.IgnoreCase);
+                    images = images.Where(x => !pattern.IsMatch(x));
+                }
             }
 
             return images.ToArray();
         }
-    }
+
+        // this is to provide backwards compatibility with the previous globbing
+        // that was using only the Directory.EnumerateFiles searchPattern
+        private static string NormalizePattern(string ignorePattern)
+        {
+            ignorePattern = ignorePattern.Replace("\\", "/");
+            ignorePattern = ignorePattern.Replace("**", ".*");
+            if (ignorePattern.StartsWith("*"))
+                return "." + ignorePattern;
+            return ignorePattern;
+        }
+  }
 }
