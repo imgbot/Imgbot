@@ -20,6 +20,7 @@ namespace WebHook.Model
         public Repository repository { get; set; }
 
         public List<Commit> commits { get; set; }
+        public Commit head_commit { get; set; }
 
         [JsonProperty("ref")]
         public string @ref { get; set; }
@@ -35,6 +36,9 @@ namespace WebHook.Model
             public List<string> added { get; set; }
             public List<string> removed { get; set; }
             public List<string> modified { get; set; }
+
+            public Committer committer { get; set; }
+            public Committer author { get; set; }
         }
 
         public class Account
@@ -56,6 +60,13 @@ namespace WebHook.Model
             public string received_events_url { get; set; }
             public string type { get; set; }
             public bool site_admin { get; set; }
+        }
+
+        public class Committer
+        {
+            public string name { get; set; }
+            public string email { get; set; }
+            public string username { get; set; }
         }
 
         public class Permissions

@@ -121,7 +121,20 @@
           "reveal": "always"
         },
         "problemMatcher": "$func-watch"
+      },
+      {
+        "label": "Run DeleteBranchFunction",
+        "type": "shell",
+        "dependsOn": "build",
+        "options": {
+          "cwd": "${workspaceFolder}/DeleteBranchFunction/bin/Debug/netstandard2.0"
+        },
+        "command": "func host start",
+        "isBackground": true,
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": "$func-watch"
       }
     ]
   }
-  

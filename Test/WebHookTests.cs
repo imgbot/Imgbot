@@ -29,6 +29,7 @@ namespace Test
                 payload: "data/hooks/commit-otherbranch.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -41,6 +42,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -57,6 +61,7 @@ namespace Test
                 payload: "data/hooks/commit-defaultbranch-noimages.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -69,6 +74,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -85,6 +93,7 @@ namespace Test
                 payload: "data/hooks/commit-imgbotbranch-byimgbot.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -101,6 +110,9 @@ namespace Test
                        JsonConvert.DeserializeObject<OpenPrMessage>(x.AsString).RepoName == "test" &&
                        JsonConvert.DeserializeObject<OpenPrMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
 
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
 
@@ -116,6 +128,7 @@ namespace Test
                 payload: "data/hooks/commit-imgbotbranch-byothers.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -128,6 +141,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -144,6 +160,7 @@ namespace Test
                 payload: "data/hooks/commit-defaultbranch-images.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -160,6 +177,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -176,6 +196,7 @@ namespace Test
                 payload: "data/hooks/commit-defaultbranch-config.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -192,6 +213,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -208,6 +232,7 @@ namespace Test
                 payload: "cased-data/hooks/commit-defaultbranch-images-uppercase-extensions.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -225,6 +250,9 @@ namespace Test
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
 
@@ -240,6 +268,7 @@ namespace Test
                 payload: "data/hooks/installation_repositories_added.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -257,6 +286,9 @@ namespace Test
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
 
@@ -272,6 +304,7 @@ namespace Test
                 payload: "data/hooks/installation_repositories_created.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -288,6 +321,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -321,6 +357,7 @@ namespace Test
                 payload: "data/hooks/installation_repositories_removed.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
                 ExtraSetup);
@@ -334,6 +371,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // 1 call to InstallationTable
             await installationsTable.Received(1).ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Delete));
@@ -370,6 +410,7 @@ namespace Test
                 payload: "data/hooks/installation_deleted.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
                 ExtraSetup);
@@ -383,6 +424,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // 2 call to InstallationTable to delete
             await installationsTable.Received(2).ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Delete));
@@ -399,6 +443,7 @@ namespace Test
                 payload: "data/hooks/marketplacepurchase.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable);
 
@@ -411,6 +456,9 @@ namespace Test
 
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
@@ -445,6 +493,7 @@ namespace Test
                 payload: "data/hooks/marketplacecancellation.json",
                 out var routerMessages,
                 out var openPrMessages,
+                out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
                 ExtraSetup);
@@ -459,6 +508,9 @@ namespace Test
             // No messages sent to OpenPr
             await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
 
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
             // No calls to InstallationTable
             await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
 
@@ -467,11 +519,120 @@ namespace Test
                 Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Delete));
         }
 
+        [TestMethod]
+        public async Task GivenMergedImgBotToDefaultBranch_ShouldReturnOkQueueToDeleteBranch()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/merged-imgbot-todefault.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("deleteit", response.Result);
+
+            // No messages sent to Router
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // 1 message set to DeleteBranch
+            await deleteBranchMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenSquashMergedImgBotToDefaultBranch_ShouldReturnOkQueueToDeleteBranch()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/merged-squash-imgbot-todefault.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("deleteit", response.Result);
+
+            // No messages sent to Router
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // 1 message set to DeleteBranch
+            await deleteBranchMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenRebaseMergedImgBotToDefaultBranch_ShouldReturnOkQueueToDeleteBranch()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/merged-rebase-imgbot-todefault.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("deleteit", response.Result);
+
+            // No messages sent to Router
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // 1 message set to DeleteBranch
+            await deleteBranchMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
         private Task<IActionResult> ExecuteHookAsync(
             string githubEvent,
             string payload,
             out CloudQueue routerMessages,
             out CloudQueue openPrMessages,
+            out CloudQueue deleteBranchMessages,
             out CloudTable installationsTable,
             out CloudTable marketplaceTable,
             Action<CloudQueue, CloudQueue, CloudTable, CloudTable> extraSetup = null)
@@ -479,6 +640,7 @@ namespace Test
             var request = Substitute.For<HttpRequestMessage>();
             routerMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/routermessage"));
             openPrMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/openprmessage"));
+            deleteBranchMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/deletebranchmessage"));
             installationsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/installation"));
             marketplaceTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/marketplace"));
             var logger = Substitute.For<ILogger>();
@@ -489,7 +651,7 @@ namespace Test
             extraSetup?.Invoke(routerMessages, openPrMessages, installationsTable, marketplaceTable);
 
             return WebHook.WebHookFunction.Run(
-                request, routerMessages, openPrMessages, installationsTable, marketplaceTable, logger);
+                request, routerMessages, openPrMessages, deleteBranchMessages, installationsTable, marketplaceTable, logger);
         }
     }
 }

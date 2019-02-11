@@ -27,16 +27,18 @@ namespace WebHook
             var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
             var routerQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("routermessage");
             var openPrQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage");
+            var deleteBranchMessages = storageAccount.CreateCloudQueueClient().GetQueueReference("deletebranchmessage");
             var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
             var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
 
-            return Run(req, routerQueue, openPrQueue, installationTable, marketplaceTable, logger);
+            return Run(req, routerQueue, openPrQueue, deleteBranchMessages, installationTable, marketplaceTable, logger);
         }
 
         public static async Task<IActionResult> Run(
             HttpRequestMessage req,
             CloudQueue routerMessages,
             CloudQueue openPrMessages,
+            CloudQueue deleteBranchMessages,
             CloudTable installationTable,
             CloudTable marketplaceTable,
             ILogger logger)
@@ -51,7 +53,7 @@ namespace WebHook
                     result = await ProcessInstallationAsync(hook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    result = await ProcessPushAsync(hook, marketplaceTable, routerMessages, openPrMessages, logger).ConfigureAwait(false);
+                    result = await ProcessPushAsync(hook, marketplaceTable, routerMessages, openPrMessages, deleteBranchMessages, logger).ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
                     result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
@@ -61,8 +63,15 @@ namespace WebHook
             return new OkObjectResult(new HookResponse { Result = result });
         }
 
-        private static async Task<string> ProcessPushAsync(Hook hook, CloudTable marketplaceTable, CloudQueue routerMessages, CloudQueue openPrMessages, ILogger logger)
+        private static async Task<string> ProcessPushAsync(
+            Hook hook,
+            CloudTable marketplaceTable,
+            CloudQueue routerMessages,
+            CloudQueue openPrMessages,
+            CloudQueue deleteBranchMessages,
+            ILogger logger)
         {
+            // private check
             if (hook.repository?.@private == true)
             {
                 var isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.repository.owner.login);
@@ -73,6 +82,7 @@ namespace WebHook
                 }
             }
 
+            // push to imgbot branch by imgbot
             if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}" && hook.sender.login == "imgbot[bot]")
             {
                 await openPrMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new OpenPrMessage
@@ -87,11 +97,27 @@ namespace WebHook
                 return "imgbot push";
             }
 
+            // push to non-default branch
             if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
             {
                 return "Commit to non default branch";
             }
 
+            // merge commit to default branch from imgbot branch
+            if (IsDefaultWebMerge(hook))
+            {
+                await deleteBranchMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new DeleteBranchMessage
+                {
+                    InstallationId = hook.installation.id,
+                    RepoName = hook.repository.name,
+                    Owner = hook.repository.owner.login,
+                    CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                })));
+
+                return "deleteit";
+            }
+
+            // regular commit to default branch
             var relevantFiles = hook.commits.SelectMany(x => x.added)
                 .Concat(hook.commits.SelectMany(x => x.modified));
             var imageFiles = relevantFiles.Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.ToLower().EndsWith(extension, StringComparison.Ordinal)));
@@ -216,6 +242,35 @@ namespace WebHook
                     $"AccountLogin eq '{ownerLogin}' and (PlanId eq 1750 or PlanId eq 781)");
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
             return rows.Count() != 0;
+        }
+
+        // We are using commit hooks here, so let's deduce whether this is an eligble scenario for auto-deleting a branch
+        // 1. should be merged using the web gui on github.com
+        // 2. should be merging into the default branch from the imgbot branch
+        // 3. should only contain the merge commit and the imgbot commit to be eligible
+        private static bool IsDefaultWebMerge(Hook hook)
+        {
+            if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
+                return false;
+
+            if (hook.commits?.Count == 1)
+            {
+                // squash?
+                if (hook.commits?[0]?.author?.username != "imgbot[bot]" && hook.commits?[0]?.author?.username != "ImgBotApp")
+                    return false;
+            }
+            else
+            {
+                // regular merge?
+                if (hook.head_commit?.committer?.username != "web-flow")
+                    return false;
+                if (hook.commits?.Count > 2)
+                    return false;
+                if (hook.commits?.All(x => x.committer.username != "ImgBotApp") == true)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

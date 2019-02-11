@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPrFunction", "OpenPrFunction\OpenPrFunction.csproj", "{5A6476B2-18FC-4A93-8DA9-E4A667662EC5}"
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{9A4BAC64-E0FB-4EA4-B1E3-38143E847127}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceSyncFunction", "MarketplaceSyncFunction\MarketplaceSyncFunction.csproj", "{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeleteBranchFunction", "DeleteBranchFunction\DeleteBranchFunction.csproj", "{B2E354C4-067D-40E9-A957-92FFFEB2E856}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,5 +69,9 @@ Global
 		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31FB826F-41D7-4D06-B0DB-99F5DF3519DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E354C4-067D-40E9-A957-92FFFEB2E856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E354C4-067D-40E9-A957-92FFFEB2E856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E354C4-067D-40E9-A957-92FFFEB2E856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E354C4-067D-40E9-A957-92FFFEB2E856}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
