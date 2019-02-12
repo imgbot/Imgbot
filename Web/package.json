@@ -15,7 +15,7 @@
     "axios": "^0.18.0",
     "babel-loader": "^8.0.5",
     "babel-preset-es2015": "^6.24.1",
-    "bootstrap": "^4.2.1",
+    "bootstrap": "^4.3.0",
     "css-loader": "^1.0.1",
     "eslint": "^5.13.0",
     "grunt": "^1.0.3",
