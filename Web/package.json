@@ -32,7 +32,7 @@
     "marked": "^0.6.0",
     "moment": "^2.24.0",
     "vue": "^2.5.17",
-    "vue-hot-reload-api": "^2.3.1",
+    "vue-hot-reload-api": "^2.3.2",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.6.2",
     "vue-octicon": "^2.1.1",
