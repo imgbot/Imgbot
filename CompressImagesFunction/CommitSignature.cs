@@ -8,8 +8,9 @@ namespace CompressImagesFunction
 {
     public class CommitSignature
     {
-        public static string Sign(string commitMessage, Stream privateKeyStream, string password)
+        public static string Sign(string commitMessage, string privateKey, string password)
         {
+            var privateKeyStream = new MemoryStream(Encoding.ASCII.GetBytes(privateKey));
             var outputStream = new MemoryStream();
             var signedMessage = DoSigning(commitMessage, privateKeyStream, outputStream, password.ToCharArray());
 

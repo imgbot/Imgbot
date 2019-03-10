@@ -15,7 +15,7 @@ namespace CompressImagesFunction
 
         public string Password { get; set; }
 
-        public Stream PgpPrivateKeyStream { get; set; }
+        public string PgpPrivateKey { get; set; }
 
         public string PgPPassword { get; set; }
 

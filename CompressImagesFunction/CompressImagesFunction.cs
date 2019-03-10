@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
@@ -51,7 +52,7 @@ namespace CompressImagesFunction
 
             var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+                Environment.GetEnvironmentVariable("APP_PRIVATE_KEY"));
 
             // check if repo is archived before starting work
             var isArchived = await repoChecks.IsArchived(new GitHubClientParameters
@@ -74,8 +75,8 @@ namespace CompressImagesFunction
                 Password = installationToken.Token,
                 RepoName = compressImagesMessage.RepoName,
                 RepoOwner = compressImagesMessage.Owner,
-                PgpPrivateKeyStream = File.OpenRead(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPrivateKeyFilename}")),
-                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPasswordFilename}")),
+                PgpPrivateKey = Environment.GetEnvironmentVariable("PGP_PRIVATE_KEY"),
+                PgPPassword = Environment.GetEnvironmentVariable("PGP_PASSWORD"),
                 CompressImagesMessage = compressImagesMessage,
             };
 
