@@ -31,7 +31,7 @@ namespace PrPoisonHandler
             ILogger logger,
             ExecutionContext context)
         {
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
             var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
             var openPrQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage");
             var openPrPoisonQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage-poison");
@@ -84,7 +84,7 @@ namespace PrPoisonHandler
 
                     var installationToken = await installationTokenProvider.GenerateAsync(
                         installationTokenParameters,
-                        File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+                        KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
                     var appClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("MyApp"))
                     {

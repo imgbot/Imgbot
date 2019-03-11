@@ -48,7 +48,7 @@ namespace Auth
             try
             {
                 var secrets = Secrets.Get(executionContext);
-                var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+                var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
                 var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
 
                 var stateCookie = req.ReadCookie("state");

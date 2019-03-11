@@ -26,7 +26,7 @@ namespace MarketplaceSyncFunction
             ExecutionContext context)
         {
             var installationTokenProvider = new InstallationTokenProvider();
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
             var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
             await RunAsync(marketplaceTable, installationTokenProvider, logger, context);
         }
@@ -43,7 +43,7 @@ namespace MarketplaceSyncFunction
                 {
                     AppId = KnownGitHubs.AppId,
                 },
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+                KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             foreach (var planId in new[] { 1749, 1750 })
             {

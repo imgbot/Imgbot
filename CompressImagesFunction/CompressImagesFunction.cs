@@ -52,7 +52,7 @@ namespace CompressImagesFunction
 
             var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
-                Environment.GetEnvironmentVariable("APP_PRIVATE_KEY"));
+                KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             // check if repo is archived before starting work
             var isArchived = await repoChecks.IsArchived(new GitHubClientParameters
@@ -71,12 +71,12 @@ namespace CompressImagesFunction
             var compressImagesParameters = new CompressimagesParameters
             {
                 CloneUrl = compressImagesMessage.CloneUrl,
-                LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP") ?? "/private/tmp/", compressImagesMessage.RepoName),
+                LocalPath = LocalPath.CloneDir(KnownEnvironmentVariables.TMP ?? "/private/tmp/", compressImagesMessage.RepoName),
                 Password = installationToken.Token,
                 RepoName = compressImagesMessage.RepoName,
                 RepoOwner = compressImagesMessage.Owner,
-                PgpPrivateKey = Environment.GetEnvironmentVariable("PGP_PRIVATE_KEY"),
-                PgPPassword = Environment.GetEnvironmentVariable("PGP_PASSWORD"),
+                PgpPrivateKey = KnownEnvironmentVariables.PGP_PRIVATE_KEY,
+                PgPPassword = KnownEnvironmentVariables.PGP_PASSWORD,
                 CompressImagesMessage = compressImagesMessage,
             };
 
