@@ -21,6 +21,7 @@ namespace CompressImagesFunction
             ILogger logger,
             ExecutionContext context)
         {
+            logger.LogInformation($"Starting compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
             var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
@@ -33,6 +34,21 @@ namespace CompressImagesFunction
                 logger.LogInformation($"Time out exceeded!");
                 longRunningCompressMessages.Add(compressImagesMessage);
             }
+        }
+
+        [Singleton("{RepoName}")]
+        [FunctionName("LongCompressImagesFunction")]
+        public static async Task LongTrigger(
+            [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
+            [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            ILogger logger,
+            ExecutionContext context)
+        {
+            logger.LogInformation($"Starting long compress");
+            var installationTokenProvider = new InstallationTokenProvider();
+            var repoChecks = new RepoChecks();
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            await task;
         }
 
         public static async Task RunAsync(
