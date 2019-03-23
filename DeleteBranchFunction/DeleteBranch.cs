@@ -44,7 +44,7 @@ namespace DeleteBranchFunction
                     AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, installation.InstallationId),
                     AppId = KnownGitHubs.AppId,
                 },
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+                KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             logger.LogInformation("DeleteBranchFunction: Deleting imgbot branch for {Owner}/{RepoName}", installation.Owner, installation.RepoName);
 

@@ -114,7 +114,7 @@ namespace Test
 
             var installationTokenProvider = Substitute.For<IInstallationTokenProvider>();
             installationTokenProvider
-                 .GenerateAsync(Arg.Any<InstallationTokenParameters>(), Arg.Any<StreamReader>())
+                 .GenerateAsync(Arg.Any<InstallationTokenParameters>(), Arg.Any<string>())
                  .Returns(Task.FromResult(new InstallationToken
                  {
                      Token = "token",

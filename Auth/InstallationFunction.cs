@@ -163,13 +163,13 @@ namespace Auth
 
         private static CloudTable GetTable(string tableName)
         {
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
             return storageAccount.CreateCloudTableClient().GetTableReference(tableName);
         }
 
         private static CloudQueue GetQueue(string queueName)
         {
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
             return storageAccount.CreateCloudQueueClient().GetQueueReference(queueName);
         }
 

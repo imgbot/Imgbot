@@ -133,7 +133,7 @@ namespace CompressImagesFunction
                 true,
                 null);
 
-            var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKeyStream, parameters.PgPPassword);
+            var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKey, parameters.PgPPassword);
 
             repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
             var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);

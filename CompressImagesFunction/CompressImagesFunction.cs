@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
@@ -20,6 +21,7 @@ namespace CompressImagesFunction
             ILogger logger,
             ExecutionContext context)
         {
+            logger.LogInformation($"Starting compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
             var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
@@ -32,6 +34,21 @@ namespace CompressImagesFunction
                 logger.LogInformation($"Time out exceeded!");
                 longRunningCompressMessages.Add(compressImagesMessage);
             }
+        }
+
+        [Singleton("{RepoName}")]
+        [FunctionName("LongCompressImagesFunction")]
+        public static async Task LongTrigger(
+            [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
+            [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            ILogger logger,
+            ExecutionContext context)
+        {
+            logger.LogInformation($"Starting long compress");
+            var installationTokenProvider = new InstallationTokenProvider();
+            var repoChecks = new RepoChecks();
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            await task;
         }
 
         public static async Task RunAsync(
@@ -51,7 +68,7 @@ namespace CompressImagesFunction
 
             var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
-                File.OpenText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.AppPrivateKey}")));
+                KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             // check if repo is archived before starting work
             var isArchived = await repoChecks.IsArchived(new GitHubClientParameters
@@ -70,12 +87,12 @@ namespace CompressImagesFunction
             var compressImagesParameters = new CompressimagesParameters
             {
                 CloneUrl = compressImagesMessage.CloneUrl,
-                LocalPath = LocalPath.CloneDir(Environment.GetEnvironmentVariable("TMP") ?? "/private/tmp/", compressImagesMessage.RepoName),
+                LocalPath = LocalPath.CloneDir(KnownEnvironmentVariables.TMP ?? "/private/tmp/", compressImagesMessage.RepoName),
                 Password = installationToken.Token,
                 RepoName = compressImagesMessage.RepoName,
                 RepoOwner = compressImagesMessage.Owner,
-                PgpPrivateKeyStream = File.OpenRead(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPrivateKeyFilename}")),
-                PgPPassword = File.ReadAllText(Path.Combine(context.FunctionDirectory, $"../{KnownGitHubs.PGPPasswordFilename}")),
+                PgpPrivateKey = KnownEnvironmentVariables.PGP_PRIVATE_KEY,
+                PgPPassword = KnownEnvironmentVariables.PGP_PASSWORD,
                 CompressImagesMessage = compressImagesMessage,
             };
 

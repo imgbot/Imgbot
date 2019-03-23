@@ -13,7 +13,7 @@ You can either get the tools [integrated with Visual Studio](https://blogs.msdn.
 or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run ImgBot.Function`.
 If you are using Visual Studio for Mac there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
 
-We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code in order to compile and get intellisense. 
+We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code in order to compile and get intellisense.
 Each function has a task you can execute that will clean + build + run the process. To start one open the prompt with `cmd/ctrl + shift + p` and select `Run task`. From there you will see all the tasks checked into `.vscode/tasks.json`. Choose a function to run such as `Run CompressImagesFunction` and it will build and start up. To attach to this process choose the `Debug a function` configuration from the debug tab to see the running processes. Type `func` into the picker to see your running function and select it. It's a two-step process, the debugger and the function process. When you kill the debugger, the process will still be running. You can kill the function host by bringing up the prompt again with `cmd/ctrl + shift + p` and select `Kill the active terminal instance`.
 
 Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage` filled out and `FUNCTIONS_WORKER_RUNTIME` set to `dotnet`.
@@ -23,6 +23,15 @@ You can see the schema of this file in [the doc](https://docs.microsoft.com/en-u
 Alternatively, running `func init` from the function directory will stamp out everything for you, or if you have a deployed function you can fetch the storage it is using.
 
 `func azure functionapp fetch-app-settings <functionName>`
+
+If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [dockerhub](https://hub.docker.com/r/dabutvin/imgbot-compressimages).
+
+There are a few additional environment settings that need to be set to run the compression workflow. These can be set with `local.settings.json` or any other way
+
+ - APP_PRIVATE_KEY - the secret certificate provided by GitHub during app registration
+ - PGP_PRIVATE_KEY - the secret key used for signing commits
+ - PGP_PASSWORD - the secret password used for signing commits
+ - TMP - the location to do the cloning
 
 Now that you are running the service locally, within the root of the repo you will see the following directories:
 

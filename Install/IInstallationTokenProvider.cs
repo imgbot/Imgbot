@@ -5,8 +5,8 @@ namespace Install
 {
     public interface IInstallationTokenProvider
     {
-        string GenerateJWT(InstallationTokenParameters input, StreamReader privateKeyReader);
+        string GenerateJWT(InstallationTokenParameters input, string privateKey);
 
-        Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader);
+        Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, string privateKey);
     }
 }

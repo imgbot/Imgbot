@@ -14,7 +14,7 @@ namespace Install
 {
     public class InstallationTokenProvider : IInstallationTokenProvider
     {
-        public string GenerateJWT(InstallationTokenParameters input, StreamReader privateKeyReader)
+        public string GenerateJWT(InstallationTokenParameters input, string privateKey)
         {
             var jwtPayload = new
             {
@@ -38,9 +38,14 @@ namespace Install
 
             ISigner signer = SignerUtilities.GetSigner("SHA-256withRSA");
             AsymmetricCipherKeyPair keyPair;
-            using (privateKeyReader)
+
+            var privateKeyBuilder = new StringBuilder();
+            privateKeyBuilder.AppendLine("-----BEGIN RSA PRIVATE KEY-----");
+            privateKeyBuilder.AppendLine(privateKey);
+            privateKeyBuilder.AppendLine("-----END RSA PRIVATE KEY-----");
+            using (TextReader textReader = new StringReader(privateKeyBuilder.ToString()))
             {
-                keyPair = (AsymmetricCipherKeyPair)new PemReader(privateKeyReader).ReadObject();
+                keyPair = (AsymmetricCipherKeyPair)new PemReader(textReader).ReadObject();
             }
 
             signer.Init(true, keyPair.Private);
@@ -51,9 +56,9 @@ namespace Install
             return string.Join(".", segments);
         }
 
-        public async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, StreamReader privateKeyReader)
+        public async Task<InstallationToken> GenerateAsync(InstallationTokenParameters input, string privateKey)
         {
-            var jwttoken = GenerateJWT(input, privateKeyReader);
+            var jwttoken = GenerateJWT(input, privateKey);
             using (var http = new HttpClient())
             {
                 http.DefaultRequestHeaders.Add("Accept", "application/vnd.github.machine-man-preview+json");

@@ -24,7 +24,7 @@ namespace WebHook
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "hook")]HttpRequestMessage req,
         ILogger logger)
         {
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
             var routerQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("routermessage");
             var openPrQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("openprmessage");
             var deleteBranchMessages = storageAccount.CreateCloudQueueClient().GetQueueReference("deletebranchmessage");

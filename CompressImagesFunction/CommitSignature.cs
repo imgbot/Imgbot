@@ -8,13 +8,16 @@ namespace CompressImagesFunction
 {
     public class CommitSignature
     {
-        public static string Sign(string commitMessage, Stream privateKeyStream, string password)
+        public static string Sign(string commitMessage, string privateKey, string password)
         {
-            var outputStream = new MemoryStream();
-            var signedMessage = DoSigning(commitMessage, privateKeyStream, outputStream, password.ToCharArray());
+            using (var privateKeyStream = new MemoryStream(Encoding.ASCII.GetBytes(privateKey)))
+            using (var outputStream = new MemoryStream())
+            {
+                var signedMessage = DoSigning(commitMessage, privateKeyStream, outputStream, password.ToCharArray());
 
-            // cutoff the actual message, we just want the signature
-            return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE", StringComparison.Ordinal));
+                // cutoff the actual message, we just want the signature
+                return signedMessage.Substring(signedMessage.IndexOf("-----BEGIN PGP SIGNATURE", StringComparison.Ordinal));
+            }
         }
 
         private static string DoSigning(string input, Stream keyIn, Stream outputStream, char[] pass)
@@ -33,42 +36,40 @@ namespace CompressImagesFunction
                 signatureGenerator.SetHashedSubpackets(subpacketGenerator.Generate());
             }
 
-            Stream inputStream = new MemoryStream(Encoding.ASCII.GetBytes(input));
-            var armoredOut = new ArmoredOutputStream(outputStream);
-
-            armoredOut.BeginClearText(digest);
-
-            // note the last \n/\r/\r\n in the file is ignored
-            var lineOut = new MemoryStream();
-            int lookAhead = ReadInputLine(lineOut, inputStream);
-
-            ProcessLine(armoredOut, signatureGenerator, lineOut.ToArray());
-
-            if (lookAhead != -1)
+            using (var inputStream = new MemoryStream(Encoding.ASCII.GetBytes(input)))
+            using (var armoredOut = new ArmoredOutputStream(outputStream))
             {
-                do
+                armoredOut.BeginClearText(digest);
+
+                // note the last \n/\r/\r\n in the file is ignored
+                using (var lineOut = new MemoryStream())
                 {
-                    lookAhead = ReadInputLine(lineOut, lookAhead, inputStream);
-
-                    signatureGenerator.Update((byte)'\n');
-
+                    int lookAhead = ReadInputLine(lineOut, inputStream);
                     ProcessLine(armoredOut, signatureGenerator, lineOut.ToArray());
+
+                    if (lookAhead != -1)
+                    {
+                        do
+                        {
+                            lookAhead = ReadInputLine(lineOut, lookAhead, inputStream);
+                            signatureGenerator.Update((byte)'\n');
+                            ProcessLine(armoredOut, signatureGenerator, lineOut.ToArray());
+                        }
+                        while (lookAhead != -1);
+                    }
+
+                    inputStream.Close();
+                    armoredOut.EndClearText();
+
+                    using (var bcpgOutput = new BcpgOutputStream(armoredOut))
+                    {
+                        signatureGenerator.Generate().Encode(bcpgOutput);
+                        armoredOut.Close();
+                        outputStream.Seek(0, 0);
+                        return new StreamReader(outputStream).ReadToEnd();
+                    }
                 }
-                while (lookAhead != -1);
             }
-
-            inputStream.Close();
-
-            armoredOut.EndClearText();
-
-            var bcpgOutput = new BcpgOutputStream(armoredOut);
-
-            signatureGenerator.Generate().Encode(bcpgOutput);
-
-            armoredOut.Close();
-
-            outputStream.Seek(0, 0);
-            return new StreamReader(outputStream).ReadToEnd();
         }
 
         private static PgpSecretKeyRingBundle CreatePgpSecretKeyRingBundle(Stream keyInStream)
