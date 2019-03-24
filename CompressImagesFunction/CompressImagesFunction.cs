@@ -94,7 +94,7 @@ namespace CompressImagesFunction
                 CompressImagesMessage = compressImagesMessage,
             };
 
-            var didCompress = await CompressImages.RunAsync(compressImagesParameters, logger);
+            var didCompress = CompressImages.Run(compressImagesParameters, logger);
 
             if (didCompress)
             {
