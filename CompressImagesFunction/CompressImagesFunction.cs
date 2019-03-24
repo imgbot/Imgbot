@@ -82,6 +82,20 @@ namespace CompressImagesFunction
                 return;
             }
 
+            // check if imgbot branch already exists before starting work
+            var branchExists = await repoChecks.BranchExists(new GitHubClientParameters
+            {
+                Password = installationToken.Token,
+                RepoName = compressImagesMessage.RepoName,
+                RepoOwner = compressImagesMessage.Owner,
+            });
+
+            if (branchExists)
+            {
+                logger.LogInformation("CompressImagesFunction: skipping repo {Owner}/{RepoName} as branch exists", compressImagesMessage.Owner, compressImagesMessage.RepoName);
+                return;
+            }
+
             var compressImagesParameters = new CompressimagesParameters
             {
                 CloneUrl = compressImagesMessage.CloneUrl,
