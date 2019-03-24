@@ -12,7 +12,6 @@ namespace CompressImagesFunction
 {
     public static class CompressImagesFunction
     {
-        [Singleton("{RepoName}")] // https://github.com/Azure/azure-webjobs-sdk/wiki/Singleton#scenarios
         [FunctionName("CompressImagesFunction")]
         public static async Task Trigger(
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
@@ -36,7 +35,6 @@ namespace CompressImagesFunction
             }
         }
 
-        [Singleton("{RepoName}")]
         [FunctionName("LongCompressImagesFunction")]
         public static async Task LongTrigger(
             [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
