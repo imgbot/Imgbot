@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -158,16 +159,42 @@ namespace CompressImagesFunction
                 try
                 {
                     Console.WriteLine(image);
-                    FileInfo file = new FileInfo(image);
-                    double before = file.Length;
-                    if (aggressiveCompression ? imageOptimizer.Compress(file) : imageOptimizer.LosslessCompress(file))
+                    FileInfo fileBefore = new FileInfo(image);
+                    double before = fileBefore.Length;
+
+                    var extension = Path.GetExtension(image);
+                    if (extension == ".svg")
+                    {
+                        var processStartInfo = new ProcessStartInfo
+                        {
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            FileName = "svgo",
+                            Arguments = $"{image} --multipass"
+                        };
+                        using (var process = Process.Start(processStartInfo))
+                        {
+                            process.WaitForExit(10000);
+                        }
+                    }
+                    else if (aggressiveCompression)
+                    {
+                        imageOptimizer.Compress(fileBefore);
+                    }
+                    else
+                    {
+                        imageOptimizer.LosslessCompress(fileBefore);
+                    }
+
+                    FileInfo fileAfter = new FileInfo(image);
+                    if (fileAfter.Length < before)
                     {
                         optimizedImages.Add(new CompressionResult
                         {
                             Title = image.Substring(localPath.Length),
                             OriginalPath = image,
                             SizeBefore = before / 1024d,
-                            SizeAfter = file.Length / 1024d,
+                            SizeAfter = fileAfter.Length / 1024d,
                         });
                     }
                 }
