@@ -1,4 +1,4 @@
-﻿namespace CompressImagesFunction
+﻿namespace CompressImagesFunction.Compress
 {
     public class CompressionResult
     {

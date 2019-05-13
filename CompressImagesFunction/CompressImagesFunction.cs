@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
+using CompressImagesFunction.Compress;
+using CompressImagesFunction.Repo;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -23,7 +25,7 @@ namespace CompressImagesFunction
             logger.LogInformation($"Starting compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, longRunningCompressMessages, openPrMessages, repoChecks, logger, context);
             if (await Task.WhenAny(task, Task.Delay(570000)) == task)
             {
                 await task;
@@ -38,6 +40,7 @@ namespace CompressImagesFunction
         [FunctionName("LongCompressImagesFunction")]
         public static async Task LongTrigger(
             [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
+            [Queue("longrunningcompressmessage")] ICollector<CompressImagesMessage> longRunningCompressMessages,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
             ILogger logger,
             ExecutionContext context)
@@ -45,13 +48,14 @@ namespace CompressImagesFunction
             logger.LogInformation($"Starting long compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, longRunningCompressMessages, openPrMessages, repoChecks, logger, context);
             await task;
         }
 
         public static async Task RunAsync(
             IInstallationTokenProvider installationTokenProvider,
             CompressImagesMessage compressImagesMessage,
+            ICollector<CompressImagesMessage> nextPageMessages,
             ICollector<OpenPrMessage> openPrMessages,
             IRepoChecks repoChecks,
             ILogger logger,
@@ -108,9 +112,14 @@ namespace CompressImagesFunction
                 CompressImagesMessage = compressImagesMessage,
             };
 
-            var didCompress = CompressImages.Run(compressImagesParameters, logger);
+            if (compressImagesMessage.Page.HasValue)
+            {
+                compressImagesParameters.Page = compressImagesMessage.Page.Value;
+            }
 
-            if (didCompress)
+            var compressionRunResult = CompressImages.Run(compressImagesParameters, logger);
+
+            if (compressionRunResult.DidCompress)
             {
                 logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 openPrMessages.Add(new OpenPrMessage
@@ -118,6 +127,18 @@ namespace CompressImagesFunction
                     InstallationId = compressImagesMessage.InstallationId,
                     RepoName = compressImagesMessage.RepoName,
                     CloneUrl = compressImagesMessage.CloneUrl,
+                });
+            }
+            else if (compressionRunResult.RunNextPage)
+            {
+                logger.LogInformation("CompressImagesFunction: Move to page: {Page} for {Owner}/{RepoName}", compressImagesParameters.Page + 1, compressImagesMessage.Owner, compressImagesMessage.RepoName);
+                nextPageMessages.Add(new CompressImagesMessage
+                {
+                    CloneUrl = compressImagesMessage.CloneUrl,
+                    InstallationId = compressImagesMessage.InstallationId,
+                    Owner = compressImagesMessage.Owner,
+                    RepoName = compressImagesMessage.Owner,
+                    Page = compressImagesParameters.Page + 1,
                 });
             }
 

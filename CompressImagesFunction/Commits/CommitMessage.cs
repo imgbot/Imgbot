@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Text;
 using Common;
+using CompressImagesFunction.Compress;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Commits
 {
     public static class CommitMessage
     {

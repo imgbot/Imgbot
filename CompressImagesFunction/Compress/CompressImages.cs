@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
+using CompressImagesFunction.Commits;
+using CompressImagesFunction.Find;
+using CompressImagesFunction.Repo;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -13,11 +16,11 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Compress
 {
     public static class CompressImages
     {
-        public static bool Run(CompressimagesParameters parameters, ILogger logger)
+        public static CompressionRunResult Run(CompressimagesParameters parameters, ILogger logger)
         {
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
@@ -40,13 +43,13 @@ namespace CompressImagesFunction
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any() == false)
                 {
                     logger.LogInformation("CompressImagesFunction: no references found for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                    return false;
+                    return CompressionRunResult.Exit();
                 }
 
                 if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{KnownGitHubs.BranchName}"))
                 {
                     logger.LogInformation("CompressImagesFunction: branch already exists for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                    return false;
+                    return CompressionRunResult.Exit();
                 }
             }
             catch (Exception e)
@@ -74,7 +77,7 @@ namespace CompressImagesFunction
             if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
             {
                 logger.LogInformation("CompressImagesFunction: skipping optimization due to schedule for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                return false;
+                return CompressionRunResult.Exit();
             }
 
             // check out the branch
@@ -85,40 +88,18 @@ namespace CompressImagesFunction
             repo.Reset(ResetMode.Mixed, repo.Head.Tip);
 
             // optimize images
-            var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
-            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger, repoConfiguration.AggressiveCompression);
+            var imageQueryResult = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration, parameters.Page);
+            var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imageQueryResult.ImagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
-                return false;
-
-            // create commit message based on optimizations
-            foreach (var image in optimizedImages)
             {
-                Commands.Stage(repo, image.OriginalPath);
+                return new CompressionRunResult
+                {
+                    DidCompress = false,
+                    RunNextPage = true,
+                };
             }
 
-            var commitMessage = CommitMessage.Create(optimizedImages);
-            var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
-            repo.Commit(commitMessage, signature, signature);
-
-            // We just made a normal commit, now we are going to capture all the values generated from that commit
-            // then rewind and make a signed commit
-            var commitBuffer = Commit.CreateBuffer(
-                repo.Head.Tip.Author,
-                repo.Head.Tip.Committer,
-                repo.Head.Tip.Message,
-                repo.Head.Tip.Tree,
-                repo.Head.Tip.Parents,
-                true,
-                null);
-
-            var signedCommitData = CommitSignature.Sign(commitBuffer + "\n", parameters.PgpPrivateKey, parameters.PgPPassword);
-
-            repo.Reset(ResetMode.Soft, repo.Head.Commits.Skip(1).First().Sha);
-            var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);
-
-            repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
-            var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
-            repo.Reset(ResetMode.Hard, commitToKeep.Sha);
+            CommitChanges.DoCommit(repo, optimizedImages, parameters.PgpPrivateKey, parameters.PgPPassword);
 
             // verify images are not corrupted by reading from git
             // see https://github.com/dabutvin/ImgBot/issues/273
@@ -132,7 +113,7 @@ namespace CompressImagesFunction
             catch (MagickErrorException)
             {
                 logger.LogError("Corrupt images after reset!");
-                return false;
+                return CompressionRunResult.Exit();
             }
 
             // push to GitHub
@@ -141,7 +122,7 @@ namespace CompressImagesFunction
                 CredentialsProvider = credentialsProvider,
             });
 
-            return true;
+            return CompressionRunResult.Success();
         }
 
         private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger, bool aggressiveCompression)

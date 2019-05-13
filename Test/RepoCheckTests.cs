@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
-using CompressImagesFunction;
+using CompressImagesFunction.Repo;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -60,6 +60,7 @@ namespace Test
                  }));
 
             var openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
+            var nextPageMessages = Substitute.For<ICollector<CompressImagesMessage>>();
 
             var repoChecks = Substitute.For<IRepoChecks>();
             repoChecks.IsArchived(Arg.Any<GitHubClientParameters>())
@@ -68,6 +69,7 @@ namespace Test
             return CompressImagesFunction.CompressImagesFunction.RunAsync(
                 installationTokenProvider,
                 compressImagesMessage,
+                nextPageMessages,
                 openPrMessages,
                 repoChecks,
                 logger,

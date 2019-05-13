@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Common;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Find
 {
     public static class ImageQuery
     {
-        public static string[] FindImages(string localPath, RepoConfiguration repoConfiguration)
+        public static ImageQueryResult FindImages(string localPath, RepoConfiguration repoConfiguration, int page = 1, int pageSize = 2000)
         {
             var images = Directory.EnumerateFiles(localPath, "*.*", SearchOption.AllDirectories)
                 .Where(x => KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(x).ToLower()))
@@ -24,7 +24,19 @@ namespace CompressImagesFunction
                 }
             }
 
-            return images.ToArray();
+            var imagePaths = images
+                  .OrderBy(x => x)
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToArray();
+
+            var hasMoreImages = images.Count() > pageSize + ((page - 1) * pageSize);
+
+            return new ImageQueryResult
+            {
+                ImagePaths = imagePaths,
+                HasMoreImages = hasMoreImages,
+            };
         }
 
         // this is to provide backwards compatibility with the previous globbing

@@ -2,7 +2,7 @@
 using System.Linq;
 using Common;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Repo
 {
     public class Schedule
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Repo
 {
     public static class LocalPath
     {

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Common;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Repo
 {
     public interface IRepoChecks
     {

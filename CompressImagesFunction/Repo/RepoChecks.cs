@@ -3,7 +3,7 @@ using Common;
 using Octokit;
 using Octokit.Internal;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Repo
 {
     public class RepoChecks : IRepoChecks
     {

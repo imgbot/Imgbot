@@ -9,5 +9,7 @@
         public string Owner { get; set; }
 
         public int InstallationId { get; set; }
+
+        public int? Page { get; set; }
     }
 }

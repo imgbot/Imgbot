@@ -1,6 +1,6 @@
 ﻿using System;
 using Common;
-using CompressImagesFunction;
+using CompressImagesFunction.Repo;
 using LibGit2Sharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Common.Messages;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Compress
 {
     public class CompressimagesParameters
     {
@@ -20,5 +20,7 @@ namespace CompressImagesFunction
         public string PgPPassword { get; set; }
 
         public CompressImagesMessage CompressImagesMessage { get; set; }
+
+        public int Page { get; set; } = 1;
   }
 }

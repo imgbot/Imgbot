@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Common;
-using CompressImagesFunction;
+using CompressImagesFunction.Find;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test
@@ -11,7 +11,7 @@ namespace Test
         [TestMethod]
         public void GivenDefaultConfiguration_ShouldFindAllImages()
         {
-            var images = ImageQuery.FindImages("data", new RepoConfiguration());
+            var images = ImageQuery.FindImages("data", new RepoConfiguration()).ImagePaths;
 
             Assert.AreEqual(7, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -24,9 +24,26 @@ namespace Test
         }
 
         [TestMethod]
+        public void GivenDefaultConfiguration_ShouldSortImages()
+        {
+            var images = ImageQuery.FindImages("data", new RepoConfiguration()).ImagePaths;
+            var expected = new[]
+            {
+                "data/a.jpg",
+                "data/b.png",
+                "data/c.png",
+                "data/folder/deep/nested/deepimage.png",
+                "data/folder/item1.png",
+                "data/folder/item2.png",
+                "data/folder/item3.jpg",
+            };
+            CollectionAssert.AreEqual(images, expected);
+        }
+
+        [TestMethod]
         public void GivenDefaultConfiguration_ShouldFindImagesWithUppercaseExtensions()
         {
-            var images = ImageQuery.FindImages("cased-data", new RepoConfiguration());
+            var images = ImageQuery.FindImages("cased-data", new RepoConfiguration()).ImagePaths;
 
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "cased-data/uppercase-jpg.JPG"));
@@ -42,7 +59,7 @@ namespace Test
                 {
                     "uppercase-jpg.jpg"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(1, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "cased-data/uppercase-png.PNG"));
@@ -57,7 +74,7 @@ namespace Test
                 {
                     "data/folder/item2.png"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -77,7 +94,7 @@ namespace Test
                 {
                     "data/folder/"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -94,7 +111,7 @@ namespace Test
                 {
                     "data/folder/*"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -111,7 +128,7 @@ namespace Test
                 {
                     "data/folder*"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -122,7 +139,7 @@ namespace Test
         [TestMethod]
         public void GivenNestedSameFolder_ShouldFindAllImages()
         {
-            var images = ImageQuery.FindImages("data_samenested", new RepoConfiguration());
+            var images = ImageQuery.FindImages("data_samenested", new RepoConfiguration()).ImagePaths;
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data_samenested/folder1/f1_a.jpg"));
@@ -142,7 +159,7 @@ namespace Test
                 {
                     "**/test_images/**"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(3, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data_samenested/folder1/f1_a.jpg"));
@@ -159,7 +176,7 @@ namespace Test
                 {
                     "*.png"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -175,7 +192,7 @@ namespace Test
                 {
                     "*"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(0, images.Length, $"Images found {string.Join("; ", images)}.");
         }
@@ -189,7 +206,7 @@ namespace Test
                 {
                     ".*"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(0, images.Length, $"Images found {string.Join("; ", images)}.");
         }
@@ -204,7 +221,7 @@ namespace Test
                     "data/folder/item2.png",
                     "data\\folder\\item3.jpg"
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(5, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -223,7 +240,7 @@ namespace Test
                 {
                     "deepimage.png",
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -243,7 +260,7 @@ namespace Test
                 {
                     "data/folder/deep/nested/*",
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -263,7 +280,7 @@ namespace Test
                 {
                     "data/folder/deep/*",
                 }
-            });
+            }).ImagePaths;
 
             Assert.AreEqual(6, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
@@ -272,6 +289,57 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+        }
+
+        [TestMethod]
+        public void GivenPagedImages_ShouldSegment()
+        {
+            var imageQueryResult1 = ImageQuery.FindImages("data", new RepoConfiguration(), page: 1, pageSize: 3);
+
+            var expected1 = new[]
+            {
+                "data/a.jpg",
+                "data/b.png",
+                "data/c.png",
+
+                // "data/folder/deep/nested/deepimage.png",
+                // "data/folder/item1.png",
+                // "data/folder/item2.png",
+                // "data/folder/item3.jpg",
+            };
+            CollectionAssert.AreEqual(imageQueryResult1.ImagePaths, expected1);
+            Assert.IsTrue(imageQueryResult1.HasMoreImages);
+
+            var imageQueryResult2 = ImageQuery.FindImages("data", new RepoConfiguration(), page: 2, pageSize: 3);
+
+            var expected2 = new[]
+            {
+                // "data/a.jpg",
+                // "data/b.png",
+                // "data/c.png",
+                "data/folder/deep/nested/deepimage.png",
+                "data/folder/item1.png",
+                "data/folder/item2.png",
+
+                // "data/folder/item3.jpg",
+            };
+            CollectionAssert.AreEqual(imageQueryResult2.ImagePaths, expected2);
+            Assert.IsTrue(imageQueryResult2.HasMoreImages);
+
+            var imageQueryResult3 = ImageQuery.FindImages("data", new RepoConfiguration(), page: 3, pageSize: 3);
+
+            var expected3 = new[]
+            {
+                // "data/a.jpg",
+                // "data/b.png",
+                // "data/c.png",
+                // "data/folder/deep/nested/deepimage.png",
+                // "data/folder/item1.png",
+                // "data/folder/item2.png",
+                "data/folder/item3.jpg",
+            };
+            CollectionAssert.AreEqual(imageQueryResult3.ImagePaths, expected3);
+            Assert.IsFalse(imageQueryResult3.HasMoreImages);
         }
     }
 }

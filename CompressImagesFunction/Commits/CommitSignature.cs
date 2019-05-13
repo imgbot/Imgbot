@@ -4,7 +4,7 @@ using System.Text;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Commits
 {
     public class CommitSignature
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Common;
-using CompressImagesFunction;
+using CompressImagesFunction.Commits;
+using CompressImagesFunction.Compress;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test
