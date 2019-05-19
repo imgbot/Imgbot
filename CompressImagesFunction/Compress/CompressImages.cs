@@ -88,14 +88,14 @@ namespace CompressImagesFunction.Compress
             repo.Reset(ResetMode.Mixed, repo.Head.Tip);
 
             // optimize images
-            var imageQueryResult = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration, parameters.Page);
+            var imageQueryResult = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration, parameters.UpdatedImages, parameters.Page);
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imageQueryResult.ImagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
             {
                 return new CompressionRunResult
                 {
                     DidCompress = false,
-                    RunNextPage = true,
+                    RunNextPage = imageQueryResult.HasMoreImages,
                 };
             }
 

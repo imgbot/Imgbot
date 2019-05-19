@@ -9,7 +9,7 @@ namespace CompressImagesFunction.Find
 {
     public static class ImageQuery
     {
-        public static ImageQueryResult FindImages(string localPath, RepoConfiguration repoConfiguration, int page = 1, int pageSize = 2000)
+        public static ImageQueryResult FindImages(string localPath, RepoConfiguration repoConfiguration, string[] updatedImages = null, int page = 1, int pageSize = 1000)
         {
             var images = Directory.EnumerateFiles(localPath, "*.*", SearchOption.AllDirectories)
                 .Where(x => KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(x).ToLower()))
@@ -31,6 +31,15 @@ namespace CompressImagesFunction.Find
                   .ToArray();
 
             var hasMoreImages = images.Count() > pageSize + ((page - 1) * pageSize);
+
+            if (hasMoreImages && updatedImages?.Length > 0)
+            {
+                // if there is more than 1 page and there are updatedImages we want to group them onto this page
+                imagePaths = imagePaths.Concat(updatedImages
+                    .Select(updated => images.FirstOrDefault(image => image.EndsWith(updated))))
+                    .Where(x => x != null)
+                    .ToArray();
+            }
 
             return new ImageQueryResult
             {

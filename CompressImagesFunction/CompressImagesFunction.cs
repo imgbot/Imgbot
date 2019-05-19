@@ -110,6 +110,7 @@ namespace CompressImagesFunction
                 PgpPrivateKey = KnownEnvironmentVariables.PGP_PRIVATE_KEY,
                 PgPPassword = KnownEnvironmentVariables.PGP_PASSWORD,
                 CompressImagesMessage = compressImagesMessage,
+                UpdatedImages = compressImagesMessage.UpdatedImages,
             };
 
             if (compressImagesMessage.Page.HasValue)

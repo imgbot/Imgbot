@@ -11,5 +11,7 @@
         public int InstallationId { get; set; }
 
         public int? Page { get; set; }
+
+        public string[] UpdatedImages { get; set; }
     }
 }

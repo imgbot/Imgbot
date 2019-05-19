@@ -22,5 +22,7 @@ namespace CompressImagesFunction.Compress
         public CompressImagesMessage CompressImagesMessage { get; set; }
 
         public int Page { get; set; } = 1;
+
+        public string[] UpdatedImages { get; set; }
   }
 }
