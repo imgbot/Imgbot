@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
@@ -157,18 +158,32 @@ namespace CompressImagesFunction
             {
                 try
                 {
-                    Console.WriteLine(image);
-                    FileInfo file = new FileInfo(image);
-                    double before = file.Length;
-                    if (aggressiveCompression ? imageOptimizer.Compress(file) : imageOptimizer.LosslessCompress(file))
-                    {
-                        optimizedImages.Add(new CompressionResult
+                    var tokenSource = new CancellationTokenSource();
+                    var task = Task.Factory.StartNew(
+                        () =>
                         {
-                            Title = image.Substring(localPath.Length),
-                            OriginalPath = image,
-                            SizeBefore = before / 1024d,
-                            SizeAfter = file.Length / 1024d,
-                        });
+                            Console.WriteLine(image);
+                            FileInfo file = new FileInfo(image);
+                            double before = file.Length;
+                            if (aggressiveCompression ? imageOptimizer.Compress(file) : imageOptimizer.LosslessCompress(file))
+                            {
+                                optimizedImages.Add(new CompressionResult
+                                {
+                                    Title = image.Substring(localPath.Length),
+                                    OriginalPath = image,
+                                    SizeBefore = before / 1024d,
+                                    SizeAfter = file.Length / 1024d,
+                                });
+                            }
+                        },
+                        tokenSource.Token);
+
+                    // returns true if the Task completed execution within the allotted time; otherwise, false.
+                    // Cancel and continue with the rest
+                    if (task.Wait(10 * 1000) == false)
+                    {
+                        logger.LogInformation("Timeout processing {Image}", image);
+                        tokenSource.Cancel();
                     }
                 }
                 catch (Exception ex)
