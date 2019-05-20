@@ -180,7 +180,7 @@ namespace CompressImagesFunction
 
                     // returns true if the Task completed execution within the allotted time; otherwise, false.
                     // Cancel and continue with the rest
-                    if (task.Wait(10 * 1000) == false)
+                    if (task.Wait(60 * 1000) == false)
                     {
                         logger.LogInformation("Timeout processing {Image}", image);
                         tokenSource.Cancel();
