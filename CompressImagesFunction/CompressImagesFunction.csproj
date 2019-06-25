@@ -9,9 +9,9 @@
       <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/libgit2-4aecb64.so" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-4aecb64.dylib" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-4aecb64.dll" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/Magick.NET-Q16-x64.Native.dll.so" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/osx-x64/native/Magick.NET-Q16-x64.Native.dll.dylib" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x64/native/Magick.NET-Q16-x64.Native.dll" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/osx-x64/native/Magick.Native-Q16-x64.dll.dylib" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x64/native/Magick.Native-Q16-x64.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(NativeBinary)" DestinationFiles="@(NativeBinary->'$(TargetDir)bin/%(Filename)%(Extension)')" />
   </Target>
