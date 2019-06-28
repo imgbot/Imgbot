@@ -121,6 +121,15 @@ namespace CompressImagesFunction
                 });
             }
 
+            try
+            {
+                Directory.Delete(compressImagesParameters.LocalPath, recursive: true);
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Error cleaning up local directory");
+            }
+
             logger.LogInformation("CompressImagesFunction: finished run for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
         }
     }
