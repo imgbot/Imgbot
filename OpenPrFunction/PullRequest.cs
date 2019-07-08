@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Common;
+using Common.TableModels;
 using Octokit;
 using Octokit.Internal;
 
@@ -7,10 +8,9 @@ namespace OpenPrFunction
 {
     public class PullRequest : IPullRequest
     {
-        public async Task<long> OpenAsync(GitHubClientParameters parameters)
+        public async Task<Pr> OpenAsync(GitHubClientParameters parameters)
         {
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Credentials(KnownGitHubs.Username, parameters.Password));
-
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
 
             var repo = await githubClient.Repository.Get(parameters.RepoOwner, parameters.RepoName);
@@ -19,16 +19,32 @@ namespace OpenPrFunction
 
             if (branch == null)
             {
-                return 0;
+                return null;
             }
 
+            var stats = Stats.ParseStats(commit.Commit.Message);
             var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, repo.DefaultBranch)
             {
-                Body = PullRequestBody.Generate(commit.Commit.Message),
+                Body = PullRequestBody.Generate(stats),
             };
 
             var result = await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
-            return result.Id;
+
+            if (stats == null)
+            {
+                return null;
+            }
+
+            return new Pr(parameters.RepoOwner)
+            {
+                RepoName = parameters.RepoName,
+                Id = result.Id,
+                NumImages = stats.Length - 1,
+                Number = result.Number,
+                SizeBefore = ImageStat.ToDouble(stats[0].Before),
+                SizeAfter = ImageStat.ToDouble(stats[0].After),
+                PercentReduced = stats[0].Percent,
+            };
         }
     }
 }
