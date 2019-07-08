@@ -39,7 +39,7 @@ namespace OpenPrFunction
             {
                 RepoName = parameters.RepoName,
                 Id = result.Id,
-                NumImages = stats.Length - 1,
+                NumImages = stats.Length == 1 ? 1 : stats.Length - 1,
                 Number = result.Number,
                 SizeBefore = ImageStat.ToDouble(stats[0].Before),
                 SizeAfter = ImageStat.ToDouble(stats[0].After),
