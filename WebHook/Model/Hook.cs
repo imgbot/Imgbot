@@ -44,6 +44,7 @@ namespace WebHook.Model
         public class Account
         {
             public string login { get; set; }
+            public string organization_billing_email { get; set; }
             public int id { get; set; }
             public string avatar_url { get; set; }
             public string gravatar_id { get; set; }
@@ -107,6 +108,7 @@ namespace WebHook.Model
         public class Sender
         {
             public string login { get; set; }
+            public string email { get; set; }
             public int id { get; set; }
             public string avatar_url { get; set; }
             public string gravatar_id { get; set; }

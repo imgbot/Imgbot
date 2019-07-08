@@ -219,6 +219,8 @@ namespace WebHook
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
                     {
                         AccountType = hook.marketplace_purchase.account.type,
+                        SenderEmail = hook.sender.email,
+                        OrganizationBillingEmail = hook.marketplace_purchase.account.organization_billing_email,
                         PlanId = hook.marketplace_purchase.plan.id,
                         SenderId = hook.sender.id,
                         SenderLogin = hook.sender.login,

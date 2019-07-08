@@ -46,7 +46,7 @@ namespace Test
                           "| **Total :** | **854.23kb** | **308.28kb** | **63.91%** |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
@@ -72,7 +72,7 @@ namespace Test
                           "| /featured-marketplace.png | 163.11kb | 160.11kb | 0.02% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
@@ -98,7 +98,7 @@ namespace Test
                           "| /featured-marketplace.png | 163.11kb | 155.11kb | 4.40% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
@@ -124,7 +124,7 @@ namespace Test
                           "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
@@ -139,7 +139,7 @@ namespace Test
             var expectedMarkdown = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information."
                 + Environment.NewLine + Environment.NewLine;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
@@ -152,7 +152,7 @@ namespace Test
             var expectedMarkdown = "Beep boop. Optimizing your images is my life. https://imgbot.net/ for more information."
                 + Environment.NewLine + Environment.NewLine;
 
-            var result = PullRequestBody.Generate(commitMessage);
+            var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
 
             Assert.AreEqual(expectedMarkdown, result);
         }
