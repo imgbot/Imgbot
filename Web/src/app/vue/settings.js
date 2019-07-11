@@ -1,3 +1,3 @@
 export const settings = {
-  authhost: 'https://auth.imgbot.net'
+  authhost: 'https://localhost:7071'
 }

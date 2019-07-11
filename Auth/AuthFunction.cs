@@ -16,7 +16,7 @@ namespace Auth
 {
     public static class AuthFunction
     {
-        public static readonly string Webhost = "https://imgbot.net";
+        public static readonly string Webhost = "http://localhost:8888";
         private static readonly HttpClient HttpClient = new HttpClient();
 
         [FunctionName("SetupFunction")]

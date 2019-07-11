@@ -1,16 +1,23 @@
 <template>
   <div class="card my-4">
     <div class="card-body">
-      <h5 class="card-title">
-        <octicon v-if="repository.fork" name="repo-forked"></octicon>
-        <octicon v-if="!repository.fork" name="repo"></octicon>
-        <a target="_blank" :href="current.html_url">{{ current.name }}</a>
-      </h5>
-      <div class="card-text">{{ lastchecked }}</div>
-      <button v-on:click="check(current.id)" :disabled="checking" class="btn btn-secondary mt-4">
-        <span v-if="!checking">Request new optimization</span>
-        <span v-if="checking">Requesting ...</span>
-      </button>
+      <div class="row">
+        <div class="col-lg-6">
+          <h5 class="card-title">
+            <octicon v-if="repository.fork" name="repo-forked"></octicon>
+            <octicon v-if="!repository.fork" name="repo"></octicon>
+            <a target="_blank" :href="current.html_url">{{ current.name }}</a>
+          </h5>
+          <div class="card-text">{{ lastchecked }}</div>
+          <button v-on:click="check(current.id)" :disabled="checking" class="btn btn-secondary mt-4">
+            <span v-if="!checking">Request new optimization</span>
+            <span v-if="checking">Requesting ...</span>
+          </button>
+        </div>
+        <div class="col-lg-6">
+          <line-chart v-if="pulls.length" :data="chartData"></line-chart>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,7 +31,7 @@ import 'vue-octicon/icons/repo-forked'
 
 export default {
   name: 'Repository',
-  props: ['repository', 'installationid'],
+  props: ['repository', 'installationid', 'pulls'],
   components: {
     Octicon
   },
@@ -44,6 +51,13 @@ export default {
       } else {
         return 'No optimization started recently'
       }
+    },
+    chartData: function() {
+      return this.pulls.reduce((res, cur) => {
+        res[cur.Timestamp] = cur.SpaceReduced
+        return res
+      }, {})
+      return {'2017-05-13': 2, '2017-05-14': 5}
     }
   },
   methods: {

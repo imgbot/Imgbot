@@ -5,6 +5,7 @@
         <img class="rounded-circle" width="50" :src="installation.avatar_url" alt="">
         {{ installation.login }}
       </h3>
+      <span v-if="pulls.length > 0">Recent PRs: {{ pulls.length }}</span>
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
       <div>
         <a class="btn btn-outline-secondary btn-sm" target="_blank" :href="installation.html_url">Manage repos</a>
@@ -18,11 +19,12 @@
     <div>
       <p class="mt-4" v-if="loaded && filteredRepositories.length < 1">No repos found</p>
       <loader v-if="!loaded"></loader>
-      <repository
+    <repository
         v-for="repository in filteredRepositories"
         v-bind:key="repository.id"
         v-bind:repository="repository"
         v-bind:installationid="installation.id"
+        v-bind:pulls="pullsByRepo(repository)"
       ></repository>
     </div>
     <hr>
@@ -48,7 +50,8 @@ export default {
     return {
       repositories: [],
       repofilter: '',
-      loaded: false
+      loaded: false,
+      pulls: []
     }
   },
   computed: {
@@ -85,6 +88,11 @@ export default {
       })
     }
   },
+  methods: {
+    pullsByRepo: function(repository) {
+      return this.pulls.filter(x => x.RepoName === repository.name)
+    }
+  },
   mounted() {
     var vm = this
 
@@ -105,7 +113,20 @@ export default {
         })
     }
 
+    function fetchPulls() {
+      axios
+        .get(
+          `${settings.authhost}/api/pulls/${vm.installation.login}`,
+          {
+            withCredentials: true
+          }
+        ).then(response => {
+          vm.pulls = response.data.pulls
+        })
+    }
+
     fetchRepos(1)
+    fetchPulls()
   }
 }
 </script>
