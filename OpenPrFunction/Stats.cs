@@ -34,6 +34,12 @@ namespace OpenPrFunction
                         continue;
                     }
 
+                    if (commitLines[i].StartsWith("Signed-off-by:"))
+                    {
+                        // skip the DCO line
+                        continue;
+                    }
+
                     var pattern = @"\*?(.*) -- (.*) -> (.*) \((.*)%\)";
                     var capture = Regex.Matches(commitLines[i], pattern)[0];
 
