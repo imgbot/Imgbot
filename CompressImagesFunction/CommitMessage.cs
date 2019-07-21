@@ -47,6 +47,9 @@ namespace CompressImagesFunction
 
             commitMessage.Append(imageLog);
 
+            commitMessage.AppendLine();
+            commitMessage.AppendLine($"Signed-off-by: {KnownGitHubs.ImgBotLogin} <{KnownGitHubs.ImgBotEmail}>");
+
             return commitMessage.ToString();
         }
 
