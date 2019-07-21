@@ -34,7 +34,9 @@ namespace Test
                            "*Total -- 600.69kb -> 455.92kb (24.1%)" + Environment.NewLine +
                            Environment.NewLine +
                            "path/to/image2.png -- 500.32kb -> 360.13kb (28.02%)" + Environment.NewLine +
-                           "path/to/image.png -- 100.37kb -> 95.79kb (4.56%)" + Environment.NewLine;
+                           "path/to/image.png -- 100.37kb -> 95.79kb (4.56%)" + Environment.NewLine +
+                           Environment.NewLine +
+                           "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
             Assert.AreEqual(expectedMessage, message);
         }
@@ -56,7 +58,9 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                              Environment.NewLine +
-                             "path/to/image.png -- 100.30kb -> 95.70kb (4.59%)" + Environment.NewLine;
+                             "path/to/image.png -- 100.30kb -> 95.70kb (4.59%)" + Environment.NewLine +
+                             Environment.NewLine +
+                             "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
             Assert.AreEqual(expectedMessage, message);
         }
@@ -87,7 +91,9 @@ namespace Test
                             "*Total -- 501.89kb -> 455.68kb (9.21%)" + Environment.NewLine +
                             Environment.NewLine +
                             "path/to/image2.png -- 300.92kb -> 260.56kb (13.41%)" + Environment.NewLine +
-                            "path/to/image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine;
+                            "path/to/image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine +
+                            Environment.NewLine +
+                            "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
             Assert.AreEqual(expectedMessage, message);
         }
@@ -118,7 +124,9 @@ namespace Test
                         "*Total -- 501.89kb -> 455.68kb (9.21%)" + Environment.NewLine
                         + Environment.NewLine +
                         "path/to/image2.png -- 300.92kb -> 260.56kb (13.41%)" + Environment.NewLine +
-                        "path/to/_image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine;
+                        "path/to/_image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine +
+                        Environment.NewLine +
+                        "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
             Assert.AreEqual(expectedMessage, message);
         }
