@@ -5,7 +5,7 @@ RUN mkdir -p /home/site/wwwroot
 RUN cd /src/CompressImagesFunction && dotnet publish CompressImagesFunction.csproj -c Release --output /home/site/wwwroot
 
 # Native Binaries
-RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/libgit2-4aecb64.so /home/site/wwwroot/bin/
+RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/libgit2-572e4d8.so /home/site/wwwroot/bin/
 RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so /home/site/wwwroot/bin/
 
 FROM mcr.microsoft.com/azure-functions/dotnet:2.0
