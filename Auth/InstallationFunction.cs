@@ -41,7 +41,6 @@ namespace Auth
                     x.html_url,
                     x.account.login,
                     accountid = x.account.id,
-                    accounttype = x.account.type,
                     x.account.avatar_url,
                     planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId
                 };

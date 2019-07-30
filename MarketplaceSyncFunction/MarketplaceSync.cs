@@ -45,7 +45,7 @@ namespace MarketplaceSyncFunction
                 },
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
-            foreach (var planId in new[] { 2840, 2841 })
+            foreach (var planId in new[] { 1749, 1750 })
             {
                 var planRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/marketplace_listing/plans/{planId}/accounts?per_page=100");
                 planRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
