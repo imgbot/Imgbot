@@ -81,7 +81,7 @@ namespace Test
             }
         }
 
-        private Task ExecuteRunAsync(int installationId, string owner, string repoName, long prId,  out ILogger logger)
+        private Task ExecuteRunAsync(int installationId, string owner, string repoName, long prId, out ILogger logger)
         {
             var cloneUrl = $"https://github.com/{owner}/{repoName}";
 
@@ -122,9 +122,11 @@ namespace Test
                  }));
 
             var pullRequest = Substitute.For<IPullRequest>();
-            pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>()).Returns(x => Task.FromResult(prId));
+            pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>()).Returns(x => Task.FromResult(new Pr(installation.Owner) { Id = prId }));
 
-            return OpenPr.RunAsync(openPrMessage, installation, installationTokenProvider, pullRequest, logger, context);
+            var prs = Substitute.For<ICollector<Pr>>();
+
+            return OpenPr.RunAsync(openPrMessage, installation, prs, installationTokenProvider, pullRequest, logger, context);
         }
     }
 }

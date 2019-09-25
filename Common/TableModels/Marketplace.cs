@@ -23,6 +23,10 @@ namespace Common.TableModels
 
         public string AccountType { get; set; }
 
+        public string SenderEmail { get; set; }
+
+        public string OrganizationBillingEmail { get; set; }
+
         public int PlanId { get; set; }
 
         public int SenderId { get; set; }

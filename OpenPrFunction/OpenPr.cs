@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
@@ -17,17 +16,19 @@ namespace OpenPrFunction
         public static async Task Trigger(
             [QueueTrigger("openprmessage")]OpenPrMessage openPrMessage,
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
+            [Table("pull")] ICollector<Pr> prs,
             ILogger logger,
             ExecutionContext context)
         {
             var installationTokenProvider = new InstallationTokenProvider();
             var pullRequest = new PullRequest();
-            await RunAsync(openPrMessage, installation, installationTokenProvider, pullRequest, logger, context).ConfigureAwait(false);
+            await RunAsync(openPrMessage, installation, prs, installationTokenProvider, pullRequest, logger, context).ConfigureAwait(false);
         }
 
         public static async Task RunAsync(
             OpenPrMessage openPrMessage,
             Installation installation,
+            ICollector<Pr> prs,
             IInstallationTokenProvider installationTokenProvider,
             IPullRequest pullRequest,
             ILogger logger,
@@ -48,16 +49,17 @@ namespace OpenPrFunction
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             logger.LogInformation("OpenPrFunction: Opening pull request for {Owner}/{RepoName}", installation.Owner, installation.RepoName);
-            var id = await pullRequest.OpenAsync(new GitHubClientParameters
+            var result = await pullRequest.OpenAsync(new GitHubClientParameters
             {
                 Password = installationToken.Token,
                 RepoName = installation.RepoName,
                 RepoOwner = installation.Owner,
             });
 
-            if (id > 0)
+            if (result?.Id > 0)
             {
-                logger.LogInformation("OpenPrFunction: Successfully opened pull request (#{PullRequestId}) for {Owner}/{RepoName}", id, installation.Owner, installation.RepoName);
+                logger.LogInformation("OpenPrFunction: Successfully opened pull request (#{PullRequestId}) for {Owner}/{RepoName}", result.Id, installation.Owner, installation.RepoName);
+                prs.Add(result);
             }
         }
     }

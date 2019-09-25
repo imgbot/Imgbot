@@ -29,13 +29,7 @@ namespace Auth
             }
 
             var marketplaceTable = GetTable("marketplace");
-            var installationsRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/installations");
-            installationsRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
-            installationsRequest.AddGithubHeaders();
-            var installationsResponse = await HttpClient.SendAsync(installationsRequest);
-            var installationsJson = await installationsResponse.Content.ReadAsStringAsync();
-            var installationsData = JsonConvert.DeserializeObject<Model.Installations>(installationsJson);
-
+            var installationsData = await GetInstallationsData(token);
             var installations = await Task.WhenAll(installationsData.installations.Select(async x =>
             {
                 var mktplc = await marketplaceTable.ExecuteAsync(
@@ -47,6 +41,7 @@ namespace Auth
                     x.html_url,
                     x.account.login,
                     accountid = x.account.id,
+                    accounttype = x.account.type,
                     x.account.avatar_url,
                     planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId
                 };
@@ -122,6 +117,49 @@ namespace Auth
                   repository = await RepositoryResponse(repository, installationTable, installationid).ConfigureAwait(false)
               })
               .EnableCors();
+            return response;
+        }
+
+        [FunctionName("ListPullsFunction")]
+        public static async Task<HttpResponseMessage> ListPullsAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pulls/{login}")] HttpRequestMessage req,
+            string login)
+        {
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var pullsTable = GetTable("pull");
+            var installationsData = await GetInstallationsData(token);
+            if (!installationsData.installations.Select(x => x.account.login).Contains(login))
+            {
+                throw new Exception("login request mismatch");
+            }
+
+            var query = new TableQuery<Common.TableModels.Pr>().Where($"PartitionKey eq '{login}'");
+            var pulls = await pullsTable.ExecuteQuerySegmentedAsync(query, null);
+            var response = req.CreateResponse();
+            response.SetJson(new
+            {
+                pulls = pulls.Results.Select(x =>
+                {
+                    return new
+                    {
+                        x.Id,
+                        x.NumImages,
+                        x.Number,
+                        x.Owner,
+                        x.PercentReduced,
+                        x.RepoName,
+                        x.SizeAfter,
+                        x.SizeBefore,
+                        x.SpaceReduced,
+                        x.Timestamp
+                    };
+                }).ToArray()
+            }).EnableCors();
             return response;
         }
 
@@ -204,6 +242,16 @@ namespace Auth
             }
 
             return null;
+        }
+
+        private static async Task<Model.Installations> GetInstallationsData(string token)
+        {
+            var installationsRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/installations");
+            installationsRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
+            installationsRequest.AddGithubHeaders();
+            var installationsResponse = await HttpClient.SendAsync(installationsRequest);
+            var installationsJson = await installationsResponse.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Model.Installations>(installationsJson);
         }
 
         private static async Task<Model.Repository> GetRepository(string installationid, string token, string repositoryid)

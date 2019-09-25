@@ -219,17 +219,19 @@ namespace WebHook
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
                     {
                         AccountType = hook.marketplace_purchase.account.type,
+                        SenderEmail = hook.sender.email,
+                        OrganizationBillingEmail = hook.marketplace_purchase.account.organization_billing_email,
                         PlanId = hook.marketplace_purchase.plan.id,
                         SenderId = hook.sender.id,
                         SenderLogin = hook.sender.login,
                     }));
 
-                    logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased for {Owner}", hook.marketplace_purchase.account.login);
+                    logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased {PlanId} for {Owner}", hook.marketplace_purchase.plan.id, hook.marketplace_purchase.account.login);
 
                     return hook.action;
                 case "cancelled":
                     await marketplaceTable.DropRow(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login);
-                    logger.LogInformation("ProcessMarketplacePurchaseAsync/cancelled for {Owner}", hook.marketplace_purchase.account.login);
+                    logger.LogInformation("ProcessMarketplacePurchaseAsync/cancelled {PlanId} for {Owner}", hook.marketplace_purchase.plan.id, hook.marketplace_purchase.account.login);
                     return "cancelled";
                 default:
                     return hook.action;
@@ -239,7 +241,7 @@ namespace WebHook
         private static async Task<bool> IsPrivateEligible(CloudTable marketplaceTable, string ownerLogin)
         {
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 1750 or PlanId eq 781)");
+                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 2841 or PlanId eq 2840 or PlanId eq 1750 or PlanId eq 781)");
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
             return rows.Count() != 0;
         }

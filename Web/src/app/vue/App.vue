@@ -131,7 +131,7 @@
           <div class="col">
             <p>
               <img class="copyright" alt src="/images/icon.svg" width="30">
-              <span class>ImgBot &copy; 2017-2018</span>
+              <span class>ImgBot &copy; 2017-2019</span>
             </p>
           </div>
         </div>
