@@ -6,13 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
-using Common.Messages;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
@@ -128,6 +125,12 @@ namespace CompressImagesFunction
             {
                 foreach (var image in optimizedImages)
                 {
+                    if (image.OriginalPath.EndsWith(".svg"))
+                    {
+                        // do not use ImageMagick to verify SVGs
+                        continue;
+                    }
+
                     new MagickImage(image.OriginalPath).Dispose();
                 }
             }
@@ -169,12 +172,14 @@ namespace CompressImagesFunction
                             var extension = Path.GetExtension(image);
                             if (extension == ".svg")
                             {
+                                var plugins = aggressiveCompression ? Svgo.LossyPlugins : Svgo.LosslessPlugins;
+                                var config = JsonConvert.SerializeObject(new { full = true });
                                 var processStartInfo = new ProcessStartInfo
                                 {
                                     UseShellExecute = false,
                                     CreateNoWindow = true,
                                     FileName = "svgo",
-                                    Arguments = $"{image} --multipass"
+                                    Arguments = $"{image} --config='{config}' --multipass --enable={string.Join(",", plugins)}"
                                 };
                                 using (var process = Process.Start(processStartInfo))
                                 {
@@ -198,7 +203,7 @@ namespace CompressImagesFunction
                                     Title = image.Substring(localPath.Length),
                                     OriginalPath = image,
                                     SizeBefore = before / 1024d,
-                                    SizeAfter = file.Length / 1024d,
+                                    SizeAfter = fileAfter.Length / 1024d,
                                 });
                             }
                         },
