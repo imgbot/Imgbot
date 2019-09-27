@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
-using Common.Messages;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
@@ -127,6 +125,12 @@ namespace CompressImagesFunction
             {
                 foreach (var image in optimizedImages)
                 {
+                    if (image.OriginalPath.EndsWith(".svg"))
+                    {
+                        // do not use ImageMagick to verify SVGs
+                        continue;
+                    }
+
                     new MagickImage(image.OriginalPath).Dispose();
                 }
             }
@@ -165,14 +169,40 @@ namespace CompressImagesFunction
                             Console.WriteLine(image);
                             FileInfo file = new FileInfo(image);
                             double before = file.Length;
-                            if (aggressiveCompression ? imageOptimizer.Compress(file) : imageOptimizer.LosslessCompress(file))
+                            var extension = Path.GetExtension(image);
+                            if (extension == ".svg")
+                            {
+                                var plugins = aggressiveCompression ? Svgo.LossyPlugins : Svgo.LosslessPlugins;
+                                var processStartInfo = new ProcessStartInfo
+                                {
+                                    UseShellExecute = false,
+                                    CreateNoWindow = true,
+                                    FileName = "svgo",
+                                    Arguments = $"{image} --config=\"{{\"\"full\"\":true}}\" --multipass --enable={string.Join(",", plugins)}"
+                                };
+                                using (var process = Process.Start(processStartInfo))
+                                {
+                                    process.WaitForExit(10000);
+                                }
+                            }
+                            else if (aggressiveCompression)
+                            {
+                                imageOptimizer.Compress(file);
+                            }
+                            else
+                            {
+                                imageOptimizer.LosslessCompress(file);
+                            }
+
+                            FileInfo fileAfter = new FileInfo(image);
+                            if (fileAfter.Length < before)
                             {
                                 optimizedImages.Add(new CompressionResult
                                 {
                                     Title = image.Substring(localPath.Length),
                                     OriginalPath = image,
                                     SizeBefore = before / 1024d,
-                                    SizeAfter = file.Length / 1024d,
+                                    SizeAfter = fileAfter.Length / 1024d,
                                 });
                             }
                         },
