@@ -173,13 +173,12 @@ namespace CompressImagesFunction
                             if (extension == ".svg")
                             {
                                 var plugins = aggressiveCompression ? Svgo.LossyPlugins : Svgo.LosslessPlugins;
-                                var config = JsonConvert.SerializeObject(new { full = true });
                                 var processStartInfo = new ProcessStartInfo
                                 {
                                     UseShellExecute = false,
                                     CreateNoWindow = true,
                                     FileName = "svgo",
-                                    Arguments = $"{image} --config='{config}' --multipass --enable={string.Join(",", plugins)}"
+                                    Arguments = $"{image} --config=\"{{\"\"full\"\":true}}\" --multipass --enable={string.Join(",", plugins)}"
                                 };
                                 using (var process = Process.Start(processStartInfo))
                                 {
