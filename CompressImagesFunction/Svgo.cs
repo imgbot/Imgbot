@@ -26,8 +26,6 @@ namespace CompressImagesFunction
 
         public static string[] LossyPlugins => LosslessPlugins.Concat(new[]
         {
-            "addAttributesToSVGElement",
-            "addClassesToSVGElement",
             "cleanupEnableBackground",
             "cleanupIDs",
             "collapseGroups",
