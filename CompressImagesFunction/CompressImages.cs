@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
+using CompressImagesFunction.Compressors;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -16,6 +16,12 @@ namespace CompressImagesFunction
 {
     public static class CompressImages
     {
+        private static ICompress[] optimizers = new ICompress[]
+        {
+            new ImageMagickCompress(),
+            new SvgoCompress(),
+        };
+
         public static bool Run(CompressimagesParameters parameters, ILogger logger)
         {
             CredentialsHandler credentialsProvider =
@@ -152,12 +158,6 @@ namespace CompressImagesFunction
         private static CompressionResult[] OptimizeImages(Repository repo, string localPath, string[] imagePaths, ILogger logger, bool aggressiveCompression)
         {
             var optimizedImages = new List<CompressionResult>();
-            ImageOptimizer imageOptimizer = new ImageOptimizer
-            {
-                OptimalCompression = true,
-                IgnoreUnsupportedFormats = true,
-            };
-
             Parallel.ForEach(imagePaths, image =>
             {
                 try
@@ -170,28 +170,19 @@ namespace CompressImagesFunction
                             FileInfo file = new FileInfo(image);
                             double before = file.Length;
                             var extension = Path.GetExtension(image);
-                            if (extension == ".svg")
+                            foreach (var optimizer in optimizers)
                             {
-                                var plugins = aggressiveCompression ? Svgo.LossyPlugins : Svgo.LosslessPlugins;
-                                var processStartInfo = new ProcessStartInfo
+                                if (optimizer.SupportedExtensions.Contains(extension))
                                 {
-                                    UseShellExecute = false,
-                                    CreateNoWindow = true,
-                                    FileName = "svgo",
-                                    Arguments = $"{image} --config=\"{{\"\"full\"\":true}}\" --multipass --enable={string.Join(",", plugins)}"
-                                };
-                                using (var process = Process.Start(processStartInfo))
-                                {
-                                    process.WaitForExit(10000);
+                                    if (aggressiveCompression)
+                                    {
+                                        optimizer.LossyCompress(image);
+                                    }
+                                    else
+                                    {
+                                        optimizer.LosslessCompress(image);
+                                    }
                                 }
-                            }
-                            else if (aggressiveCompression)
-                            {
-                                imageOptimizer.Compress(file);
-                            }
-                            else
-                            {
-                                imageOptimizer.LosslessCompress(file);
                             }
 
                             FileInfo fileAfter = new FileInfo(image);

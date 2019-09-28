@@ -1,10 +1,11 @@
+using System.Diagnostics;
 using System.Linq;
 
-namespace CompressImagesFunction
+namespace CompressImagesFunction.Compressors
 {
-    public static class Svgo
+    public class SvgoCompress : ICompress
     {
-        public static string[] LosslessPlugins => new[]
+        private static string[] losslessPlugins = new[]
         {
             "cleanupAttrs",
             "cleanupListOfValues",
@@ -24,7 +25,7 @@ namespace CompressImagesFunction
             "sortAttrs",
         };
 
-        public static string[] LossyPlugins => LosslessPlugins.Concat(new[]
+        private static string[] lossyPlugins = losslessPlugins.Concat(new[]
         {
             "cleanupEnableBackground",
             "cleanupIDs",
@@ -50,5 +51,32 @@ namespace CompressImagesFunction
             "removeViewBox",
             "removeXMLNS",
         }).ToArray();
+
+        public string[] SupportedExtensions => new[] { ".svg" };
+
+        public void LosslessCompress(string path)
+        {
+            Compress(path, losslessPlugins);
+        }
+
+        public void LossyCompress(string path)
+        {
+            Compress(path, lossyPlugins);
+        }
+
+        private void Compress(string path, string[] plugins)
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                FileName = "svgo",
+                Arguments = $"{path} --config=\"{{\"\"full\"\":true}}\" --multipass --enable={string.Join(",", plugins)}"
+            };
+            using (var process = Process.Start(processStartInfo))
+            {
+                process.WaitForExit(10000);
+            }
+        }
     }
 }
