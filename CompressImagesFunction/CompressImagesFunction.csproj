@@ -6,9 +6,9 @@
 
   <Target Name="CopyNativeBinaries" AfterTargets="Build">
     <ItemGroup>
-      <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/libgit2-572e4d8.so" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-572e4d8.dylib" />
-      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-572e4d8.dll" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/libgit2-7ce88e6.so" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/osx/native/libgit2-7ce88e6.dylib" />
+      <NativeBinary Include="$(TargetDir)bin/runtimes/win-x86/native/git2-7ce88e6.dll" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/osx-x64/native/Magick.Native-Q16-x64.dll.dylib" />
       <NativeBinary Include="$(TargetDir)bin/runtimes/win-x64/native/Magick.Native-Q16-x64.dll" />
