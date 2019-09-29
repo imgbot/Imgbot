@@ -186,7 +186,7 @@ namespace CompressImagesFunction
                             }
 
                             FileInfo fileAfter = new FileInfo(image);
-                            if (fileAfter.Length < before)
+                            if (fileAfter.Length < before && fileAfter.Length > 0)
                             {
                                 optimizedImages.Add(new CompressionResult
                                 {
