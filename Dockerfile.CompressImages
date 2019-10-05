@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends --no-install-su
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g svgo@^1.3.0
+RUN npm install mozjpeg
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot
 COPY --from=dotnet ["/home/site/wwwroot", "/home/site/wwwroot"]
