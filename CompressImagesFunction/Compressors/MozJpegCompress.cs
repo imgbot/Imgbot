@@ -1,34 +1,32 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 
 namespace CompressImagesFunction.Compressors
 {
     public class MozJpegCompress : ICompress
     {
-        private static string[] losslessPlugins = new[] { "jpegtran", };
-        private static string[] lossyPlugins = losslessPlugins.Concat(new[] { "cjpeg", }).ToArray();
+        private static readonly string LosslessPlugin = "mozjpegtran";
+        private static readonly string LossyPlugin = "mozcjpeg";
 
-        public string[] SupportedExtensions => new[] { ".jpg", ".jpeg" };
+        public string[] SupportedExtensions =>
+            new[] { ".jpg", ".jpeg" };
 
-        public void LosslessCompress(string path)
-        {
-            Compress(path, losslessPlugins);
-        }
+        public void LosslessCompress(string path) =>
+            Compress(path, LosslessPlugin);
 
-        public void LossyCompress(string path)
-        {
-            Compress(path, lossyPlugins);
-        }
+        public void LossyCompress(string path) =>
+            Compress(path, LossyPlugin);
 
-        private void Compress(string path, string[] plugins)
+        private void Compress(string path, string compressionType)
         {
             var processStartInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                FileName = "mozjpeg",
-                Arguments = $"{path} --config=\"{{\"\"full\"\":true}}\" -quality --enable={string.Join(",", plugins)}"
+                FileName = compressionType,
+                Arguments = $"-quality 80 -outfile {path} {path}"
+
+                // FileName = "mozjpeg",
+                // Arguments = $"{compressionType} -quality 80 -outfile {path} {path}"
             };
             using (var process = Process.Start(processStartInfo))
             {
