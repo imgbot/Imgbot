@@ -14,16 +14,16 @@ namespace CompressImagesFunction.Compressors
             Compress(path, LosslessPlugin);
 
         public void LossyCompress(string path) =>
-            Compress(path, LossyPlugin);
+            Compress(path, LossyPlugin, "-quality 80 ");
 
-        private void Compress(string path, string compressionType)
+        private void Compress(string path, string compressionType, string switches = "")
         {
             var processStartInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 FileName = compressionType,
-                Arguments = $"-quality 80 -outfile {path} {path}"
+                Arguments = $"{switches}-outfile {path} {path}"
 
                 // FileName = "mozjpeg",
                 // Arguments = $"{compressionType} -quality 80 -outfile {path} {path}"
