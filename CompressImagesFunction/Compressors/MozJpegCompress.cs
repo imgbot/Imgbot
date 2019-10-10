@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 namespace CompressImagesFunction.Compressors
 {
@@ -10,23 +11,31 @@ namespace CompressImagesFunction.Compressors
         public string[] SupportedExtensions =>
             new[] { ".jpg", ".jpeg" };
 
-        public void LosslessCompress(string path) =>
-            Compress(path, LosslessPlugin);
+        public void LosslessCompress(string path)
+        {
+            var arguments = $"-outfile {path}";
+            Compress(LosslessPlugin, arguments);
+        }
 
-        public void LossyCompress(string path) =>
-            Compress(path, LossyPlugin, "-quality 80 ");
+        public void LossyCompress(string path)
+        {
+            var tempPath = path + ".tmp";
+            var arguments = $"-quality 80 -outfile {tempPath} {path}";
 
-        private void Compress(string path, string compressionType, string switches = "")
+            Compress(LossyPlugin, arguments);
+
+            File.Delete(path);
+            File.Move(tempPath, path);
+        }
+
+        private void Compress(string compressionType, string arguments)
         {
             var processStartInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 FileName = compressionType,
-                Arguments = $"{switches}-outfile {path} {path}"
-
-                // FileName = "mozjpeg",
-                // Arguments = $"{compressionType} -quality 80 -outfile {path} {path}"
+                Arguments = arguments,
             };
             using (var process = Process.Start(processStartInfo))
             {
