@@ -1,4 +1,7 @@
 @green: #438977;
+@gray: rgb(100, 111, 121);
+@lightgray: #F0F4F5;
+@darkgray: #393A3A;
 
 @medium: 768px;
 @large: 992px;
@@ -13,29 +16,41 @@ body {
   overflow-x: hidden;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+a,
+small {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+}
+
 h1 {
-  font-family: "Oswald", sans-serif;
-  font-size: 76px;
+  font-size: 45px;
+  margin-bottom: 25px;
 }
 
 h2 {
-  font-family: "Open Sans Condensed", sans-serif;
-  font-size: 50px;
+  font-size: 40px;
   margin-top: 20px;
   margin-bottom: 10px;
-  font-weight: bold;
 }
 
 h3 {
-  font-family: "Open Sans Condensed", sans-serif;
-  font-size: 36px;
+  color: @gray;
+  font-size: 22px;
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
 p,
 ul {
-  font-family: "Muli", sans-serif;
   font-size: 16px;
 }
 
@@ -47,90 +62,48 @@ a {
   color: @green;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  text-transform: uppercase;
-}
-
 ul,
 ol {
   margin: 0;
   padding: 0;
 }
 
-.container-hero {
+small {
+  color: @gray;
+  display: block;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.btn-primary {
   background: @green;
-  color: #fff;
-  padding: 100px 0;
-  position: relative;
-  overflow: hidden;
-  box-shadow: #dee0e0 0 0 15px 15px;
-  border-bottom: 2px solid @green;
+  color: #fff !important;
 
-  h1 {
-    font-size: 100px;
-  }
-
-  .btn-link {
-    color: #fff;
-  }
-
-  .github {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-
-  @media only screen and (max-width: @medium) {
-    text-align: center;
-  }
-
-  @media only screen and (min-width: @large) {
-    margin-top: 60px;
-
-    &:before {
-      content: "";
-      position: absolute;
-      left: 14%;
-      width: 120%;
-      height: 400%;
-      background-color: #fff;
-      top: 0;
-      -webkit-transform: rotate(45deg);
-      -moz-transform: rotate(45deg);
-      transform: rotate(45deg);
-    }
-  }
-
-  @media only screen and (min-width: @xlarge) {
-    &:before {
-      content: "";
-      left: 30%;
-      width: 130%;
-    }
-  }
-
-  @media only screen and (min-width: @xxlarge) {
-    &:before {
-      content: "";
-      left: 28%;
-      top: 50%;
-    }
-  }
-
-  @media only screen and (min-width: @xxxlarge) {
-    &:before {
-      content: "";
-      left: 40%;
-      top: 50%;
-    }
+  &:hover {
+    background: darken(@green, 10%);
   }
 }
 
-h2 {
-  color: @green;
+.container-hero {
+  padding: 200px 0 0 0;
+  text-align: center;
+
+  @media only screen and (max-width: @medium) {
+    // text-align: center;
+  }
+
+  @media only screen and (min-width: @large) {
+
+  }
+
+  .btn {
+    padding: 12px 24px;
+    margin-top: 24px;
+  }
+
+  & + .container-spaced {
+    margin-top: -120px;
+  }
 }
 
 .container-spaced {
@@ -138,8 +111,7 @@ h2 {
 }
 
 .container-light {
-  background-color: lighten(@green, 50%);
-  //background-color: #e6f5f0;
+  background-color: @lightgray;
 
   h2 {
     color: #000;
@@ -148,11 +120,15 @@ h2 {
 
 footer {
   padding: 20px 20px;
-  background-color: @green;
+  background-color: @darkgray;
   color: #fff;
 
   a {
     color: #fff;
+
+    &:hover {
+      color: #fff;
+    }
   }
 
   .copyright {
@@ -161,9 +137,19 @@ footer {
     padding: 6px 8px;
   }
 
+  h3 {
+    margin-left: 24px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
   ul {
     margin-left: 24px;
-    text-decoration: underline;
+    list-style: none;
+
+    li {
+      margin-top: 24px;
+    }
   }
 }
 
@@ -177,7 +163,6 @@ footer {
   li {
     margin-top: 27px;
     font-size: 16px;
-    font-family: "Playfair Display", serif;
     padding-left: 7px;
     border-left: 5px solid transparent;
     transition: all 0.2s;
@@ -210,7 +195,6 @@ footer {
 
   h1,
   h2 {
-    font-family: "Playfair Display", serif;
     font-weight: normal;
   }
 
@@ -238,14 +222,12 @@ footer {
 
   h3 {
     font-size: 20px;
-    font-family: "Muli", sans-serif;
     text-transform: none;
   }
 
   h4 {
     font-size: 16px;
     font-weight: bold;
-    font-family: "Muli", sans-serif;
     text-transform: none;
   }
 
@@ -257,7 +239,6 @@ footer {
   ol {
     font-size: 14px;
     margin: 15px 45px;
-    font-family: "Muli", sans-serif;
   }
 
   li {
