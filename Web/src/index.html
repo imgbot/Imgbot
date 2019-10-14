@@ -1,4 +1,4 @@
-<!-- @@@title: Imgbot - Optimize your images on GitHub@@@ -->
+<!-- @@@title: Imgbot - Automatic image compression@@@ -->
 
 <nav class="navbar navbar-light bg-white navbar-expand-lg fixed-top border-bottom">
   <a class="navbar-brand" href="/">
@@ -135,7 +135,8 @@
         <img src="https://www.kensiumsolutions.com/blog/wp-content/uploads/2018/07/Vertical-Orange-Magento-Logo.png">
       </div>
       <div class="col">
-        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--0HI0TVhO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://www.code2bits.com/wp-content/uploads/feature-image/feature-image-homebrew.png">
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--0HI0TVhO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://www.code2bits.com/wp-content/uploads/feature-image/feature-image-homebrew.png">
       </div>
       <div class="col">
         <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
@@ -147,43 +148,72 @@
         <img src="https://cdn.freebiesupply.com/logos/thumbs/2x/electron-4-logo.png">
       </div>
       <div class="col">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Nextcloud_Logo.svg/1280px-Nextcloud_Logo.svg.png">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Nextcloud_Logo.svg/1280px-Nextcloud_Logo.svg.png">
       </div>
       <div class="col">
         <img src="https://avatars1.githubusercontent.com/u/43716716?s=200&v=4">
       </div>
       <div class="col">
-        <img src="data:image/png;base64,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">
+        <img
+          src="data:image/png;base64,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">
       </div>
     </div>
     <div class="row mt-5">
       <div class="col">
-        <img src="http://placekitten.com/g/100/100">
+        <img src="https://brsanders.files.wordpress.com/2017/12/gumroad-logo-big.png?w=848">
       </div>
       <div class="col">
-        <img src="http://placekitten.com/g/100/100">
+        <img src="https://user-images.githubusercontent.com/61099/37693034-5783b3d6-2c93-11e8-80ea-bd78438dcd51.png">
       </div>
       <div class="col">
-        <img src="http://placekitten.com/g/100/100">
+        <img src="https://getstream.imgix.net/images/getstream_io_og.png">
       </div>
       <div class="col">
-        <img src="http://placekitten.com/g/100/100">
+        <img src="https://nozbe.com/images/base/default.jpg">
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col">
+        <img src="https://avatars3.githubusercontent.com/u/6295529?s=200&v=4">
+      </div>
+      <div class="col">
+        <img src="https://avatars3.githubusercontent.com/u/19707867?s=200&v=4">
+      </div>
+      <div class="col">
+        <img src="https://avatars0.githubusercontent.com/u/107424?s=200&v=4">
+      </div>
+      <div class="col">
+        <img src="https://raw.githubusercontent.com/agflow/logos/master/agflow-logo.png">
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col">
+        <img src="https://donar.messe.de/exhibitor/didactahannover/2018/X736109/clogo-240x240-537435.jpg">
+      </div>
+      <div class="col">
+        <img src="https://www.commonlit.org/logo.png">
+      </div>
+      <div class="col">
+        <img src="https://dwdqz3611m4qq.cloudfront.net/meta-images/Wave_shareable_image.jpg?mtime=20181207145119">
+      </div>
+      <div class="col">
+        <img src="https://ga0.imgix.net/logo/o/91009-1490300399-007432?auto=format&ch=Width%2CDPR&ixjsv=2.0.0&ixlib=rb-1.0.0&w=1010">
       </div>
     </div>
   </div>
 </div>
 
-
 <div class="container-spaced container-light container-hero">
   <div class="container text-center">
     <div class="row">
       <div class="col">
-        <h2>Optimize your images from now until forever.</h2>
+        <h2>See why more than 150,000 projects on GitHub rely on Imgbot.</h2>
       </div>
     </div>
     <div class="row justify-content-md-center">
       <div class="col col-md-8">
-        <h3>See why more than 150,000 projects on GitHub rely on Imgbot.</h3>
+        <h3 class="live-text"><span class="placeholder">Optimize your images from now until forever.</span></h3>
       </div>
     </div>
     <div class="row mt-4">
@@ -251,3 +281,38 @@
     </div>
   </div>
 </footer>
+
+<script>
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://api.github.com/search/issues?o=desc&p=3&q=imgbot%20is:pr&sort=created');
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      var index = -1;
+
+      var rotate = function () {
+        var item, link, percentMatch;
+        do {
+          index++;
+          if (index >= data.items.length) return;
+
+          item = data.items[index];
+          link = item.html_url;
+          percentMatch = item.body.match(/Your image file size has been reduced by \*\*(.*)%\*\*/);
+        } while (!percentMatch || !percentMatch.length > 1);
+
+        var percent = percentMatch[1];
+        var handle = item.html_url.match(/https:\/\/github.com\/(.+?)\//)[1];
+
+        $(".live-text .placeholder").remove();
+        $(".live-text").append(
+          "<a target='_blank' href='" + link + "'>Imgbot just optimized images by " + percent + "% for @" + handle + "</a>");
+      };
+
+      rotate();
+      setInterval(rotate, 5000);
+    }
+  }
+  xhr.send();
+</script>
