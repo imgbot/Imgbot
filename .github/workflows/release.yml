@@ -3,7 +3,7 @@ name: Release dabutvin/imgbot-compressimages
 jobs:
   dockerRegistry:
     name: Docker Registry
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
