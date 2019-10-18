@@ -6,20 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Docker Registry
-      uses: actions/docker/login@8cdf801b322af5f369e00d85e9cf3a7122f49108
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    - name: GitHub Action for Docker
-      uses: actions/docker/cli@8cdf801b322af5f369e00d85e9cf3a7122f49108
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@2.6
       with:
-        args: build -f Dockerfile.CompressImages . -t imgbot-compressimages
-    - name: Docker Tag
-      uses: actions/docker/tag@8cdf801b322af5f369e00d85e9cf3a7122f49108
-      with:
-        args: imgbot-compressimages dabutvin/imgbot-compressimages
-    - name: GitHub Action for Docker-1
-      uses: actions/docker/cli@8cdf801b322af5f369e00d85e9cf3a7122f49108
-      with:
-        args: push dabutvin/imgbot-compressimages
+        name: dabutvin/imgbot-compressimages
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        snapshot: true
+        dockerfile: Dockerfile.CompressImages
