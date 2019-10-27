@@ -31,11 +31,12 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
-            Assert.AreEqual("Commit to non default branch", response.Result);
+            Assert.AreEqual("Commit to non default branch (or override)", response.Result);
 
             // No messages sent to Router
             await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
@@ -63,7 +64,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -95,7 +97,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -130,11 +133,12 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
-            Assert.AreEqual("Commit to non default branch", response.Result);
+            Assert.AreEqual("Commit to non default branch (or override)", response.Result);
 
             // No messages sent to Router
             await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
@@ -162,7 +166,65 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("truth", response.Result);
+
+            // 1 message sent to Router
+            await routerMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<RouterMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages set to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenCommitToOtherBranchWithOverride_ShouldReturnOkQueueToRouter()
+        {
+            void ExtraSetup(
+                CloudQueue extraRouterMessages,
+                CloudQueue extraOpenPrMessages,
+                CloudTable extraInstallationsTable,
+                CloudTable extraMarketplaceTable,
+                CloudTable extraSettingsTable) =>
+            extraSettingsTable
+                .ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve))
+                .Returns(Task.FromResult(new TableResult
+                {
+                    Result = new Settings
+                    {
+                        ETag = "*",
+                        RowKey = "test",
+                        PartitionKey = "23199",
+                        DefaultBranchOverride = "some-random-branch"
+                    },
+                }));
+
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/commit-otherbranch.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable,
+                out var settingsTable,
+                ExtraSetup);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -198,7 +260,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -234,7 +297,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -270,7 +334,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -306,7 +371,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -339,7 +405,8 @@ namespace Test
                 CloudQueue extraRouterMessages,
                 CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
-                CloudTable extraMarketplaceTable) =>
+                CloudTable extraMarketplaceTable,
+                CloudTable extraSettingsTable) =>
             extraInstallationsTable
                 .ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve))
                 .Returns(Task.FromResult(new TableResult
@@ -360,6 +427,7 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
+                out var settingsTable,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -400,7 +468,8 @@ namespace Test
                 CloudQueue extraRouterMessages,
                 CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
-                CloudTable extraMarketplaceTable) =>
+                CloudTable extraMarketplaceTable,
+                CloudTable extraSettingsTable) =>
             extraInstallationsTable
                 .ExecuteQuerySegmentedAsync(Arg.Any<TableQuery>(), Arg.Any<TableContinuationToken>())
                 .Returns(Task.FromResult(tableQuerySegment));
@@ -413,6 +482,7 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
+                out var settingsTable,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -445,7 +515,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -475,7 +546,8 @@ namespace Test
                 CloudQueue extraRouterMessages,
                 CloudQueue extraOpenPrMessages,
                 CloudTable extraInstallationsTable,
-                CloudTable extraMarketplaceTable) =>
+                CloudTable extraMarketplaceTable,
+                CloudTable extraSettingsTable) =>
             extraMarketplaceTable
                 .ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve))
                 .Returns(Task.FromResult(new TableResult
@@ -496,6 +568,7 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
+                out var settingsTable,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -529,7 +602,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -556,6 +630,96 @@ namespace Test
         }
 
         [TestMethod]
+        public async Task GivenMergedImgBotToDefaultBranchOverride_ShouldReturnOkQueueToDeleteBranch()
+        {
+            void ExtraSetup(
+                CloudQueue extraRouterMessages,
+                CloudQueue extraOpenPrMessages,
+                CloudTable extraInstallationsTable,
+                CloudTable extraMarketplaceTable,
+                CloudTable extraSettingsTable) =>
+            extraSettingsTable
+                .ExecuteAsync(Arg.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve))
+                .Returns(Task.FromResult(new TableResult
+                {
+                    Result = new Settings
+                    {
+                        ETag = "*",
+                        RowKey = "test",
+                        PartitionKey = "23199",
+                        DefaultBranchOverride = "some-random-branch"
+                    },
+                }));
+
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/merged-imgbot-to-otherbranch.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable,
+                out var settingsTable,
+                ExtraSetup);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("deleteit", response.Result);
+
+            // No messages sent to Router
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // 1 message set to DeleteBranch
+            await deleteBranchMessages.Received(1).AddMessageAsync(Arg.Is<CloudQueueMessage>(x =>
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).InstallationId == 23199 &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).RepoName == "test" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).Owner == "dabutvin" &&
+                JsonConvert.DeserializeObject<DeleteBranchMessage>(x.AsString).CloneUrl == "https://github.com/dabutvin/test"));
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
+        public async Task GivenMergedImgBotToOtherBranch_ShouldReturnOkDoNothing()
+        {
+            var result = await ExecuteHookAsync(
+                githubEvent: "push",
+                payload: "data/hooks/merged-imgbot-to-otherbranch.json",
+                out var routerMessages,
+                out var openPrMessages,
+                out var deleteBranchMessages,
+                out var installationsTable,
+                out var marketplaceTable,
+                out var settingsTable);
+
+            // Assert OKObjectResult and Value
+            var response = (HookResponse)((OkObjectResult)result).Value;
+            Assert.AreEqual("Commit to non default branch (or override)", response.Result);
+
+            // No messages sent to Router
+            await routerMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to OpenPr
+            await openPrMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No messages sent to DeleteBranch
+            await deleteBranchMessages.DidNotReceive().AddMessageAsync(Arg.Any<CloudQueueMessage>());
+
+            // No calls to InstallationTable
+            await installationsTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+
+            // No calls to MarketplaceTable
+            await marketplaceTable.DidNotReceive().ExecuteAsync(Arg.Any<TableOperation>());
+        }
+
+        [TestMethod]
         public async Task GivenSquashMergedImgBotToDefaultBranch_ShouldReturnOkQueueToDeleteBranch()
         {
             var result = await ExecuteHookAsync(
@@ -565,7 +729,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -601,7 +766,8 @@ namespace Test
                 out var openPrMessages,
                 out var deleteBranchMessages,
                 out var installationsTable,
-                out var marketplaceTable);
+                out var marketplaceTable,
+                out var settingsTable);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -635,7 +801,8 @@ namespace Test
             out CloudQueue deleteBranchMessages,
             out CloudTable installationsTable,
             out CloudTable marketplaceTable,
-            Action<CloudQueue, CloudQueue, CloudTable, CloudTable> extraSetup = null)
+            out CloudTable settingsTable,
+            Action<CloudQueue, CloudQueue, CloudTable, CloudTable, CloudTable> extraSetup = null)
         {
             var request = Substitute.For<HttpRequestMessage>();
             routerMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/routermessage"));
@@ -643,15 +810,16 @@ namespace Test
             deleteBranchMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/deletebranchmessage"));
             installationsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/installation"));
             marketplaceTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/marketplace"));
+            settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
             var logger = Substitute.For<ILogger>();
 
             request.Headers.Add("X-GitHub-Event", new[] { githubEvent });
             request.Content = new StringContent(File.ReadAllText(payload));
 
-            extraSetup?.Invoke(routerMessages, openPrMessages, installationsTable, marketplaceTable);
+            extraSetup?.Invoke(routerMessages, openPrMessages, installationsTable, marketplaceTable, settingsTable);
 
             return WebHook.WebHookFunction.Run(
-                request, routerMessages, openPrMessages, deleteBranchMessages, installationsTable, marketplaceTable, logger);
+                request, routerMessages, openPrMessages, deleteBranchMessages, installationsTable, marketplaceTable, settingsTable, logger);
         }
     }
 }

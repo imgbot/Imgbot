@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Common;
@@ -8,6 +9,7 @@ using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.WindowsAzure.Storage.Table;
 using NSubstitute;
 
 namespace Test
@@ -60,6 +62,7 @@ namespace Test
                  }));
 
             var openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
+            var settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
 
             var repoChecks = Substitute.For<IRepoChecks>();
             repoChecks.IsArchived(Arg.Any<GitHubClientParameters>())
@@ -69,6 +72,7 @@ namespace Test
                 installationTokenProvider,
                 compressImagesMessage,
                 openPrMessages,
+                settingsTable,
                 repoChecks,
                 logger,
                 context);
