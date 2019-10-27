@@ -6,6 +6,6 @@ namespace OpenPrFunction
 {
     public interface IPullRequest
     {
-        Task<Pr> OpenAsync(GitHubClientParameters parameters);
+        Task<Pr> OpenAsync(GitHubClientParameters parameters, Settings settings = null);
     }
 }
