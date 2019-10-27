@@ -15,6 +15,7 @@ Here is an example .imgbotconfig setup that shows some of the options.
         "public/special_images/*", // ignore by folderpath
     ],
     "aggressiveCompression": "true" // true|false
+    "compressWiki": "true" // true|false
 }
 ```
 
