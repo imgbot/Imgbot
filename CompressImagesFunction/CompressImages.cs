@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
+using Common.Messages;
 using CompressImagesFunction.Compressors;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -23,7 +25,7 @@ namespace CompressImagesFunction
             new MozJpegCompress(),
         };
 
-        public static bool Run(CompressimagesParameters parameters, ILogger logger)
+        public static bool Run(CompressimagesParameters parameters, ICollector<CompressImagesMessage> compressImagesMessages, ILogger logger)
         {
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
@@ -81,6 +83,17 @@ namespace CompressImagesFunction
             {
                 logger.LogInformation("CompressImagesFunction: skipping optimization due to schedule for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                 return false;
+            }
+
+            if (repoConfiguration.CompressWiki && !parameters.CloneUrl.Contains(".wiki.gi"))
+            {
+                compressImagesMessages.Add(new CompressImagesMessage()
+                {
+                    InstallationId = parameters.CompressImagesMessage.InstallationId,
+                    RepoName = parameters.CompressImagesMessage.RepoName,
+                    Owner = parameters.RepoOwner,
+                    CloneUrl = $"https://github.com/{parameters.RepoOwner}/{parameters.RepoName}.wiki.gi"
+                });
             }
 
             // check out the branch

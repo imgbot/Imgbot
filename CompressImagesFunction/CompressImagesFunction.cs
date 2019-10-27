@@ -17,13 +17,14 @@ namespace CompressImagesFunction
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("longrunningcompressmessage")] ICollector<CompressImagesMessage> longRunningCompressMessages,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            [Queue("compressimagesmessage")] ICollector<CompressImagesMessage> compressImagesMessages,
             ILogger logger,
             ExecutionContext context)
         {
             logger.LogInformation($"Starting compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, repoChecks, logger, context);
             if (await Task.WhenAny(task, Task.Delay(570000)) == task)
             {
                 await task;
@@ -39,13 +40,14 @@ namespace CompressImagesFunction
         public static async Task LongTrigger(
             [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            [Queue("compressimagesmessage")] ICollector<CompressImagesMessage> compressImagesMessages,
             ILogger logger,
             ExecutionContext context)
         {
             logger.LogInformation($"Starting long compress");
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, repoChecks, logger, context);
             await task;
         }
 
@@ -53,6 +55,7 @@ namespace CompressImagesFunction
             IInstallationTokenProvider installationTokenProvider,
             CompressImagesMessage compressImagesMessage,
             ICollector<OpenPrMessage> openPrMessages,
+            ICollector<CompressImagesMessage> compressImagesMessages,
             IRepoChecks repoChecks,
             ILogger logger,
             ExecutionContext context)
@@ -108,7 +111,7 @@ namespace CompressImagesFunction
                 CompressImagesMessage = compressImagesMessage,
             };
 
-            var didCompress = CompressImages.Run(compressImagesParameters, logger);
+            var didCompress = CompressImages.Run(compressImagesParameters, compressImagesMessages, logger);
 
             if (didCompress)
             {
