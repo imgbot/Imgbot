@@ -60,6 +60,29 @@ namespace CompressImagesFunction
                 logger.LogWarning(e, "CompressImagesFunction: issue checking for existing branch or empty repo for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
             }
 
+            // check if we should switch away from the default branch
+            if (parameters.Settings != null && !string.IsNullOrEmpty(parameters.Settings.DefaultBranchOverride))
+            {
+                logger.LogInformation(
+                    "CompressImagesFunction: default branch override for {Owner}/{RepoName} is {DefaultBranchOverride}",
+                    parameters.RepoOwner,
+                    parameters.RepoName,
+                    parameters.Settings.DefaultBranchOverride);
+
+                var baseBranch = repo.Branches[parameters.Settings.DefaultBranchOverride];
+                if (baseBranch == null)
+                {
+                    logger.LogWarning(
+                        "CompressImagesFunction: default branch ({DefaultBranchOverride}) not found for {Owner}/{RepoName}",
+                        parameters.Settings.DefaultBranchOverride,
+                        parameters.RepoOwner,
+                        parameters.RepoName);
+                    return false;
+                }
+
+                Commands.Checkout(repo, baseBranch);
+            }
+
             var repoConfiguration = new RepoConfiguration();
 
             try
