@@ -8,17 +8,17 @@ namespace Common.TableModels
         {
         }
 
-        public Settings(string installationId, string repositoryId)
+        public Settings(string installationId, string repoName)
         {
             PartitionKey = installationId;
-            RowKey = repositoryId;
+            RowKey = repoName.ToLower();
             InstallationId = installationId;
-            RepositoryId = repositoryId;
+            RepoName = repoName;
         }
 
         public string InstallationId { get; set; }
 
-        public string RepositoryId { get; set; }
+        public string RepoName { get; set; }
 
         public string DefaultBranchOverride { get; set; }
     }

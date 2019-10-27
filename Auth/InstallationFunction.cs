@@ -218,15 +218,14 @@ namespace Auth
             }
 
             var settingsTable = GetTable("settings");
-            var settingsResult = await settingsTable.ExecuteAsync(TableOperation.Retrieve<Common.TableModels.Settings>(installationid, repositoryid));
-            var settings = settingsResult.Result as Common.TableModels.Settings;
+            var settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, installationid, repository.name);
             var response = req.CreateResponse();
             if (settings != null)
             {
                 response.SetJson(new
                 {
                     settings.InstallationId,
-                    settings.RepositoryId,
+                    settings.RepoName,
                     settings.DefaultBranchOverride,
                 });
             }
@@ -237,10 +236,15 @@ namespace Auth
 
         [FunctionName("SetRepositorySettingsFunction")]
         public static async Task<HttpResponseMessage> SetRepositorySettingsAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "repositories/settings/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "repositories/settings/{installationid}/{repositoryid}")]HttpRequestMessage req,
             string installationid,
             string repositoryid)
         {
+            if (req.Method == HttpMethod.Options)
+            {
+                return req.CreateOptionsResponse();
+            }
+
             var token = req.ReadCookie("token");
             if (token == null)
             {
@@ -254,20 +258,16 @@ namespace Auth
             }
 
             var settingsTable = GetTable("settings");
-            var settingsResult = await settingsTable.ExecuteAsync(TableOperation.Retrieve<Common.TableModels.Settings>(installationid, repositoryid));
-            var settings = settingsResult.Result as Common.TableModels.Settings;
+            var settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, installationid, repository.name);
             if (settings == null)
             {
-                settings = new Common.TableModels.Settings(installationid, repositoryid);
+                settings = new Common.TableModels.Settings(installationid, repository.name);
             }
 
             var bodyJson = await req.Content.ReadAsStringAsync();
             var newSettings = JsonConvert.DeserializeObject<Common.TableModels.Settings>(bodyJson);
 
-            if (!string.IsNullOrEmpty(newSettings.DefaultBranchOverride))
-            {
-                settings.DefaultBranchOverride = newSettings.DefaultBranchOverride;
-            }
+            settings.DefaultBranchOverride = newSettings.DefaultBranchOverride;
 
             await settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings));
             var response = req.CreateResponse();
