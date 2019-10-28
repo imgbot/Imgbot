@@ -79,21 +79,21 @@ namespace CompressImagesFunction
                 // ignore
             }
 
-            if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
-            {
-                logger.LogInformation("CompressImagesFunction: skipping optimization due to schedule for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                return false;
-            }
-
-            if (repoConfiguration.CompressWiki && !parameters.CloneUrl.Contains(".wiki.gi"))
+            if (repoConfiguration.CompressWiki && !parameters.CloneUrl.Contains(".wiki.git"))
             {
                 compressImagesMessages.Add(new CompressImagesMessage()
                 {
                     InstallationId = parameters.CompressImagesMessage.InstallationId,
                     RepoName = parameters.CompressImagesMessage.RepoName,
                     Owner = parameters.RepoOwner,
-                    CloneUrl = $"https://github.com/{parameters.RepoOwner}/{parameters.RepoName}.wiki.gi"
+                    CloneUrl = $"https://github.com/{parameters.RepoOwner}/{parameters.RepoName}.wiki.git"
                 });
+            }
+
+            if (Schedule.ShouldOptimizeImages(repoConfiguration, repo) == false)
+            {
+                logger.LogInformation("CompressImagesFunction: skipping optimization due to schedule for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
+                return false;
             }
 
             // check out the branch

@@ -60,6 +60,7 @@ namespace Test
                  }));
 
             var openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
+            var compressImagesMessages = Substitute.For<ICollector<CompressImagesMessage>>();
 
             var repoChecks = Substitute.For<IRepoChecks>();
             repoChecks.IsArchived(Arg.Any<GitHubClientParameters>())
@@ -69,6 +70,7 @@ namespace Test
                 installationTokenProvider,
                 compressImagesMessage,
                 openPrMessages,
+                compressImagesMessages,
                 repoChecks,
                 logger,
                 context);
