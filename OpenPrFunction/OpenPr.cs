@@ -6,6 +6,7 @@ using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace OpenPrFunction
@@ -18,10 +19,11 @@ namespace OpenPrFunction
             [QueueTrigger("openprmessage")]OpenPrMessage openPrMessage,
             [Table("installation", "{InstallationId}", "{RepoName}")] Installation installation,
             [Table("pull")] ICollector<Pr> prs,
-            [Table("settings")] CloudTable settingsTable,
             ILogger logger,
             ExecutionContext context)
         {
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
             var installationTokenProvider = new InstallationTokenProvider();
             var pullRequest = new PullRequest();
             await RunAsync(openPrMessage, installation, prs, settingsTable, installationTokenProvider, pullRequest, logger, context)

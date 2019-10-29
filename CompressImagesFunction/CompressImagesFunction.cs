@@ -6,6 +6,7 @@ using Common.Messages;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace CompressImagesFunction
@@ -17,11 +18,14 @@ namespace CompressImagesFunction
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("longrunningcompressmessage")] ICollector<CompressImagesMessage> longRunningCompressMessages,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
-            [Table("settings")] CloudTable settingsTable,
             ILogger logger,
             ExecutionContext context)
         {
             logger.LogInformation($"Starting compress");
+
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
             var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
@@ -40,11 +44,14 @@ namespace CompressImagesFunction
         public static async Task LongTrigger(
             [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
-            [Table("settings")] CloudTable settingsTable,
             ILogger logger,
             ExecutionContext context)
         {
             logger.LogInformation($"Starting long compress");
+
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
             var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
