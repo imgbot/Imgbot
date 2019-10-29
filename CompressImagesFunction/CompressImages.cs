@@ -70,7 +70,7 @@ namespace CompressImagesFunction
                     parameters.RepoName,
                     parameters.Settings.DefaultBranchOverride);
 
-                var baseBranch = repo.Branches[parameters.Settings.DefaultBranchOverride];
+                var baseBranch = repo.Branches[$"refs/remotes/origin/{parameters.Settings.DefaultBranchOverride}"];
                 if (baseBranch == null)
                 {
                     logger.LogWarning(
