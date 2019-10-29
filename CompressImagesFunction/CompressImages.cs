@@ -20,6 +20,7 @@ namespace CompressImagesFunction
         {
             new ImageMagickCompress(),
             new SvgoCompress(),
+            new MozJpegCompress(),
         };
 
         public static bool Run(CompressimagesParameters parameters, ILogger logger)
@@ -200,6 +201,7 @@ namespace CompressImagesFunction
                                     if (aggressiveCompression)
                                     {
                                         optimizer.LossyCompress(image);
+                                        optimizer.LosslessCompress(image);
                                     }
                                     else
                                     {
