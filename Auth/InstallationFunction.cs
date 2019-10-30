@@ -199,6 +199,82 @@ namespace Auth
             return response;
         }
 
+        [FunctionName("GetRepositorySettingsFunction")]
+        public static async Task<HttpResponseMessage> GetRepositorySettingsAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/settings/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            string installationid,
+            string repositoryid)
+        {
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var repository = await GetRepository(installationid, token, repositoryid);
+            if (repository == null)
+            {
+                throw new Exception("repository request mismatch");
+            }
+
+            var settingsTable = GetTable("settings");
+            var settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, installationid, repository.name);
+            var response = req.CreateResponse();
+            if (settings != null)
+            {
+                response.SetJson(new
+                {
+                    settings.InstallationId,
+                    settings.RepoName,
+                    settings.DefaultBranchOverride,
+                });
+            }
+
+            response.EnableCors();
+            return response;
+        }
+
+        [FunctionName("SetRepositorySettingsFunction")]
+        public static async Task<HttpResponseMessage> SetRepositorySettingsAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "repositories/settings/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            string installationid,
+            string repositoryid)
+        {
+            if (req.Method == HttpMethod.Options)
+            {
+                return req.CreateOptionsResponse();
+            }
+
+            var token = req.ReadCookie("token");
+            if (token == null)
+            {
+                throw new Exception("missing authentication");
+            }
+
+            var repository = await GetRepository(installationid, token, repositoryid);
+            if (repository == null)
+            {
+                throw new Exception("repository request mismatch");
+            }
+
+            var settingsTable = GetTable("settings");
+            var settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, installationid, repository.name);
+            if (settings == null)
+            {
+                settings = new Common.TableModels.Settings(installationid, repository.name);
+            }
+
+            var bodyJson = await req.Content.ReadAsStringAsync();
+            var newSettings = JsonConvert.DeserializeObject<Common.TableModels.Settings>(bodyJson);
+
+            settings.DefaultBranchOverride = newSettings.DefaultBranchOverride;
+
+            await settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings));
+            var response = req.CreateResponse();
+            response.EnableCors();
+            return response;
+        }
+
         private static CloudTable GetTable(string tableName)
         {
             var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
