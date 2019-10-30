@@ -6,6 +6,8 @@ using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace OpenPrFunction
 {
@@ -20,15 +22,19 @@ namespace OpenPrFunction
             ILogger logger,
             ExecutionContext context)
         {
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
             var installationTokenProvider = new InstallationTokenProvider();
             var pullRequest = new PullRequest();
-            await RunAsync(openPrMessage, installation, prs, installationTokenProvider, pullRequest, logger, context).ConfigureAwait(false);
+            await RunAsync(openPrMessage, installation, prs, settingsTable, installationTokenProvider, pullRequest, logger, context)
+                    .ConfigureAwait(false);
         }
 
         public static async Task RunAsync(
             OpenPrMessage openPrMessage,
             Installation installation,
             ICollector<Pr> prs,
+            CloudTable settingsTable,
             IInstallationTokenProvider installationTokenProvider,
             IPullRequest pullRequest,
             ILogger logger,
@@ -49,12 +55,26 @@ namespace OpenPrFunction
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
 
             logger.LogInformation("OpenPrFunction: Opening pull request for {Owner}/{RepoName}", installation.Owner, installation.RepoName);
-            var result = await pullRequest.OpenAsync(new GitHubClientParameters
+
+            var settings = await SettingsHelper.GetSettings(settingsTable, installation.InstallationId, installation.RepoName);
+
+            if (settings != null && !string.IsNullOrEmpty(settings.DefaultBranchOverride))
             {
-                Password = installationToken.Token,
-                RepoName = installation.RepoName,
-                RepoOwner = installation.Owner,
-            });
+                logger.LogInformation(
+                    "OpenPrFunction: default branch override for {Owner}/{RepoName} is {DefaultBranchOverride}",
+                    installation.Owner,
+                    installation.RepoName,
+                    settings.DefaultBranchOverride);
+            }
+
+            var result = await pullRequest.OpenAsync(
+                new GitHubClientParameters
+                {
+                    Password = installationToken.Token,
+                    RepoName = installation.RepoName,
+                    RepoOwner = installation.Owner,
+                },
+                settings);
 
             if (result?.Id > 0)
             {

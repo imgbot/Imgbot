@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
@@ -9,8 +7,8 @@ using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.WindowsAzure.Storage.Table;
 using NSubstitute;
 using OpenPrFunction;
 
@@ -124,9 +122,11 @@ namespace Test
             var pullRequest = Substitute.For<IPullRequest>();
             pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>()).Returns(x => Task.FromResult(new Pr(installation.Owner) { Id = prId }));
 
+            var settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
+
             var prs = Substitute.For<ICollector<Pr>>();
 
-            return OpenPr.RunAsync(openPrMessage, installation, prs, installationTokenProvider, pullRequest, logger, context);
+            return OpenPr.RunAsync(openPrMessage, installation, prs, settingsTable, installationTokenProvider, pullRequest, logger, context);
         }
     }
 }

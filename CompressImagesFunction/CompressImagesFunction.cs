@@ -1,12 +1,13 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace CompressImagesFunction
 {
@@ -21,9 +22,13 @@ namespace CompressImagesFunction
             ExecutionContext context)
         {
             logger.LogInformation($"Starting compress");
+
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
             if (await Task.WhenAny(task, Task.Delay(570000)) == task)
             {
                 await task;
@@ -43,9 +48,13 @@ namespace CompressImagesFunction
             ExecutionContext context)
         {
             logger.LogInformation($"Starting long compress");
+
+            var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
             await task;
         }
 
@@ -53,6 +62,7 @@ namespace CompressImagesFunction
             IInstallationTokenProvider installationTokenProvider,
             CompressImagesMessage compressImagesMessage,
             ICollector<OpenPrMessage> openPrMessages,
+            CloudTable settingsTable,
             IRepoChecks repoChecks,
             ILogger logger,
             ExecutionContext context)
@@ -106,6 +116,7 @@ namespace CompressImagesFunction
                 PgpPrivateKey = KnownEnvironmentVariables.PGP_PRIVATE_KEY,
                 PgPPassword = KnownEnvironmentVariables.PGP_PASSWORD,
                 CompressImagesMessage = compressImagesMessage,
+                Settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, compressImagesMessage.InstallationId, compressImagesMessage.RepoName),
             };
 
             var didCompress = CompressImages.Run(compressImagesParameters, logger);

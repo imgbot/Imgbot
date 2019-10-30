@@ -30,8 +30,17 @@ namespace WebHook
             var deleteBranchMessages = storageAccount.CreateCloudQueueClient().GetQueueReference("deletebranchmessage");
             var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
             var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
+            var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
 
-            return Run(req, routerQueue, openPrQueue, deleteBranchMessages, installationTable, marketplaceTable, logger);
+            return Run(
+                req,
+                routerQueue,
+                openPrQueue,
+                deleteBranchMessages,
+                installationTable,
+                marketplaceTable,
+                settingsTable,
+                logger);
         }
 
         public static async Task<IActionResult> Run(
@@ -41,6 +50,7 @@ namespace WebHook
             CloudQueue deleteBranchMessages,
             CloudTable installationTable,
             CloudTable marketplaceTable,
+            CloudTable settingsTable,
             ILogger logger)
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
@@ -53,7 +63,8 @@ namespace WebHook
                     result = await ProcessInstallationAsync(hook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    result = await ProcessPushAsync(hook, marketplaceTable, routerMessages, openPrMessages, deleteBranchMessages, logger).ConfigureAwait(false);
+                    result = await ProcessPushAsync(hook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, logger)
+                                    .ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
                     result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
@@ -66,6 +77,7 @@ namespace WebHook
         private static async Task<string> ProcessPushAsync(
             Hook hook,
             CloudTable marketplaceTable,
+            CloudTable settingsTable,
             CloudQueue routerMessages,
             CloudQueue openPrMessages,
             CloudQueue deleteBranchMessages,
@@ -97,14 +109,26 @@ namespace WebHook
                 return "imgbot push";
             }
 
-            // push to non-default branch
-            if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
+            var repositorySettings = await SettingsHelper.GetSettings(settingsTable, hook.installation.id, hook.repository.name);
+            var branchToCheck = hook.repository.default_branch;
+            if (repositorySettings != null && !string.IsNullOrEmpty(repositorySettings.DefaultBranchOverride))
             {
-                return "Commit to non default branch";
+                logger.LogInformation(
+                    "ProcessPush: default branch override for {Owner}/{RepoName} is {DefaultBranchOverride}",
+                    hook.repository.owner.login,
+                    hook.repository.name,
+                    repositorySettings.DefaultBranchOverride);
+                branchToCheck = repositorySettings.DefaultBranchOverride;
+            }
+
+            // push to non-default branch
+            if (hook.@ref != $"refs/heads/{branchToCheck}")
+            {
+                return "Commit to non default branch (or override)";
             }
 
             // merge commit to default branch from imgbot branch
-            if (IsDefaultWebMerge(hook))
+            if (IsDefaultWebMerge(hook, branchToCheck))
             {
                 await deleteBranchMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new DeleteBranchMessage
                 {
@@ -250,9 +274,9 @@ namespace WebHook
         // 1. should be merged using the web gui on github.com
         // 2. should be merging into the default branch from the imgbot branch
         // 3. should only contain the merge commit and the imgbot commit to be eligible
-        private static bool IsDefaultWebMerge(Hook hook)
+        private static bool IsDefaultWebMerge(Hook hook, string branchToCheck)
         {
-            if (hook.@ref != $"refs/heads/{hook.repository.default_branch}")
+            if (hook.@ref != $"refs/heads/{branchToCheck}")
                 return false;
 
             if (hook.commits?.Count == 1)
