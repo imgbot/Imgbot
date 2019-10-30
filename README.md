@@ -55,7 +55,7 @@ to help@imgbot.net
 - optional
 - Accepts: true|false
 - Opt in to also compress wiki repo
-    - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.gi`
+    - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.git`
 - The default behavior is opt out
 
 Find out more: https://imgbot.net/docs
