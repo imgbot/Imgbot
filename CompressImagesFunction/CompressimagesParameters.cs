@@ -19,6 +19,8 @@ namespace CompressImagesFunction
 
         public string PgPPassword { get; set; }
 
+        public Common.TableModels.Settings Settings { get; set; }
+
         public CompressImagesMessage CompressImagesMessage { get; set; }
   }
 }
