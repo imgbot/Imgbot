@@ -113,7 +113,11 @@ namespace CompressImagesFunction
 
             var didCompress = CompressImages.Run(compressImagesParameters, compressImagesMessages, logger);
 
-            if (didCompress)
+            if (didCompress && compressImagesParameters.CloneUrl.Contains(".wiki.git"))
+            {
+                logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}/wiki", compressImagesMessage.Owner, compressImagesMessage.RepoName);
+            }
+            else if (didCompress)
             {
                 logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 openPrMessages.Add(new OpenPrMessage

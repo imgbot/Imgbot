@@ -79,8 +79,10 @@ namespace CompressImagesFunction
                 // ignore
             }
 
-            if (repoConfiguration.CompressWiki && !parameters.CloneUrl.Contains(".wiki.git"))
+            // Add new compressMessage if we should compress Wiki
+            if (repoConfiguration.CompressWiki && parameters.CloneUrl.Contains(".wiki.git") == false)
             {
+                logger.LogInformation("CompressImagesFunction: Adding Wiki image compression to queue for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                 compressImagesMessages.Add(new CompressImagesMessage()
                 {
                     InstallationId = parameters.CompressImagesMessage.InstallationId,
@@ -96,9 +98,13 @@ namespace CompressImagesFunction
                 return false;
             }
 
-            // check out the branch
-            repo.CreateBranch(KnownGitHubs.BranchName);
-            var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            // Should not create branch if we are compressing Wiki
+            if (parameters.CloneUrl.Contains(".wiki.git") == false)
+            {
+                // check out the branch
+                repo.CreateBranch(KnownGitHubs.BranchName);
+                var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            }
 
             // reset any mean files
             repo.Reset(ResetMode.Mixed, repo.Head.Tip);
@@ -136,7 +142,13 @@ namespace CompressImagesFunction
             var commitToKeep = repo.ObjectDatabase.CreateCommitWithSignature(commitBuffer, signedCommitData);
 
             repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
-            var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
+
+            // Should not create branch if we are compressing Wiki
+            if (parameters.CloneUrl.Contains(".wiki.git") == false)
+            {
+                var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            }
+
             repo.Reset(ResetMode.Hard, commitToKeep.Sha);
 
             // verify images are not corrupted by reading from git
