@@ -56,7 +56,7 @@ namespace CompressImagesFunction
 
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, settingsTable, repoChecks, logger, context);
             await task;
         }
 
