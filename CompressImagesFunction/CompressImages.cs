@@ -41,6 +41,7 @@ namespace CompressImagesFunction
 
             var repo = new Repository(parameters.LocalPath);
             var remote = repo.Network.Remotes["origin"];
+            var isWikiCompress = parameters.CloneUrl.EndsWith(".wiki.git");
 
             // check if we have the branch already or this is empty repo
             try
@@ -64,7 +65,7 @@ namespace CompressImagesFunction
             }
 
             // check if we should switch away from the default branch
-            if (parameters.Settings != null && !string.IsNullOrEmpty(parameters.Settings.DefaultBranchOverride))
+            if (!isWikiCompress && parameters.Settings != null && !string.IsNullOrEmpty(parameters.Settings.DefaultBranchOverride))
             {
                 logger.LogInformation(
                     "CompressImagesFunction: default branch override for {Owner}/{RepoName} is {DefaultBranchOverride}",
@@ -103,7 +104,7 @@ namespace CompressImagesFunction
             }
 
             // Add new compressMessage if we should compress Wiki
-            if (repoConfiguration.CompressWiki && parameters.CloneUrl.Contains(".wiki.git") == false)
+            if (repoConfiguration.CompressWiki && isWikiCompress == false)
             {
                 logger.LogInformation("CompressImagesFunction: Adding Wiki image compression to queue for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                 compressImagesMessages.Add(new CompressImagesMessage()
@@ -122,7 +123,7 @@ namespace CompressImagesFunction
             }
 
             // Should not create branch if we are compressing Wiki
-            if (parameters.CloneUrl.Contains(".wiki.git") == false)
+            if (isWikiCompress == false)
             {
                 // check out the branch
                 repo.CreateBranch(KnownGitHubs.BranchName);
@@ -166,8 +167,12 @@ namespace CompressImagesFunction
 
             repo.Refs.UpdateTarget(repo.Refs.Head, commitToKeep);
 
-            // Should not create branch if we are compressing Wiki
-            if (parameters.CloneUrl.Contains(".wiki.git") == false)
+            // Should use "master" if we are compressing Wiki
+            if (isWikiCompress)
+            {
+                var branchAgain = Commands.Checkout(repo, "master");
+            }
+            else
             {
                 var branchAgain = Commands.Checkout(repo, KnownGitHubs.BranchName);
             }
@@ -196,10 +201,20 @@ namespace CompressImagesFunction
             }
 
             // push to GitHub
-            repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
+            if (isWikiCompress)
             {
-                CredentialsProvider = credentialsProvider,
-            });
+                repo.Network.Push(remote, "refs/heads/master", new PushOptions
+                {
+                    CredentialsProvider = credentialsProvider,
+                });
+            }
+            else
+            {
+                repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
+                {
+                    CredentialsProvider = credentialsProvider,
+                });
+            }
 
             return true;
         }
