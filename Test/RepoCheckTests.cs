@@ -62,6 +62,7 @@ namespace Test
                  }));
 
             var openPrMessages = Substitute.For<ICollector<OpenPrMessage>>();
+            var compressImagesMessages = Substitute.For<ICollector<CompressImagesMessage>>();
             var settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
 
             var repoChecks = Substitute.For<IRepoChecks>();
@@ -72,6 +73,7 @@ namespace Test
                 installationTokenProvider,
                 compressImagesMessage,
                 openPrMessages,
+                compressImagesMessages,
                 settingsTable,
                 repoChecks,
                 logger,

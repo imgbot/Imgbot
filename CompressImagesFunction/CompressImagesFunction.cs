@@ -18,6 +18,7 @@ namespace CompressImagesFunction
             [QueueTrigger("compressimagesmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("longrunningcompressmessage")] ICollector<CompressImagesMessage> longRunningCompressMessages,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            [Queue("compressimagesmessage")] ICollector<CompressImagesMessage> compressImagesMessages,
             ILogger logger,
             ExecutionContext context)
         {
@@ -28,7 +29,7 @@ namespace CompressImagesFunction
 
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, settingsTable, repoChecks, logger, context);
             if (await Task.WhenAny(task, Task.Delay(570000)) == task)
             {
                 await task;
@@ -44,6 +45,7 @@ namespace CompressImagesFunction
         public static async Task LongTrigger(
             [QueueTrigger("longrunningcompressmessage")]CompressImagesMessage compressImagesMessage,
             [Queue("openprmessage")] ICollector<OpenPrMessage> openPrMessages,
+            [Queue("compressimagesmessage")] ICollector<CompressImagesMessage> compressImagesMessages,
             ILogger logger,
             ExecutionContext context)
         {
@@ -54,7 +56,7 @@ namespace CompressImagesFunction
 
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
-            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, settingsTable, repoChecks, logger, context);
+            var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, settingsTable, repoChecks, logger, context);
             await task;
         }
 
@@ -62,6 +64,7 @@ namespace CompressImagesFunction
             IInstallationTokenProvider installationTokenProvider,
             CompressImagesMessage compressImagesMessage,
             ICollector<OpenPrMessage> openPrMessages,
+            ICollector<CompressImagesMessage> compressImagesMessages,
             CloudTable settingsTable,
             IRepoChecks repoChecks,
             ILogger logger,
@@ -119,9 +122,13 @@ namespace CompressImagesFunction
                 Settings = await Common.TableModels.SettingsHelper.GetSettings(settingsTable, compressImagesMessage.InstallationId, compressImagesMessage.RepoName),
             };
 
-            var didCompress = CompressImages.Run(compressImagesParameters, logger);
+            var didCompress = CompressImages.Run(compressImagesParameters, compressImagesMessages, logger);
 
-            if (didCompress)
+            if (didCompress && compressImagesParameters.CloneUrl.Contains(".wiki.git"))
+            {
+                logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}/wiki", compressImagesMessage.Owner, compressImagesMessage.RepoName);
+            }
+            else if (didCompress)
             {
                 logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 openPrMessages.Add(new OpenPrMessage
