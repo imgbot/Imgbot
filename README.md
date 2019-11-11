@@ -19,7 +19,8 @@ This file should be placed in the root of the repository and set to your liking.
     	"image1.png",              // by filename
     	"public/special_images/*", // by folderpath
     ],
-    "aggressiveCompression": true // true|false
+    "aggressiveCompression": "true", // true|false
+    "compressWiki": "true" // true|false
 }
 ```
 
@@ -48,6 +49,14 @@ to help@imgbot.net
 - Accepts: true|false
 - Opt in to use lossy compression algorithms
 - The default behavior without this setting is lossless compression
+
+**compressWiki**
+
+- optional
+- Accepts: true|false
+- Opt in to also compress wiki repo
+    - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.git`
+- The default behavior is opt out
 
 Find out more: https://imgbot.net/docs
 
