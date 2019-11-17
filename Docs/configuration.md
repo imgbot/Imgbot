@@ -15,8 +15,14 @@ Here is an example .imgbotconfig setup that shows some of the options.
         "public/special_images/*", // ignore by folderpath
     ],
     "aggressiveCompression": "true" // true|false
+    "compressWiki": "true" // true|false
 }
 ```
+
+Outside of the `.imgbotconfig` file, there are additional settings that can be configured by logging in to
+[the website](https://imgbot.net/app). This is the current list of settings supported in this UI:
+
+ - Default branch override (If you want Imgbot to look after a different branch instead of the default for the repo)
 
 If there are any configuration settings you would like to see supported,
 please feel free to [open an issue](https://github.com/dabutvin/ImgBot/issues/new) in the repo or shoot an email over

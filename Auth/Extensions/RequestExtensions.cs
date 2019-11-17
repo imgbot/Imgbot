@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 
 namespace Auth.Extensions
@@ -18,6 +19,15 @@ namespace Auth.Extensions
             req.Headers.Add("User-Agent", "IMGBOT");
             req.Headers.Add("Accept", "application/vnd.github.machine-man-preview+json");
             return req;
+        }
+
+        public static HttpResponseMessage CreateOptionsResponse(this HttpRequestMessage req)
+        {
+            var response = req.CreateResponse();
+            response.EnableCors();
+            response.StatusCode = HttpStatusCode.NoContent;
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return response;
         }
     }
 }

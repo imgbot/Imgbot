@@ -1,20 +1,48 @@
-﻿{
+{
   "ref": "refs/heads/some-random-branch",
-  "before": "714d27263ed356287c83bb545870ae78d98cced6",
-  "after": "178d4f05bcfbdc31185860fbd8bf18af2eeb7cda",
+  "before": "e2c93b02205367181f35ea5fe0ae64f6458285b5",
+  "after": "7f7a330e2fd698368ee80a5cacebd3b7483f68fc",
   "created": false,
   "deleted": false,
   "forced": false,
   "base_ref": null,
-  "compare": "https://github.com/dabutvin/test/compare/714d27263ed3...178d4f05bcfb",
+  "compare": "https://github.com/dabutvin/test/compare/e2c93b022053...7f7a330e2fd6",
   "commits": [
     {
-      "id": "178d4f05bcfbdc31185860fbd8bf18af2eeb7cda",
-      "tree_id": "eb1341494d81e45534eb66fb052a710332360acb",
+      "id": "5385c8cd37bdd0051b2c082aa556a00d54d4ccc7",
+      "tree_id": "9401e01b4114eb0d57b3b68777444787706a9836",
+      "distinct": false,
+      "message": "[ImgBot] Optimize images\n\n*Total -- 554.64kb -> 510.94kb (7.88%)\n\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+      "timestamp": "2019-02-10T21:44:02Z",
+      "url": "https://github.com/dabutvin/test/commit/5385c8cd37bdd0051b2c082aa556a00d54d4ccc7",
+      "author": {
+        "name": "ImgBotApp",
+        "email": "ImgBotHelp@gmail.com",
+        "username": "ImgBotApp"
+      },
+      "committer": {
+        "name": "ImgBotApp",
+        "email": "ImgBotHelp@gmail.com",
+        "username": "ImgBotApp"
+      },
+      "added": [
+
+      ],
+      "removed": [
+
+      ],
+      "modified": [
+        "gradient.jpg",
+        "imgbot_white_large@3x.png"
+      ]
+    },
+    {
+      "id": "7f7a330e2fd698368ee80a5cacebd3b7483f68fc",
+      "tree_id": "9401e01b4114eb0d57b3b68777444787706a9836",
       "distinct": true,
-      "message": "some random commit message",
-      "timestamp": "2018-08-04T12:36:25-07:00",
-      "url": "https://github.com/dabutvin/test/commit/178d4f05bcfbdc31185860fbd8bf18af2eeb7cda",
+      "message": "Merge pull request #11 from dabutvin/imgbot\n\n[ImgBot] Optimize images",
+      "timestamp": "2019-02-10T14:08:29-08:00",
+      "url": "https://github.com/dabutvin/test/commit/7f7a330e2fd698368ee80a5cacebd3b7483f68fc",
       "author": {
         "name": "Dan Butvinik",
         "email": "butvinik@outlook.com",
@@ -26,23 +54,24 @@
         "username": "web-flow"
       },
       "added": [
-        "image.png"
+
       ],
       "removed": [
 
       ],
       "modified": [
-        "README.md"
+        "gradient.jpg",
+        "imgbot_white_large@3x.png"
       ]
     }
   ],
   "head_commit": {
-    "id": "178d4f05bcfbdc31185860fbd8bf18af2eeb7cda",
-    "tree_id": "eb1341494d81e45534eb66fb052a710332360acb",
+    "id": "7f7a330e2fd698368ee80a5cacebd3b7483f68fc",
+    "tree_id": "9401e01b4114eb0d57b3b68777444787706a9836",
     "distinct": true,
-    "message": "some random commit message",
-    "timestamp": "2018-08-04T12:36:25-07:00",
-    "url": "https://github.com/dabutvin/test/commit/178d4f05bcfbdc31185860fbd8bf18af2eeb7cda",
+    "message": "Merge pull request #11 from dabutvin/imgbot\n\n[ImgBot] Optimize images",
+    "timestamp": "2019-02-10T14:08:29-08:00",
+    "url": "https://github.com/dabutvin/test/commit/7f7a330e2fd698368ee80a5cacebd3b7483f68fc",
     "author": {
       "name": "Dan Butvinik",
       "email": "butvinik@outlook.com",
@@ -60,14 +89,16 @@
 
     ],
     "modified": [
-      "README.md"
+      "gradient.jpg",
+      "imgbot_white_large@3x.png"
     ]
   },
   "repository": {
-    "id": 130265863,
-    "node_id": "MDEwOlJlcG9zaXRvcnkxMzAyNjU4NjM=",
+    "id": 162552040,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxNjI1NTIwNDA=",
     "name": "test",
     "full_name": "dabutvin/test",
+    "private": false,
     "owner": {
       "name": "dabutvin",
       "email": "butvinik@outlook.com",
@@ -90,7 +121,6 @@
       "type": "User",
       "site_admin": false
     },
-    "private": false,
     "html_url": "https://github.com/dabutvin/test",
     "description": null,
     "fork": false,
@@ -131,30 +161,30 @@
     "labels_url": "https://api.github.com/repos/dabutvin/test/labels{/name}",
     "releases_url": "https://api.github.com/repos/dabutvin/test/releases{/id}",
     "deployments_url": "https://api.github.com/repos/dabutvin/test/deployments",
-    "created_at": 1524167656,
-    "updated_at": "2018-08-01T14:40:21Z",
-    "pushed_at": 1533411385,
+    "created_at": 1545295821,
+    "updated_at": "2019-02-10T21:42:49Z",
+    "pushed_at": 1549836510,
     "git_url": "git://github.com/dabutvin/test.git",
     "ssh_url": "git@github.com:dabutvin/test.git",
     "clone_url": "https://github.com/dabutvin/test.git",
     "svn_url": "https://github.com/dabutvin/test",
     "homepage": null,
-    "size": 5556,
+    "size": 2316,
     "stargazers_count": 0,
     "watchers_count": 0,
     "language": null,
     "has_issues": true,
-    "has_projects": false,
+    "has_projects": true,
     "has_downloads": true,
-    "has_wiki": false,
+    "has_wiki": true,
     "has_pages": false,
     "forks_count": 0,
     "mirror_url": null,
     "archived": false,
-    "open_issues_count": 1,
+    "open_issues_count": 0,
     "license": null,
     "forks": 0,
-    "open_issues": 1,
+    "open_issues": 0,
     "watchers": 0,
     "default_branch": "master",
     "stargazers": 0,
@@ -185,6 +215,7 @@
     "site_admin": false
   },
   "installation": {
-    "id": 23199
+    "id": 23199,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNDkxNTg="
   }
 }

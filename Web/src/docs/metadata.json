@@ -28,6 +28,10 @@
     "title": "Aggressive compression"
   },
   {
+    "slug": "compress-wiki",
+    "title": "Compress wiki"
+  },
+  {
     "slug": "authorization",
     "title": "Authorization"
   },

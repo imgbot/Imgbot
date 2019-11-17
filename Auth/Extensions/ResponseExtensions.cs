@@ -34,7 +34,7 @@ namespace Auth.Extensions
         public static HttpResponseMessage EnableCors(this HttpResponseMessage res)
         {
             res.Headers.Add("Access-Control-Allow-Credentials", "true");
-            res.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            res.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS, POST");
             res.Headers.Add("Access-Control-Allow-Origin", AuthFunction.Webhost);
             return res;
         }
