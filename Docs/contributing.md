@@ -1,16 +1,16 @@
-All the code for ImgBot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation.
-If you are unsure what to work on, but still want to contribute you can look for an [existing issue](https://github.com/dabutvin/ImgBot/issues) in the repo.
+All the code for Imgbot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation.
+If you are unsure what to work on, but still want to contribute you can look for an [existing issue](https://github.com/dabutvin/Imgbot/issues) in the repo.
 
-The following is where you can find out how to get set up to run locally as well as detailed information on exactly how ImgBot works.
+The following is where you can find out how to get set up to run locally as well as detailed information on exactly how Imgbot works.
 
-### ImgBot Service
+### Imgbot Service
 
-The core of ImgBot runs on a serverless stack called [Azure Functions](https://azure.microsoft.com/en-us/services/functions/).
+The core of Imgbot runs on a serverless stack called [Azure Functions](https://azure.microsoft.com/en-us/services/functions/).
 The Function apps are running the image compression, pushing the commits, and opening the Pull Requests.
 Once you get the tools you need to work with Azure functions you can run the apps locally.
 
 You can either get the tools [integrated with Visual Studio](https://blogs.msdn.microsoft.com/webdev/2017/05/10/azure-function-tools-for-visual-studio-2017/) and use `F5`
-or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run ImgBot.Function`.
+or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run Imgbot.Function`.
 If you are using Visual Studio for Mac there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
 
 We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code in order to compile and get intellisense.
@@ -50,20 +50,20 @@ The following file locations may be helpful if you are looking for specific func
 - `InstallationToken.cs` - uses a pem file and the GitHub API to get access to repos
 - `LocalPath.cs` - generates the location to clone from
 - `PullRequest.cs` - opens the pull request and sets the title and description
-- `Schedule.cs` - logic to limit the frequency of ImgBot PRs
+- `Schedule.cs` - logic to limit the frequency of Imgbot PRs
 - `WebHookFunction.cs` - reads the GitHub hook messages and kicks off tasks
 
 #### Triggers
 
-ImgBot uses [QueueTriggers](https://github.com/Azure/azure-webjobs-sdk/wiki/Queues#trigger) to kick off workflows.
+Imgbot uses [QueueTriggers](https://github.com/Azure/azure-webjobs-sdk/wiki/Queues#trigger) to kick off workflows.
 
 The triggers in place today are `routermessage`, `openprmessage`, `compressimagesmessage`.
 
-ImgBot also uses an HttpTrigger as the entry point for the service.
+Imgbot also uses an HttpTrigger as the entry point for the service.
 
 #### Compression workflow
 
-ImgBot uses [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) to perform all the git operations.
+Imgbot uses [LibGit2Sharp](https://github.com/libgit2/libgit2sharp) to perform all the git operations.
 
 The following is the high-level workflow for the `CompressImagesFunction`:
 
@@ -75,11 +75,11 @@ The following is the high-level workflow for the `CompressImagesFunction`:
 
 The clone directory is read from environment variable `%TMP%` or falls back to `/private/tmp/` if this environment variable is not set.
 
-Once the branch is pushed, ImgBot uses [Octokit](https://github.com/octokit/octokit.net) to create the pull request in GitHub.
+Once the branch is pushed, Imgbot uses [Octokit](https://github.com/octokit/octokit.net) to create the pull request in GitHub.
 
 #### Installation tokens
 
-ImgBot uses [BouncyCastle](http://www.bouncycastle.org/csharp/) to help generate an [installation token](https://developer.github.com/apps/building-integrations/setting-up-and-registering-github-apps/about-authentication-options-for-github-apps/#authenticating-as-an-installation).
+Imgbot uses [BouncyCastle](http://www.bouncycastle.org/csharp/) to help generate an [installation token](https://developer.github.com/apps/building-integrations/setting-up-and-registering-github-apps/about-authentication-options-for-github-apps/#authenticating-as-an-installation).
 
 This requires a combination of a Private Key, an App Id, and an InstallationId to generate a token to be used on behalf of the installation.
 
@@ -96,15 +96,15 @@ If there is a part of this process that isn't clear or you have any questions at
 #### Schedules
 
 This Schedule class is responsible for throttling optimization routines.
-ImgBot is triggered when there is a new image added to a repo and by default will submit a PR as soon as it can.
+Imgbot is triggered when there is a new image added to a repo and by default will submit a PR as soon as it can.
 
 Some users prefer to defer the pull requests and do the optimization in bigger batches. This is implemented by offering three options 'daily', 'weekly', and 'monthly'.
 
-ImgBot will check the commit log to find the last time we committed an optimization. If it has been long enough since ImgBot has last committed in this branch then we will try to optimize the images again. Otherwise we will skip running optimizations for this run.
+Imgbot will check the commit log to find the last time we committed an optimization. If it has been long enough since Imgbot has last committed in this branch then we will try to optimize the images again. Otherwise we will skip running optimizations for this run.
 
 #### Commit messages
 
-ImgBot uses a standard commit title and generates a report of the image optimizations to be used in the commit message body.
+Imgbot uses a standard commit title and generates a report of the image optimizations to be used in the commit message body.
 
 The input is a dictionary where the key is the filename and the value is a pair of numbers that represent file size before and after compression.
 
@@ -112,26 +112,26 @@ This dictionary is transformed into an optimization report in the form of a comm
 
 #### Image query
 
-ImgBot locates all the images that are to be sent through the optimization routine with file directory access against a local clone.
+Imgbot locates all the images that are to be sent through the optimization routine with file directory access against a local clone.
 
 The known image extensions are used to find all the images recursively and the ignored files from imgbotconfig are parsed.
 
 #### Local Paths
 
-For each execution, ImgBot generates the folder for the git operations to take place in.
+For each execution, Imgbot generates the folder for the git operations to take place in.
 
 Today this is done by combining the name of the repo with a random number.
 
 #### Webhooks
 
 The 2 main events we deal with through webhooks are installation events and push events.
-Each time a repo has ImgBot installed, GitHub fires a hook to `WebHookFunction.cs` and we start the installation workflow.
+Each time a repo has Imgbot installed, GitHub fires a hook to `WebHookFunction.cs` and we start the installation workflow.
 
-Each time a repo that already has ImgBot installed gets pushed to, GitHub fires a hook to `WebHookFunction.cs` and, if the commit contains an image update, we start the compression worflow.
+Each time a repo that already has Imgbot installed gets pushed to, GitHub fires a hook to `WebHookFunction.cs` and, if the commit contains an image update, we start the compression worflow.
 
-### ImgBot website
+### Imgbot website
 
-The frontend that drives https://imgbot.net/ is a generated static web app built with Grunt and a little bit of JavaScript. This static site is generated to be completely stand alone and hosted on a CDN for caching worldwide. The grid system for the ImgBot site is bootstrap 4. The purpose of this website is to run the landing page and docs for ImgBot.
+The frontend that drives https://imgbot.net/ is a generated static web app built with Grunt and a little bit of JavaScript. This static site is generated to be completely stand alone and hosted on a CDN for caching worldwide. The grid system for the Imgbot site is bootstrap 4. The purpose of this website is to run the landing page and docs for Imgbot.
 
 You will find the `package.json` file for the website in the `Web/` directory of the repo. From here the input files live in the `src/` directory and the generated site is output to the `dist/` directory and git-ignored.
 
@@ -161,28 +161,28 @@ Within the `Web/` directory you will see the following key files
 - `src/css/site.less` - the landing page stylesheet
 - `gruntfile.js` - the task configuration for generating and serving the site
 
-### ImgBot Docs
+### Imgbot Docs
 
-The docs are published from checked in markdown files to the [ImgBot website](https://imgbot.net/docs) to view in a browser. Alternatively, the docs can be browsed and edited [within GitHub](https://github.com/dabutvin/ImgBot/tree/master/Docs).
+The docs are published from checked in markdown files to the [Imgbot website](https://imgbot.net/docs) to view in a browser. Alternatively, the docs can be browsed and edited [within GitHub](https://github.com/dabutvin/Imgbot/tree/master/Docs).
 
 When the docs are compiled to HTML they use the layout and metadata found in the `Web/src/docs` directory. The `metadata.json` file here will define the order and title of each doc. For example:
 
 ```
 {
     "slug": "contributing-website",
-    "title": "Contribute to ImgBot website"
+    "title": "Contribute to Imgbot website"
 }
 ```
 
 The slug matches the name of the markdown file and also drives the URL segment to browse this doc.
 
-This metadata file is read within the [Web/tasks/compile-docs.js](https://github.com/dabutvin/ImgBot/tree/master/Web/tasks/compile-docs.js) file. This is a custom grunt task that arranges all the documentation.
+This metadata file is read within the [Web/tasks/compile-docs.js](https://github.com/dabutvin/Imgbot/tree/master/Web/tasks/compile-docs.js) file. This is a custom grunt task that arranges all the documentation.
 
-The template that renders the documentation is [Web/src/docs/layout.jst](https://github.com/dabutvin/ImgBot/tree/master/Web/src/docs/layout.jst). This is a template file that renders the documentation navigation and content as HTML.
+The template that renders the documentation is [Web/src/docs/layout.jst](https://github.com/dabutvin/Imgbot/tree/master/Web/src/docs/layout.jst). This is a template file that renders the documentation navigation and content as HTML.
 
 ### Tests
 
-ImgBot uses VSTest with NSubstitue to manage unit testing of the logic within the ImgBot codebase.
+Imgbot uses VSTest with NSubstitue to manage unit testing of the logic within the Imgbot codebase.
 The tests live in the Test directory.
 Please do your best to add tests as new features or logic are added so we can keep Imgbot running smoothly.
 :)

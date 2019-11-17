@@ -9,6 +9,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-devserver')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-webpack')
+  grunt.loadNpmTasks('grunt-postcss')
   grunt.loadTasks('./tasks')
 
   grunt.initConfig({
@@ -44,6 +45,16 @@ module.exports = function(grunt) {
         files: {
           'dist/css/site.css': 'src/css/site.less'
         }
+      }
+    },
+    postcss: {
+      options: {
+        processors: [
+          require('autoprefixer')()
+        ]
+      },
+      dist: {
+        src: 'dist/css/*.css'
       }
     },
     cssmin: {
@@ -110,6 +121,7 @@ module.exports = function(grunt) {
     'compile-docs',
     'markdown:all',
     'less:all',
+    'postcss',
     'cssmin',
     'copy'
   ])

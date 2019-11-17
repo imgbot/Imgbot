@@ -1,43 +1,42 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <img width="100" alt="ImgBot" src="/images/imgbot.svg">
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link h5 mb-0 pb-0" href="/docs">Docs</a>
-            </li>
-          </ul>
-          <button
-            class="btn btn-outline-success"
-            v-if="loaded && !isauthenticated"
-            v-on:click="signin"
-          >Sign in</button>
-          <button
-            class="btn btn-outline-secondary"
-            v-if="loaded && isauthenticated"
-            v-on:click="signout"
-          >Sign out</button>
-        </div>
+    <nav class="navbar navbar-light bg-white navbar-expand-lg fixed-top border-bottom">
+      <a class="navbar-brand" href="/">
+        <img width="135" alt="Imgbot" src="/images/imgbot.svg" />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link mb-0" href="/docs">Documentation</a>
+          </li>
+          <li class="nav-item">
+            <button
+              class="btn btn-outline-success"
+              v-if="loaded && !isauthenticated"
+              v-on:click="signin"
+            >Sign in</button>
+            <button
+              class="btn btn-outline-secondary"
+              v-if="loaded && isauthenticated"
+              v-on:click="signout"
+            >Sign out</button>
+          </li>
+        </ul>
       </div>
     </nav>
     <div class="container" style="min-height: 250px">
-      <h2 class="mb-5">ImgBot installations</h2>
+      <h2 class="mb-5">Imgbot installations</h2>
       <div v-if="isauthenticated && loaded && installations.length === 0">
         <h3>No installations found</h3>
         <a
@@ -66,7 +65,7 @@
           href="https://github.com/marketplace/imgbot"
         >+</a>
       </div>
-      <hr>
+      <hr />
       <div>
         <loader v-if="!loaded"></loader>
         <button
@@ -83,34 +82,43 @@
     </div>
     <footer>
       <div class="container pt-5">
-        <div class="row">
-          <div class="col-lg">
+        <div class="row justify-content-center">
+          <div class="col-lg-3">
+            <h3>Imgbot</h3>
             <ul>
               <li>
-                <a href="https://github.com/marketplace/category/code-quality">Marketplace</a>
+                <a href="/app">Log in</a>
               </li>
               <li>
-                <a href="https://github.com/works-with/category/code-quality">Works with</a>
+                <a href="https://github.com/marketplace/imgbot#pricing-and-setup">Pricing</a>
               </li>
               <li>
-                <a href="https://github.com/apps/imgbot">Application</a>
+                <a href="https://github.com/marketplace/imgbot">Install</a>
+              </li>
+              <li>
+                <a href="/info">Request more info</a>
               </li>
             </ul>
           </div>
-          <div class="col-lg">
+          <div class="col-lg-3">
+            <h3>Help</h3>
             <ul>
               <li>
-                <a href="https://github.com/dabutvin/ImgBot/issues">Open an issue</a>
+                <a href="https://github.com/dabutvin/Imgbot/issues">Open an issue</a>
               </li>
               <li>
-                <a href="mailto:help@imgbot.net">Email help@imgbot.net</a>
+                <a href="mailto:help@imgbot.net">Contact support</a>
               </li>
               <li>
-                <a href="/docs">Read the Docs</a>
+                <a href="/docs">Documentation</a>
+              </li>
+              <li>
+                <a href="https://github.com/dabutvin/Imgbot">Read the code</a>
               </li>
             </ul>
           </div>
-          <div class="col-lg">
+          <div class="col-lg-3">
+            <h3>Policies</h3>
             <ul>
               <li>
                 <a href="/privacy">Privacy policy</a>
@@ -119,19 +127,31 @@
                 <a href="/terms">Terms of Service</a>
               </li>
               <li>
-                <a href="/incident-response">Incident Response policy</a>
+                <a href="/incident-response">Incident Response</a>
               </li>
               <li>
-                <a href="/vulnerability-management">Vulnerability Management policy</a>
+                <a href="/vulnerability-management">Vulnerability Management</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="row mt-5">
-          <div class="col">
+          <div class="col-11 col-lg offset-lg-1">
             <p>
-              <img class="copyright" alt src="/images/icon.svg" width="30">
-              <span class>ImgBot &copy; 2017-2019</span>
+              <img alt src="/images/128x128_circle.png" width="30" />
+              Imgbot &copy; 2017-2019
+            </p>
+          </div>
+          <div class="col-11 col-lg">
+            <p>
+              Design by
+              <a href="http://eliselivingston.design">Elise Livingston</a>
+            </p>
+          </div>
+          <div class="col-11 col-lg">
+            <p>
+              Illustrations by
+              <a href="http://undraw.co">undraw.co</a>
             </p>
           </div>
         </div>
