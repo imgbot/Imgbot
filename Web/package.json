@@ -1,6 +1,6 @@
 {
   "name": "imgbot-web",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "scripts": {
     "gen": "grunt gen",
     "watch": "grunt watch:site",
