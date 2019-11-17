@@ -136,18 +136,22 @@
           </div>
         </div>
         <div class="row mt-5">
-          <div class="col offset-md-2">
+          <div class="col-11 col-lg offset-lg-1">
             <p>
               <img alt src="/images/128x128_circle.png" width="30" />
-              <span class>Imgbot &copy; 2017-2019</span>
-              <span class="ml-3">
-                Illustrations by
-                <a href="http://undraw.co">undraw.co</a>
-              </span>
-              <span class="ml-3">
-                Web and logo design by
-                <a href="http://eliselivingston.design">Elise Livingston</a>
-              </span>
+              Imgbot &copy; 2017-2019
+            </p>
+          </div>
+          <div class="col-11 col-lg">
+            <p>
+              Design by
+              <a href="http://eliselivingston.design">Elise Livingston</a>
+            </p>
+          </div>
+          <div class="col-11 col-lg">
+            <p>
+              Illustrations by
+              <a href="http://undraw.co">undraw.co</a>
             </p>
           </div>
         </div>
