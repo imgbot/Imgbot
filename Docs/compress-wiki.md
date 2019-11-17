@@ -1,5 +1,3 @@
-# Compress Wiki
-
 If your repository has a wiki with images, you can opt in to optimize these images as well as your code repo.
 
 All of the images in the wiki will be updated directly on the default branch. This is due to the lack of branch management and no pull requests available within GitHub wikis.
