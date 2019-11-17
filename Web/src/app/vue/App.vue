@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div class="container">
         <a class="navbar-brand" href="/">
-          <img width="100" alt="ImgBot" src="/images/imgbot.svg">
+          <img width="100" alt="Imgbot" src="/images/imgbot.svg">
         </a>
         <button
           class="navbar-toggler"
@@ -37,7 +37,7 @@
       </div>
     </nav>
     <div class="container" style="min-height: 250px">
-      <h2 class="mb-5">ImgBot installations</h2>
+      <h2 class="mb-5">Imgbot installations</h2>
       <div v-if="isauthenticated && loaded && installations.length === 0">
         <h3>No installations found</h3>
         <a
@@ -100,7 +100,7 @@
           <div class="col-lg">
             <ul>
               <li>
-                <a href="https://github.com/dabutvin/ImgBot/issues">Open an issue</a>
+                <a href="https://github.com/dabutvin/Imgbot/issues">Open an issue</a>
               </li>
               <li>
                 <a href="mailto:help@imgbot.net">Email help@imgbot.net</a>
@@ -131,7 +131,7 @@
           <div class="col">
             <p>
               <img class="copyright" alt src="/images/icon.svg" width="30">
-              <span class>ImgBot &copy; 2017-2019</span>
+              <span class>Imgbot &copy; 2017-2019</span>
             </p>
           </div>
         </div>

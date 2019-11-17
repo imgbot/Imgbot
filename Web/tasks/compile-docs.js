@@ -18,7 +18,7 @@ module.exports = grunt => {
     const siteTemplate = grunt.file.read('./src/layout.jst')
     const siteHtml = _.template(siteTemplate)({
       content: docsHtml,
-      title: 'ImgBot - Docs'
+      title: 'Imgbot - Docs'
     })
 
     grunt.file.write('./dist/docs/index.html', siteHtml)

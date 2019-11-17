@@ -1,4 +1,4 @@
-You can maximize ImgBot's compression through the `.imgbotconfig` file.
+You can maximize Imgbot's compression through the `.imgbotconfig` file.
 
  - This configuration is optional and is only required if you require a more aggressive compression of images
  - Accepts the syntax: true|false
