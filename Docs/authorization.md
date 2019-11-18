@@ -10,3 +10,15 @@ The author and committer for these actions are set to `ImgBotApp<ImgBotHelp@gmai
 Furthermore, the commits pushed by Imgbot are digitally signed with a secure and registered PGP private key and password and verified against a public key registered with GitHub. This verification provides an extra level of security to ensure that commits that come into your repo are in fact coming from the authentic Imgbot. And you get the nice green verified badge in the PR.
 
 If at anytime you want to remove Imgbot's ability to interact with your repo, you simply uninstall the application from your settings and all further action's will be immediately blocked with no access.
+
+The following permissions are required for Imgbot to function:
+
+- Write access to code
+- Read access to metadata
+- Read and write access to pull requests
+
+The metadata access includes "Search repositories", "List collaborators", and "Access repository metadata". See the [GitHub documentation](https://developer.github.com/v3/apps/permissions/#metadata-permissions) for more information.
+
+The code access is required to clone the repo, create a branch, and push a commit.
+
+The pull requests access is required to open the actual pull request.
