@@ -43,7 +43,8 @@ namespace Auth
                     accountid = x.account.id,
                     accounttype = x.account.type,
                     x.account.avatar_url,
-                    planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId
+                    planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId,
+                    student = (mktplc.Result as Common.TableModels.Marketplace)?.Student,
                 };
             }));
 

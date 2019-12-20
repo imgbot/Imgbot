@@ -96,15 +96,51 @@ namespace Auth
                 var mktplcRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/marketplace_purchases?access_token=" + token);
                 mktplcRequest.Headers.Add("User-Agent", "IMGBOT");
                 var mktplcResponse = await HttpClient.SendAsync(mktplcRequest);
-
                 var planDataJson = await mktplcResponse.Content.ReadAsStringAsync();
                 var planData = JsonConvert.DeserializeObject<PlanData[]>(planDataJson);
+
+                var eduData = new Edu();
+                try
+                {
+                    var eduRequest = new HttpRequestMessage(HttpMethod.Get, "https://education.github.com/api/user");
+                    eduRequest.Headers.Add("User-Agent", "IMGBOT");
+                    eduRequest.Headers.Add("Authorization", "token " + token);
+                    var eduResponse = await HttpClient.SendAsync(eduRequest);
+                    var eduDataJson = await eduResponse.Content.ReadAsStringAsync();
+                    eduData = JsonConvert.DeserializeObject<Edu>(eduDataJson);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error processing auth education");
+                }
+
                 foreach (var item in planData)
                 {
                     var marketplaceRow = new Marketplace(item.account.id, item.account.login)
                     {
                         AccountType = item.account.type,
-                        PlanId = item.plan.id
+                        PlanId = item.plan.id,
+                        Student = eduData.Student,
+                    };
+
+                    await marketplaceTable.CreateIfNotExistsAsync();
+                    await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(marketplaceRow));
+                }
+
+                if (planData.Length == 0 && eduData.Student == true)
+                {
+                    // no marketplace data so we need to get the account id from the user api
+                    var userRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user");
+                    userRequest.Headers.Add("User-Agent", "IMGBOT");
+                    userRequest.Headers.Add("Authorization", "token " + token);
+                    var userResponse = await HttpClient.SendAsync(userRequest);
+                    var userDataJson = await userResponse.Content.ReadAsStringAsync();
+                    var userData = JsonConvert.DeserializeObject<Account>(userDataJson);
+                    var marketplaceRow = new Marketplace(userData.id, userData.login)
+                    {
+                        AccountType = userData.type,
+                        PlanId = 1337,
+                        Student = eduData.Student,
                     };
 
                     await marketplaceTable.CreateIfNotExistsAsync();

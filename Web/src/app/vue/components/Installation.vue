@@ -65,6 +65,9 @@ export default {
         case 2841:
           return 'Professional plan'
       }
+      if (this.installation.student) {
+        return 'Student'
+      }
     },
     changePlan: function() {
       switch (this.installation.planId) {

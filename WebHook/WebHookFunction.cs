@@ -265,7 +265,7 @@ namespace WebHook
         private static async Task<bool> IsPrivateEligible(CloudTable marketplaceTable, string ownerLogin)
         {
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 2841 or PlanId eq 2840 or PlanId eq 1750 or PlanId eq 781)");
+                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 2841 or PlanId eq 2840 or PlanId eq 1750 or PlanId eq 781) or Student eq true");
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
             return rows.Count() != 0;
         }
