@@ -53,6 +53,9 @@ export default {
   },
   computed: {
     plan: function() {
+      if (this.installation.student) {
+        return 'Student'
+      }
       switch (this.installation.planId) {
         case 781:
           return 'Early adopter plan'
@@ -64,9 +67,6 @@ export default {
           return 'Individual plan'
         case 2841:
           return 'Professional plan'
-      }
-      if (this.installation.student) {
-        return 'Student'
       }
     },
     changePlan: function() {
