@@ -1,6 +1,6 @@
 # ImgBot
 
-ImgBot crawls all your image files in GitHub and submits pull requests after applying a lossless compression.
+ImgBot crawls through all your image files in GitHub and submits pull requests after applying a lossless compression.
 This will make the file size go down, but leave the dimensions and quality just as good.
 
 ![screenshot](https://imgbot.net/images/screen.png?cache=2)
@@ -13,7 +13,7 @@ This file should be placed in the root of the repository and set to your liking.
 
 ```
 {
-    "schedule": "daily", // daily|weekly|monthly
+    "Schedule": "Daily", // daily|weekly|monthly
     "ignoredFiles": [
     	"*.jpg",                   // by extension
     	"image1.png",              // by filename
@@ -27,32 +27,32 @@ This file should be placed in the root of the repository and set to your liking.
 The following are the currently supported parameters.
 If there are any configuration settings you would like to see supported,
 please feel free to open an issue here in the repo or shoot an email over
-to help@imgbot.net
+to help@imgbot.net.
 
-**schedule**
+**Schedule**
 
-- optional
+- Optional
 - Accepts: daily|weekly|monthly
-- Limits the PRs from ImgBot to once a day, once a week, or once a month respectively
-- The default behavior is to receive ImgBot PRs as images require optimization
+- Limits the PRs from ImgBot to once a day, once a week, or once a month respectively.
+- The default behavior is to receive ImgBot PRs as images require optimization.
 
 **ignoredFiles**
 
-- optional
+- Optional
 - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
-- Limits the images optimized by ImgBot by esentially ignoring them
-- When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
+- Limits the images optimized by ImgBot by esentially ignoring them.
+- When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary.
 
 **aggressiveCompression**
 
-- optional
+- Optional
 - Accepts: true|false
 - Opt in to use lossy compression algorithms
 - The default behavior without this setting is lossless compression
 
 **compressWiki**
 
-- optional
+- Optional
 - Accepts: true|false
 - Opt in to also compress wiki repo
     - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.git`
