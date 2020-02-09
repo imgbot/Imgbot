@@ -36,7 +36,7 @@
     "vue": "^2.6.6",
     "vue-hot-reload-api": "^2.3.4",
     "vue-html-loader": "^1.2.4",
-    "vue-loader": "^15.7.1",
+    "vue-loader": "^15.8.3",
     "vue-octicon": "^2.1.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.6",
