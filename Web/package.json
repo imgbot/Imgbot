@@ -33,13 +33,13 @@
     "lodash": "^4.17.15",
     "marked": "^0.7.0",
     "moment": "^2.24.0",
-    "vue": "^2.6.6",
+    "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.8.3",
     "vue-octicon": "^2.1.1",
     "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.6.6",
+    "vue-template-compiler": "^2.6.11",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.9"
   }
