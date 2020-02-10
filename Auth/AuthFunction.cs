@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Auth.Extensions;
 using Auth.Model;
@@ -93,8 +94,9 @@ namespace Auth
 
                 var token = tokenContent.Get("access_token");
 
-                var mktplcRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/marketplace_purchases?access_token=" + token);
+                var mktplcRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/marketplace_purchases");
                 mktplcRequest.Headers.Add("User-Agent", "IMGBOT");
+                mktplcRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
                 var mktplcResponse = await HttpClient.SendAsync(mktplcRequest);
                 var planDataJson = await mktplcResponse.Content.ReadAsStringAsync();
                 var planData = JsonConvert.DeserializeObject<PlanData[]>(planDataJson);
