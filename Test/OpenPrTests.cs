@@ -120,7 +120,7 @@ namespace Test
                  }));
 
             var pullRequest = Substitute.For<IPullRequest>();
-            pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>()).Returns(x => Task.FromResult(new Pr(installation.Owner) { Id = prId }));
+            pullRequest.OpenAsync(Arg.Any<GitHubClientParameters>(), false).Returns(x => Task.FromResult(new Pr(installation.Owner) { Id = prId }));
 
             var settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
 

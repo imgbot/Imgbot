@@ -1,6 +1,6 @@
 ﻿namespace CompressImagesFunction
 {
-    public class CompressionResult
+    public partial class CompressionResult
     {
         public string Title { get; set; }
 

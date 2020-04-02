@@ -7,5 +7,7 @@
         public string RepoName { get; set; }
 
         public string CloneUrl { get; set; }
+
+        public bool Update { get; set; }
     }
 }

@@ -76,7 +76,6 @@ namespace CompressImagesFunction
                 AccessTokensUrl = string.Format(KnownGitHubs.AccessTokensUrlFormat, compressImagesMessage.InstallationId),
                 AppId = KnownGitHubs.AppId,
             };
-
             var installationToken = await installationTokenProvider.GenerateAsync(
                 installationTokenParameters,
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
@@ -103,7 +102,7 @@ namespace CompressImagesFunction
                 RepoOwner = compressImagesMessage.Owner,
             });
 
-            if (branchExists)
+            if (branchExists && !compressImagesMessage.IsRebase)
             {
                 logger.LogInformation("CompressImagesFunction: skipping repo {Owner}/{RepoName} as branch exists", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 return;
@@ -116,6 +115,7 @@ namespace CompressImagesFunction
                 Password = installationToken.Token,
                 RepoName = compressImagesMessage.RepoName,
                 RepoOwner = compressImagesMessage.Owner,
+                IsRebase = compressImagesMessage.IsRebase,
                 PgpPrivateKey = KnownEnvironmentVariables.PGP_PRIVATE_KEY,
                 PgPPassword = KnownEnvironmentVariables.PGP_PASSWORD,
                 CompressImagesMessage = compressImagesMessage,
@@ -130,12 +130,14 @@ namespace CompressImagesFunction
             }
             else if (didCompress)
             {
+                var update = compressImagesMessage.IsRebase;
                 logger.LogInformation("CompressImagesFunction: Successfully compressed images for {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 openPrMessages.Add(new OpenPrMessage
                 {
                     InstallationId = compressImagesMessage.InstallationId,
                     RepoName = compressImagesMessage.RepoName,
                     CloneUrl = compressImagesMessage.CloneUrl,
+                    Update = compressImagesMessage.IsRebase,
                 });
             }
 
