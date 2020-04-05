@@ -11,7 +11,8 @@ namespace CompressImagesFunction.Compressors
             "cleanupListOfValues",
             "cleanupNumericValues",
             "convertColors",
-            "convertStyleToAttrs",
+
+            // "convertStyleToAttrs", // see issue https://github.com/dabutvin/Imgbot/issues/603
             "minifyStyles",
             "moveGroupAttrsToElems",
             "removeComments",
