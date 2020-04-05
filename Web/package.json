@@ -19,7 +19,7 @@
     "bootstrap": "^4.3.1",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
-    "grunt": "^1.0.3",
+    "grunt": "^1.1.0",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^3.0.0",
