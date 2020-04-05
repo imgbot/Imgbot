@@ -14,8 +14,9 @@ Here is an example .imgbotconfig setup that shows some of the options.
         "image1.png",              // ignore by filename
         "public/special_images/*", // ignore by folderpath
     ],
-    "aggressiveCompression": "true" // true|false
-    "compressWiki": "true" // true|false
+    "aggressiveCompression": "true", // true|false
+    "compressWiki": "true", // true|false
+    "minKBReduced": 500 // delay new prs until size reduction meets this threshold (default to 10)
 }
 ```
 

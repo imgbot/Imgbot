@@ -32,6 +32,10 @@
     "title": "Compress wiki"
   },
   {
+    "slug": "min-kb-threshold",
+    "title": "Min KB threshold"
+  },
+  {
     "slug": "authorization",
     "title": "Authorization"
   },

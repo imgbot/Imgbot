@@ -139,6 +139,12 @@ namespace CompressImagesFunction
             if (optimizedImages.Length == 0)
                 return false;
 
+            if (!Threshold.MeetsThreshold(repoConfiguration, optimizedImages))
+            {
+                logger.LogInformation($"Did not meet threshold. {parameters.RepoOwner}/{parameters.RepoName}");
+                return false;
+            }
+
             // create commit message based on optimizations
             foreach (var image in optimizedImages)
             {
