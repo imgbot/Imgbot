@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Auth.Extensions;
+using Common;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.WindowsAzure.Storage;
@@ -185,6 +186,17 @@ namespace Auth
                 throw new Exception("repository request mismatch");
             }
 
+            var response = req.CreateResponse();
+            response.EnableCors();
+
+            var imgbotBranch = await GetImgbotBranch(repository, token);
+            if (imgbotBranch != null)
+            {
+                // branch already exists
+                response.SetJson(new { status = "branchexists" });
+                return response;
+            }
+
             await routerQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new Common.Messages.RouterMessage
             {
                 CloneUrl = repository.html_url,
@@ -193,10 +205,7 @@ namespace Auth
                 RepoName = repository.name,
             })));
 
-            var response = req.CreateResponse();
-            response
-              .SetJson(new { status = "OK" })
-              .EnableCors();
+            response.SetJson(new { status = "OK" });
             return response;
         }
 
@@ -356,6 +365,30 @@ namespace Auth
             while (repository == null && next != null);
 
             return repository;
+        }
+
+        private static async Task<Model.Branch> GetImgbotBranch(Model.Repository repository, string token)
+        {
+            Model.Branch imgbotBranch = null;
+
+            try
+            {
+                var imgbotBranchRequest = new HttpRequestMessage(HttpMethod.Get, repository.branches_url.Replace("{/branch}", $"/{KnownGitHubs.BranchName}"));
+                imgbotBranchRequest.Headers.Authorization = new AuthenticationHeaderValue("token", token);
+                imgbotBranchRequest.AddGithubHeaders();
+                var imgbotBranchResponse = await HttpClient.SendAsync(imgbotBranchRequest);
+                var imbotBranchJson = await imgbotBranchResponse.Content.ReadAsStringAsync();
+                imgbotBranch = JsonConvert.DeserializeObject<Model.Branch>(imbotBranchJson);
+                if (imgbotBranch.name != KnownGitHubs.BranchName)
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+            }
+
+            return imgbotBranch;
         }
     }
 }

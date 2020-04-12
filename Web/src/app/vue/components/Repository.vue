@@ -108,6 +108,7 @@ export default {
       var vm = this;
 
       vm.checking = true;
+
       axios
         .get(
           `${settings.authhost}/api/repositories/check/${vm.installationid}/${vm.current.id}`,
@@ -115,26 +116,31 @@ export default {
             withCredentials: true
           }
         )
-        .then(() => {
-          var interval = setInterval(() => {
-            axios
-              .get(
-                `${settings.authhost}/api/repositories/${vm.installationid}/repository/${vm.current.id}`,
-                {
-                  withCredentials: true
-                }
-              )
-              .then(response => {
-                if (
-                  vm.current.lastchecked !==
-                  response.data.repository.lastchecked
-                ) {
-                  clearInterval(interval);
-                  vm.current = response.data.repository;
-                  vm.checking = false;
-                }
-              });
-          }, 30000);
+        .then((checkResponse) => {
+          if (checkResponse.data.status === "branchexists") {
+            alert("The Imgbot branch already exists in this repo. If you want a new round of optimization please delete this branch and try again.");
+            vm.checking = false;
+          } else {
+            var interval = setInterval(() => {
+              axios
+                .get(
+                  `${settings.authhost}/api/repositories/${vm.installationid}/repository/${vm.current.id}`,
+                  {
+                    withCredentials: true
+                  }
+                )
+                .then(response => {
+                  if (
+                    vm.current.lastchecked !==
+                    response.data.repository.lastchecked
+                  ) {
+                    clearInterval(interval);
+                    vm.current = response.data.repository;
+                    vm.checking = false;
+                  }
+                });
+            }, 30000);
+          }
         });
     },
     loadSettings: function() {
