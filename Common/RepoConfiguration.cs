@@ -9,5 +9,7 @@
         public bool AggressiveCompression { get; set; }
 
         public bool CompressWiki { get; set; }
+
+        public int? MinKBReduced { get; set; } = 10;
     }
 }
