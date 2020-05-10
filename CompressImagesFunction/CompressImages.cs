@@ -23,6 +23,7 @@ namespace CompressImagesFunction
             new ImageMagickCompress(),
             new SvgoCompress(),
             new MozJpegCompress(),
+            new GifsicleCompress(),
         };
 
         public static bool Run(CompressimagesParameters parameters, ICollector<CompressImagesMessage> compressImagesMessages, ILogger logger)
