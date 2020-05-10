@@ -27,5 +27,11 @@ RUN cd /tmp/mozjpeg-3.3.1/build && sh ../configure && make install
 RUN ln -s /opt/mozjpeg/bin/jpegtran /usr/local/bin/mozjpegtran
 RUN ln -s /opt/mozjpeg/bin/cjpeg /usr/local/bin/mozcjpeg
 
+# Add support for gifsicle
+RUN cd /tmp && wget https://github.com/kohler/gifsicle/archive/v1.92.tar.gz
+RUN cd /tmp && tar -xzf v1.92.tar.gz
+RUN cd /tmp/gifsicle-1.92 && autoreconf -fiv
+RUN cd /tmp/gifsicle-1.92 && sh ./configure --disable-gifview && make install
+
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot
 COPY --from=dotnet ["/home/site/wwwroot", "/home/site/wwwroot"]
