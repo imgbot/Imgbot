@@ -51,17 +51,18 @@ namespace CompressImagesFunction
                     logger.LogInformation("CompressImagesFunction: no references found for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                     return false;
                 }
-
-                if (!parameters.IsRebase && repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{KnownGitHubs.BranchName}"))
-                {
-                    logger.LogInformation("CompressImagesFunction: branch already exists for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                    return false;
-                }
             }
             catch (Exception e)
             {
                 // log + ignore
                 logger.LogWarning(e, "CompressImagesFunction: issue checking for existing branch or empty repo for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
+            }
+
+            // check if the branch exists and has been modified by the user
+            if (parameters.IsRebase && repo.Branches[$"refs/remotes/origin/{KnownGitHubs.BranchName}"].Tip.Author.Name != KnownGitHubs.ImgBotLogin)
+            {
+                logger.LogInformation("CompressImagesFunction: imgbot branch has been modified by the user.");
+                return false;
             }
 
             // check if we should switch away from the default branch
@@ -129,57 +130,18 @@ namespace CompressImagesFunction
                 repo.CreateBranch(KnownGitHubs.BranchName);
                 var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
             }
+            else if (parameters.IsRebase)
+            {
+                // if rebasing, fetch the branch
+                var refspec = string.Format("{0}:{0}", KnownGitHubs.BranchName);
+                Commands.Fetch(repo, "origin", new List<string> { refspec }, null, "fetch");
+            }
 
             // reset any mean files
             repo.Reset(ResetMode.Mixed, repo.Head.Tip);
 
             // optimize images
-            string[] imagePaths;
-            List<string> addedOrModifiedImagePaths = new List<string>();
-            List<string> deletedImagePaths = new List<string>();
-            if (parameters.IsRebase)
-            {
-                var refspec = string.Format("{0}:{0}", KnownGitHubs.BranchName);
-                Commands.Fetch(repo, "origin", new List<string> { refspec }, null, "fetch");
-
-                var diff = repo.Diff.Compare<TreeChanges>(repo.Branches[KnownGitHubs.BranchName].Commits.ElementAt(1).Tree, repo.Head.Tip.Tree);
-
-                if (diff == null)
-                {
-                    logger.LogInformation("Something went wrong while doing rebase");
-                    return false;
-                }
-
-                foreach (TreeEntryChanges c in diff)
-                {
-                    if (KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(c.Path)))
-                    {
-                        var path = Path.Combine(parameters.LocalPath, c.Path).Replace("\\", "/");
-                        var oldpath = Path.Combine(parameters.LocalPath, c.OldPath).Replace("\\", "/");
-
-                        switch (c.Status)
-                        {
-                            case ChangeKind.Added:
-                            case ChangeKind.Modified:
-                                addedOrModifiedImagePaths.Add(path);
-                                break;
-                            case ChangeKind.Renamed:
-                                addedOrModifiedImagePaths.Add(path);
-                                deletedImagePaths.Add(oldpath);
-                                break;
-                            case ChangeKind.Deleted:
-                                deletedImagePaths.Add(path);
-                                break;
-                        }
-                    }
-                }
-
-                imagePaths = ImageQuery.FilterOutIgnoredFiles(addedOrModifiedImagePaths, repoConfiguration);
-            }
-            else
-            {
-                imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
-            }
+            var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
 
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
@@ -205,14 +167,15 @@ namespace CompressImagesFunction
             {
                 var baseBranch = repo.Head;
                 var newCommit = baseBranch.Tip;
-                var oldCommit = repo.Branches[KnownGitHubs.BranchName].Tip;
 
                 // we need to reset the default branch so that we can
                 // rebase to it later.
                 repo.Reset(ResetMode.Hard, repo.Head.Commits.ElementAt(1));
 
-                // checkout to imgbot branch. TODO: remove because this is needed earlier on diff
                 Commands.Checkout(repo, KnownGitHubs.BranchName);
+
+                // reset imgbot branch removing old commit
+                repo.Reset(ResetMode.Hard, repo.Head.Commits.ElementAt(1));
 
                 // cherry-pick
                 var cherryPickOptions = new CherryPickOptions()
@@ -234,17 +197,6 @@ namespace CompressImagesFunction
 
                     repo.Commit(commitMessage, signature, signature);
                 }
-
-                // New commit message creation
-                var previousCommitResults = CompressionResult.ParseCommitMessage(oldCommit.Message);
-                var mergedResults = CompressionResult.Merge(optimizedImages, previousCommitResults);
-                var filteredResults = CompressionResult.Filter(mergedResults, deletedImagePaths.ToArray());
-                var squashCommitMessage = CommitMessage.Create(filteredResults);
-
-                // squash
-                var baseCommit = repo.Head.Commits.ElementAt(2);
-                repo.Reset(ResetMode.Soft, baseCommit);
-                repo.Commit(squashCommitMessage, signature, signature);
 
                 // rebase
                 var rebaseOptions = new RebaseOptions()

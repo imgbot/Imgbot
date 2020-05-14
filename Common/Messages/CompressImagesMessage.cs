@@ -9,7 +9,5 @@
         public string Owner { get; set; }
 
         public int InstallationId { get; set; }
-
-        public bool IsRebase { get; set; }
     }
 }

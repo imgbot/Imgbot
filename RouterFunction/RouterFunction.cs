@@ -41,7 +41,6 @@ namespace RouterFunction
                 InstallationId = routerMessage.InstallationId,
                 Owner = routerMessage.Owner,
                 RepoName = routerMessage.RepoName,
-                IsRebase = routerMessage.IsRebase,
             });
 
             logger.LogInformation("RouterFunction: Added CompressImagesMessage for {Owner}/{RepoName}", routerMessage.Owner, routerMessage.RepoName);

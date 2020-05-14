@@ -292,7 +292,7 @@ namespace Test
                 },
             };
 
-            var parsed = CompressionResult.ParseCommitMessage(commitMessage);
+            var parsed = CommitMessage.Parse(commitMessage);
             Assert.AreEqual(parsed.Length, expected.Length);
 
             for (int i = 0; i < parsed.Length; ++i)

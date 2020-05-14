@@ -54,29 +54,20 @@ namespace WebHook
             ILogger logger)
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
+            var hook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
             var result = "no action";
             switch (hookEvent)
             {
                 case "installation_repositories":
                 case "installation":
-                    var instalattionHook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
-                    result = await ProcessInstallationAsync(instalattionHook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
+                    result = await ProcessInstallationAsync(hook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    var pushHook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
-                    result = await ProcessPushAsync(pushHook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, logger)
+                    result = await ProcessPushAsync(hook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, logger)
                                     .ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
-                    var purchaseHook = JsonConvert.DeserializeObject<Hook>(await req.Content.ReadAsStringAsync());
-                    result = await ProcessMarketplacePurchaseAsync(purchaseHook, marketplaceTable, logger).ConfigureAwait(false);
-                    break;
-
-                // TODO: case 'issue-comment'
-                case "issue_comment":
-                    var commentHook = JsonConvert.DeserializeObject<IssueCommentHook>(await req.Content.ReadAsStringAsync());
-                    result = await ProcessIssueCommentAsync(commentHook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, logger)
-                                    .ConfigureAwait(false);
+                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
                     break;
             }
 
@@ -171,50 +162,6 @@ namespace WebHook
             })));
 
             logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
-
-            return "truth";
-        }
-
-        private static async Task<string> ProcessIssueCommentAsync(
-            IssueCommentHook hook,
-            CloudTable marketplaceTable,
-            CloudTable settingsTable,
-            CloudQueue routerMessages,
-            CloudQueue openPrMessages,
-            CloudQueue deleteBranchMessages,
-            ILogger logger)
-        {
-            if (hook.issue.pull_request == null)
-            {
-                return "This is not a PR";
-            }
-
-            if (hook.comment.body != "@imgbot rebase" || hook.issue.user.login != "imgbot[bot]")
-            {
-                return "Not an ImgBot directive";
-            }
-
-            // private check
-            if (hook.repository?.@private == true)
-            {
-                var isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.repository.owner.login);
-                if (!isPrivateEligible)
-                {
-                    logger.LogError("ProcessRebase: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
-                    throw new Exception("Plan mismatch");
-                }
-            }
-
-            await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
-            {
-                InstallationId = hook.installation.id,
-                Owner = hook.repository.owner.login,
-                RepoName = hook.repository.name,
-                CloneUrl = $"https://github.com/{hook.repository.full_name}",
-                IsRebase = true,
-            })));
-
-            logger.LogInformation("ProcessIssueComment: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
 
             return "truth";
         }

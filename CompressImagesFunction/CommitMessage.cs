@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Common;
 
 namespace CompressImagesFunction
@@ -51,6 +53,47 @@ namespace CompressImagesFunction
             commitMessage.AppendLine($"Signed-off-by: {KnownGitHubs.ImgBotLogin} <{KnownGitHubs.ImgBotEmail}>");
 
             return commitMessage.ToString();
+        }
+
+        public static CompressionResult[] Parse(string commitBody)
+        {
+            try
+            {
+                var compressionResults = new List<CompressionResult>();
+
+                var commitLines = commitBody.Split(new[] { '\r', '\n' });
+                for (var i = 0; i < commitLines.Length; i++)
+                {
+                    if (i == 0 || string.IsNullOrWhiteSpace(commitLines[i]))
+                    {
+                        // skip the first line and blank lines
+                        continue;
+                    }
+
+                    if (commitLines[i].StartsWith("Signed-off-by:") || commitLines[i].StartsWith("*Total --"))
+                    {
+                        // skip the DCO line
+                        continue;
+                    }
+
+                    var pattern = @"\*?(.*) -- (.*)kb -> (.*)kb \((.*)%\)";
+                    var capture = Regex.Matches(commitLines[i], pattern)[0];
+
+                    compressionResults.Add(new CompressionResult
+                    {
+                        Title = capture.Groups[1].Value,
+                        SizeBefore = Convert.ToDouble(capture.Groups[2].Value),
+                        SizeAfter = Convert.ToDouble(capture.Groups[3].Value),
+                    });
+                }
+
+                return compressionResults.ToArray();
+            }
+            catch
+            {
+                // commit messages can be out of our control
+                return null;
+            }
         }
 
         public static int ToSecondsSinceEpoch(this DateTimeOffset date)
