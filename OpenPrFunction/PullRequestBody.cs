@@ -61,11 +61,18 @@ namespace OpenPrFunction
             sb.AppendLine("---");
             sb.AppendLine();
 
-            sb.Append("[📝docs](https://imgbot.net/docs) | ");
+            sb.Append("**Black Lives Matter** | ");
+            sb.Append("[💰 donate](https://blacklivesmatters.carrd.co/#donate) | ");
+            sb.Append("[🎓 learn](https://blacklivesmatters.carrd.co/#educate) | ");
+            sb.Append("[✍🏾 sign](https://blacklivesmatters.carrd.co/#petitions)");
+            sb.AppendLine();
+            sb.AppendLine();
+
+            sb.Append("[📝 docs](https://imgbot.net/docs) | ");
             sb.Append("[:octocat: repo](https://github.com/dabutvin/ImgBot) | ");
-            sb.Append("[🙋issues](https://github.com/dabutvin/ImgBot/issues) | ");
-            sb.Append("[🏅swag](https://goo.gl/forms/1GX7wlhGEX8nkhGO2) | ");
-            sb.Append("[🏪marketplace](https://github.com/marketplace/imgbot)");
+            sb.Append("[🙋🏾 issues](https://github.com/dabutvin/ImgBot/issues) | ");
+            sb.Append("[🏅 swag](https://goo.gl/forms/1GX7wlhGEX8nkhGO2) | ");
+            sb.Append("[🏪 marketplace](https://github.com/marketplace/imgbot)");
 
             sb.AppendLine();
 
