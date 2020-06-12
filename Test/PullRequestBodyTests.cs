@@ -11,9 +11,9 @@ namespace Test
                                                 "---" +
                                                 Environment.NewLine + Environment.NewLine +
                                                 "**Black Lives Matter** | " +
-                                                "[💰 donate](https://blacklivesmatters.carrd.co/#donate) | " +
-                                                "[🎓 learn](https://blacklivesmatters.carrd.co/#educate) | " +
-                                                "[✍🏾 sign](https://blacklivesmatters.carrd.co/#petitions)" +
+                                                "[💰 donate](https://blm-bookmarks.carrd.co/#donate) | " +
+                                                "[🎓 learn](https://blm-bookmarks.carrd.co/#learn) | " +
+                                                "[✍🏾 sign](https://blm-bookmarks.carrd.co/#sign)" +
                                                 Environment.NewLine + Environment.NewLine +
                                                 "[📝 docs](https://imgbot.net/docs) | " +
                                                 "[:octocat: repo](https://github.com/dabutvin/ImgBot) | " +
