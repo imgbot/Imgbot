@@ -10,11 +10,16 @@ namespace Test
         private static string expectedFooter = Environment.NewLine + Environment.NewLine +
                                                 "---" +
                                                 Environment.NewLine + Environment.NewLine +
-                                                "[📝docs](https://imgbot.net/docs) | " +
+                                                "**Black Lives Matter** | " +
+                                                "[💰 donate](https://blacklivesmatters.carrd.co/#donate) | " +
+                                                "[🎓 learn](https://blacklivesmatters.carrd.co/#educate) | " +
+                                                "[✍🏾 sign](https://blacklivesmatters.carrd.co/#petitions)" +
+                                                Environment.NewLine + Environment.NewLine +
+                                                "[📝 docs](https://imgbot.net/docs) | " +
                                                 "[:octocat: repo](https://github.com/dabutvin/ImgBot) | " +
-                                                "[🙋issues](https://github.com/dabutvin/ImgBot/issues) | " +
-                                                "[🏅swag](https://goo.gl/forms/1GX7wlhGEX8nkhGO2) | " +
-                                                "[🏪marketplace](https://github.com/marketplace/imgbot)" +
+                                                "[🙋🏾 issues](https://github.com/dabutvin/ImgBot/issues) | " +
+                                                "[🏅 swag](https://goo.gl/forms/1GX7wlhGEX8nkhGO2) | " +
+                                                "[🏪 marketplace](https://github.com/marketplace/imgbot)" +
                                                 Environment.NewLine;
 
         [TestMethod]
