@@ -66,6 +66,7 @@ namespace OpenPrFunction
             sb.Append("[🎓 learn](https://blacklivesmatters.carrd.co/#educate) | ");
             sb.Append("[✍🏾 sign](https://blacklivesmatters.carrd.co/#petitions)");
             sb.AppendLine();
+            sb.AppendLine();
 
             sb.Append("[📝 docs](https://imgbot.net/docs) | ");
             sb.Append("[:octocat: repo](https://github.com/dabutvin/ImgBot) | ");
