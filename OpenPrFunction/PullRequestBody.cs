@@ -61,9 +61,9 @@ namespace OpenPrFunction
             sb.AppendLine("---");
             sb.AppendLine();
 
-            sb.Append("**Black Lives Matter** |");
-            sb.Append("[💰 donate](https://blacklivesmatters.carrd.co/#donate) |");
-            sb.Append("[🎓 learn](https://blacklivesmatters.carrd.co/#educate) |");
+            sb.Append("**Black Lives Matter** | ");
+            sb.Append("[💰 donate](https://blacklivesmatters.carrd.co/#donate) | ");
+            sb.Append("[🎓 learn](https://blacklivesmatters.carrd.co/#educate) | ");
             sb.Append("[✍🏾 sign](https://blacklivesmatters.carrd.co/#petitions)");
             sb.AppendLine();
 
