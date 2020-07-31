@@ -41,7 +41,7 @@ to help@imgbot.net
 
 - optional
 - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
-- Limits the images optimized by Imgbot by esentially ignoring them
+- Limits the images optimized by Imgbot by essentially ignoring them
 - When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
 
 **aggressiveCompression**
