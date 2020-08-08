@@ -32,7 +32,7 @@
     "jquery": "^3.5.0",
     "lodash": "^4.17.15",
     "marked": "^1.0.0",
-    "moment": "^2.25.3",
+    "moment": "^2.27.0",
     "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4",
     "vue-html-loader": "^1.2.4",
