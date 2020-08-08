@@ -15,16 +15,21 @@ namespace CompressImagesFunction
                 .Where(x => KnownImgPatterns.ImgExtensions.Contains(Path.GetExtension(x).ToLower()))
                 .Select(x => x.Replace("\\", "/"));
 
+            return FilterOutIgnoredFiles(images, repoConfiguration);
+        }
+
+        public static string[] FilterOutIgnoredFiles(IEnumerable<string> imagePaths, RepoConfiguration repoConfiguration)
+        {
             if (repoConfiguration.IgnoredFiles != null)
             {
                 foreach (var ignorePattern in repoConfiguration.IgnoredFiles)
                 {
                     var pattern = new Regex(NormalizePattern(ignorePattern), RegexOptions.IgnoreCase);
-                    images = images.Where(x => !pattern.IsMatch(x));
+                    imagePaths = imagePaths.Where(x => !pattern.IsMatch(x));
                 }
             }
 
-            return images.ToArray();
+            return imagePaths.ToArray();
         }
 
         // this is to provide backwards compatibility with the previous globbing

@@ -9,5 +9,7 @@
         public string CloneUrl { get; set; }
 
         public string Owner { get; set; }
+
+        public bool IsRebase { get; set; }
     }
 }

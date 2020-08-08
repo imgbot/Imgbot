@@ -37,7 +37,6 @@ namespace CompressImagesFunction
             {
                 CredentialsProvider = credentialsProvider,
             };
-
             Repository.Clone(parameters.CloneUrl, parameters.LocalPath, cloneOptions);
 
             var repo = new Repository(parameters.LocalPath);
@@ -52,17 +51,18 @@ namespace CompressImagesFunction
                     logger.LogInformation("CompressImagesFunction: no references found for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
                     return false;
                 }
-
-                if (repo.Network.ListReferences(remote, credentialsProvider).Any(x => x.CanonicalName == $"refs/heads/{KnownGitHubs.BranchName}"))
-                {
-                    logger.LogInformation("CompressImagesFunction: branch already exists for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
-                    return false;
-                }
             }
             catch (Exception e)
             {
                 // log + ignore
                 logger.LogWarning(e, "CompressImagesFunction: issue checking for existing branch or empty repo for {Owner}/{RepoName}", parameters.RepoOwner, parameters.RepoName);
+            }
+
+            // check if the branch exists and has been modified by the user
+            if (parameters.IsRebase && repo.Branches[$"refs/remotes/origin/{KnownGitHubs.BranchName}"].Tip.Author.Name != KnownGitHubs.ImgBotLogin)
+            {
+                logger.LogInformation("CompressImagesFunction: imgbot branch has been modified by the user.");
+                return false;
             }
 
             // check if we should switch away from the default branch
@@ -123,12 +123,18 @@ namespace CompressImagesFunction
                 return false;
             }
 
-            // Should not create branch if we are compressing Wiki
-            if (isWikiCompress == false)
+            // Should not create branch if we are compressing Wiki or performing rebase
+            if (isWikiCompress == false && !parameters.IsRebase)
             {
                 // check out the branch
                 repo.CreateBranch(KnownGitHubs.BranchName);
                 var branch = Commands.Checkout(repo, KnownGitHubs.BranchName);
+            }
+            else if (parameters.IsRebase)
+            {
+                // if rebasing, fetch the branch
+                var refspec = string.Format("{0}:{0}", KnownGitHubs.BranchName);
+                Commands.Fetch(repo, "origin", new List<string> { refspec }, null, "fetch");
             }
 
             // reset any mean files
@@ -136,6 +142,7 @@ namespace CompressImagesFunction
 
             // optimize images
             var imagePaths = ImageQuery.FindImages(parameters.LocalPath, repoConfiguration);
+
             var optimizedImages = OptimizeImages(repo, parameters.LocalPath, imagePaths, logger, repoConfiguration.AggressiveCompression);
             if (optimizedImages.Length == 0)
                 return false;
@@ -155,6 +162,71 @@ namespace CompressImagesFunction
             var commitMessage = CommitMessage.Create(optimizedImages);
             var signature = new Signature(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail, DateTimeOffset.Now);
             repo.Commit(commitMessage, signature, signature);
+
+            if (parameters.IsRebase)
+            {
+                var baseBranch = repo.Head;
+                var newCommit = baseBranch.Tip;
+
+                // we need to reset the default branch so that we can
+                // rebase to it later.
+                repo.Reset(ResetMode.Hard, repo.Head.Commits.ElementAt(1));
+
+                Commands.Checkout(repo, KnownGitHubs.BranchName);
+
+                // reset imgbot branch removing old commit
+                repo.Reset(ResetMode.Hard, repo.Head.Commits.ElementAt(1));
+
+                // cherry-pick
+                var cherryPickOptions = new CherryPickOptions()
+                {
+                    MergeFileFavor = MergeFileFavor.Theirs,
+                };
+                var cherryPickResult = repo.CherryPick(newCommit, signature, cherryPickOptions);
+
+                if (cherryPickResult.Status == CherryPickStatus.Conflicts)
+                {
+                    var status = repo.RetrieveStatus(new LibGit2Sharp.StatusOptions() { });
+                    foreach (var item in status)
+                    {
+                        if (item.State == FileStatus.Conflicted)
+                        {
+                            Commands.Stage(repo, item.FilePath);
+                        }
+                    }
+
+                    repo.Commit(commitMessage, signature, signature);
+                }
+
+                // rebase
+                var rebaseOptions = new RebaseOptions()
+                {
+                    FileConflictStrategy = CheckoutFileConflictStrategy.Theirs,
+                };
+
+                var rebaseResult = repo.Rebase.Start(repo.Head, baseBranch, null, new Identity(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail), rebaseOptions);
+
+                while (rebaseResult.Status == RebaseStatus.Conflicts)
+                {
+                    var status = repo.RetrieveStatus(new LibGit2Sharp.StatusOptions() { });
+                    foreach (var item in status)
+                    {
+                        if (item.State == FileStatus.Conflicted)
+                        {
+                            if (imagePaths.Contains(Path.Combine(parameters.LocalPath, item.FilePath)))
+                            {
+                                Commands.Stage(repo, item.FilePath);
+                            }
+                            else
+                            {
+                                Commands.Remove(repo, item.FilePath);
+                            }
+                        }
+                    }
+
+                    rebaseResult = repo.Rebase.Continue(new Identity(KnownGitHubs.ImgBotLogin, KnownGitHubs.ImgBotEmail), rebaseOptions);
+                }
+            }
 
             // We just made a normal commit, now we are going to capture all the values generated from that commit
             // then rewind and make a signed commit
@@ -217,7 +289,12 @@ namespace CompressImagesFunction
             }
             else
             {
-                repo.Network.Push(remote, $"refs/heads/{KnownGitHubs.BranchName}", new PushOptions
+                var refs = $"refs/heads/{KnownGitHubs.BranchName}";
+                if (parameters.IsRebase)
+                    refs = refs.Insert(0, "+");
+                logger.LogInformation("refs: {refs}", refs);
+
+                repo.Network.Push(remote, refs, new PushOptions
                 {
                     CredentialsProvider = credentialsProvider,
                 });

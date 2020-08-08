@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Common;
 using Common.TableModels;
 using Octokit;
@@ -8,7 +10,7 @@ namespace OpenPrFunction
 {
     public class PullRequest : IPullRequest
     {
-        public async Task<Pr> OpenAsync(GitHubClientParameters parameters, Settings settings = null)
+        public async Task<Pr> OpenAsync(GitHubClientParameters parameters, bool update, Settings settings = null)
         {
             var inMemoryCredentialStore = new InMemoryCredentialStore(new Credentials(KnownGitHubs.Username, parameters.Password));
             var githubClient = new GitHubClient(new ProductHeaderValue("ImgBot"), inMemoryCredentialStore);
@@ -29,12 +31,36 @@ namespace OpenPrFunction
             }
 
             var stats = Stats.ParseStats(commit.Commit.Message);
-            var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, baseBranch)
-            {
-                Body = PullRequestBody.Generate(stats),
-            };
 
-            var result = await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+            Octokit.PullRequest result;
+            if (update)
+            {
+                // get PR number
+                var allPrs = await githubClient.PullRequest.GetAllForRepository(parameters.RepoOwner, parameters.RepoName);
+
+                var pr = allPrs.First(p => p.State == ItemState.Open && p.Head.Sha == commit.Sha);
+
+                if (pr == null)
+                {
+                    throw new Exception("Couldn't update PR. PR not found");
+                }
+
+                var pru = new PullRequestUpdate()
+                {
+                    Body = PullRequestBody.Generate(stats),
+                };
+
+                result = await githubClient.PullRequest.Update(parameters.RepoOwner, parameters.RepoName, pr.Number, pru);
+            }
+            else
+            {
+                var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, baseBranch)
+                {
+                    Body = PullRequestBody.Generate(stats),
+                };
+
+                result = await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+            }
 
             if (stats == null)
             {

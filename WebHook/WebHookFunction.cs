@@ -102,6 +102,7 @@ namespace WebHook
                     InstallationId = hook.installation.id,
                     RepoName = hook.repository.name,
                     CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                    Update = false,
                 })));
 
                 logger.LogInformation("ProcessPush: Added OpenPrMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
