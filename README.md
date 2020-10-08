@@ -1,14 +1,15 @@
 # Imgbot
 
-Imgbot crawls all your image files in GitHub and submits pull requests after applying a lossless compression.
-This will make the file size go down, but leave the dimensions and quality just as good.
+Imgbot is an open-source software, which crawls all your image files in GitHub and submits pull requests after applying a lossless compression.
+This makes the file size to go down, but leaves the dimensiona and image quality just as good.
+
 
 ![screenshot](https://imgbot.net/images/screen.png?cache=2)
 
 ## Configuration
 
 Imgbot supports optional configuration through a `.imgbotconfig` json file.
-This is not a required step to using Imgbot and is only for more advanced scenarios.
+This step is not required to use Imgbot and is only for more advanced scenarios.
 This file should be placed in the root of the repository and set to your liking.
 
 ```
