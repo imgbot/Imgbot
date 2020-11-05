@@ -26,34 +26,34 @@ This file should be placed in the root of the repository and set to your liking.
 ```
 
 The following are the currently supported parameters.
-If there are any configuration settings you would like to see supported,
+If there are any configuration settings you would like to see changed or supported,
 please feel free to open an issue here in the repo or shoot an email over
 to help@imgbot.net
 
 **schedule**
 
-- optional
+- Optional
 - Accepts: daily|weekly|monthly
 - Limits the PRs from Imgbot to once a day, once a week, or once a month respectively
 - The default behavior is to receive Imgbot PRs as images require optimization
 
 **ignoredFiles**
 
-- optional
+- Optional
 - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
 - Limits the images optimized by Imgbot by essentially ignoring them
-- When ignoring by filename no path is necessary, when ignoring by foldername full path from root is necessary
+- When ignoring by filename no path is necessary, when ignoring by folder name full path from root is necessary
 
 **aggressiveCompression**
 
-- optional
+- Optional
 - Accepts: true|false
 - Opt in to use lossy compression algorithms
 - The default behavior without this setting is lossless compression
 
 **compressWiki**
 
-- optional
+- Optional
 - Accepts: true|false
 - Opt in to also compress wiki repo
     - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.git`
@@ -62,7 +62,7 @@ to help@imgbot.net
 
 **minKBReduced**
 
-- optional
+- Optional
 - Accepts only numbers as input (e.g. `"minKBReduced": 500` for a 500 KB threshold)
 - Can be used to limit the frequency of PRs Imgbot will open over time
 - The default setting is 10
