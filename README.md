@@ -30,28 +30,28 @@ If there are any configuration settings you would like to see changed or support
 please feel free to open an issue here in the repo or shoot an email over
 to help@imgbot.net
 
-**schedule**
+**Schedule**
 
 - Optional
 - Accepts: daily|weekly|monthly
 - Limits the PRs from Imgbot to once a day, once a week, or once a month respectively
 - The default behavior is to receive Imgbot PRs as images require optimization
 
-**ignoredFiles**
+**Ignored Files**
 
 - Optional
 - Accepts the syntax for searchPattern on [Directory.EnumerateFiles()](https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles)
 - Limits the images optimized by Imgbot by essentially ignoring them
 - When ignoring by file name no path is necessary, when ignoring by folder name full path from root is necessary
 
-**aggressiveCompression**
+**Aggressive Compression**
 
 - Optional
 - Accepts: true|false
 - Opt in to use lossy compression algorithms
 - The default behaviour without this setting is loss less compression
 
-**compressWiki**
+**Compress Wiki**
 
 - Optional
 - Accepts: true|false
@@ -60,7 +60,7 @@ to help@imgbot.net
 - The default behaviour is opt out
 
 
-**minKBReduced**
+**MinKB Reduced**
 
 - Optional
 - Accepts only numbers as input (e.g. `"minKBReduced": 500` for a 500 KB threshold)
@@ -69,8 +69,10 @@ to help@imgbot.net
 
 Find out more: https://imgbot.net/docs
 
-## Contributing
+# Contributing
 
 All the code for Imgbot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation. This is where you can find out how to get set up to run locally as well as detailed information on exactly how Imgbot works.
 
 https://imgbot.net/docs#contributing
+
+## Thank You!
