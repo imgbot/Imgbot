@@ -89,7 +89,7 @@ The installation token serves as a password to clone private repos, push to remo
 
 The username to accompany the installation token password is `x-access-token`.
 
-For security reasons we cannot provide contributors with a pem file as this is a secret that delegates permissions in GitHub. You can run every part of the function except parts where authentication is required without this secret. If you are working on a part of the function that requires this secret then you can generate one for yourself to test with. [Register a GitHub app](https://github.com/settings/apps/new) for development purpose and install this app into the repo you are using to test with. Set the AppId in the code and you should be good to go.
+For security reasons, we cannot provide contributors with a pem file as this is a secret that delegates permissions in GitHub. You can run every part of the function except parts where authentication is required without this secret. If you are working on a part of the function that requires this secret then you can generate one for yourself to test with. [Register a GitHub app](https://github.com/settings/apps/new) for development purposes and install this app into the repo you are using to test with. Set the AppId in the code and you should be good to go.
 
 If there is a part of this process that isn't clear or you have any questions at all feel free to open an issue in this repo and we'll work it out :)
 
