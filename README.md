@@ -57,7 +57,7 @@ to help@imgbot.net
 - Accepts: true|false
 - Opt in to also compress wiki repo
     - Example: `https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.wiki.git`
-- The default behaviour is opt out
+- The default behaviour is opt-out
 
 
 **minKBReduced**
