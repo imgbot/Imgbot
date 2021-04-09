@@ -11,7 +11,7 @@
   "author": "dabutvin",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.11.1",
+    "@babel/core": "^7.13.15",
     "autoprefixer": "^9.8.6",
     "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
