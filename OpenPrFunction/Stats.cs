@@ -10,7 +10,7 @@ namespace OpenPrFunction
          * The commit message body is the source of truth for the PR we are opening
          * Convert this format into ImageStat[]
          *
-         *      [ImgBot] Optimize images
+         *      feat(ImgBot): Optimize images
 
                 *Total -- 854.23kb -> 308.28kb (63.91%)
 

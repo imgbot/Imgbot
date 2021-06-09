@@ -12,7 +12,7 @@
       "id": "607e8f5363eff35a8c925c2f4ff9f08ede011b92",
       "tree_id": "c67a1aab5333619dd17b2b3dab9918ea4db56701",
       "distinct": true,
-      "message": "[ImgBot] Optimize images (#12)\n\n*Total -- 602.30kb -> 547.92kb (9.03%)\r\n\r\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\r\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\r\n/a/b/c/deepnesting.png -- 20.51kb -> 17.97kb (12.37%)\r\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+      "message": "feat(ImgBot): Optimize images (#12)\n\n*Total -- 602.30kb -> 547.92kb (9.03%)\r\n\r\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\r\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\r\n/a/b/c/deepnesting.png -- 20.51kb -> 17.97kb (12.37%)\r\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
       "timestamp": "2019-02-10T15:35:08-08:00",
       "url": "https://github.com/dabutvin/test/commit/607e8f5363eff35a8c925c2f4ff9f08ede011b92",
       "author": {
@@ -43,7 +43,7 @@
     "id": "607e8f5363eff35a8c925c2f4ff9f08ede011b92",
     "tree_id": "c67a1aab5333619dd17b2b3dab9918ea4db56701",
     "distinct": true,
-    "message": "[ImgBot] Optimize images (#12)\n\n*Total -- 602.30kb -> 547.92kb (9.03%)\r\n\r\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\r\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\r\n/a/b/c/deepnesting.png -- 20.51kb -> 17.97kb (12.37%)\r\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+    "message": "feat(ImgBot): Optimize images (#12)\n\n*Total -- 602.30kb -> 547.92kb (9.03%)\r\n\r\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\r\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\r\n/a/b/c/deepnesting.png -- 20.51kb -> 17.97kb (12.37%)\r\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
     "timestamp": "2019-02-10T15:35:08-08:00",
     "url": "https://github.com/dabutvin/test/commit/607e8f5363eff35a8c925c2f4ff9f08ede011b92",
     "author": {

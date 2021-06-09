@@ -25,7 +25,7 @@ namespace Test
         [TestMethod]
         public void GivenMultiImageCommitMessage_ShouldFormatMarkdownTable()
         {
-            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
+            var commitMessage = "feat(ImgBot): Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "*Total -- 854.23kb -> 308.28kb (63.91%)" + Environment.NewLine +
                          Environment.NewLine +
@@ -61,7 +61,7 @@ namespace Test
         [TestMethod]
         public void GivenZeroPercentReductionCommitMessage_ShouldOmitPercentage()
         {
-            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
+            var commitMessage = "feat(ImgBot): Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "/featured-marketplace.png -- 163.11kb -> 160.11kb (0.02%)" + Environment.NewLine +
                          Environment.NewLine +
@@ -89,7 +89,7 @@ namespace Test
         [TestMethod]
         public void GivenReductionBelow5PercentCommitMessage_ShouldOmitPercentage()
         {
-            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
+            var commitMessage = "feat(ImgBot): Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "/featured-marketplace.png -- 163.11kb -> 155.11kb (4.40%)" + Environment.NewLine +
                          Environment.NewLine +
@@ -117,7 +117,7 @@ namespace Test
         [TestMethod]
         public void GivenSingleImageCommitMessage_ShouldFormatMarkdownTable()
         {
-            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
+            var commitMessage = "feat(ImgBot): Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "/featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)" + Environment.NewLine +
                          Environment.NewLine +
@@ -173,7 +173,7 @@ namespace Test
         [TestMethod]
         public void GivenMissingDCOCommitMessage_ShouldFormatMarkdownTable()
         {
-            var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
+            var commitMessage = "feat(ImgBot): Optimize images" + Environment.NewLine +
                          Environment.NewLine +
                          "*Total -- 854.23kb -> 308.28kb (63.91%)" + Environment.NewLine +
                          Environment.NewLine +
