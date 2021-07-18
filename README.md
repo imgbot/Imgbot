@@ -73,4 +73,6 @@ Find out more: https://imgbot.net/docs
 
 All the code for Imgbot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation. This is where you can find out how to get set up to run locally as well as detailed information on exactly how Imgbot works.
 
+Please contribute to IMGBOT for the love for open source community
+
 https://imgbot.net/docs#contributing
