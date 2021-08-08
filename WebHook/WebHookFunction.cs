@@ -146,7 +146,7 @@ namespace WebHook
             var relevantFiles = hook.commits.SelectMany(x => x.added)
                 .Concat(hook.commits.SelectMany(x => x.modified));
             var imageFiles = relevantFiles.Where(file => KnownImgPatterns.ImgExtensions.Any(extension => file.ToLower().EndsWith(extension, StringComparison.Ordinal)));
-            var configFile = relevantFiles.Where(file => file.ToLower() == ".imgbotconfig");
+            var configFile = relevantFiles.Where(file => file.ToLower() == ".imgbotconfig" || file.ToLower() == ".imgbotconfig.json");
 
             if (!imageFiles.Any() && !configFile.Any())
             {
