@@ -24,7 +24,7 @@ Alternatively, running `func init` from the function directory will stamp out ev
 
 `func azure functionapp fetch-app-settings <functionName>`
 
-If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [dockerhub](https://hub.docker.com/r/dabutvin/imgbot-compressimages).
+If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [dockerhub](https://hub.docker.com/r/vertigostudio/imgbot-compress).
 
 There are a few additional environment settings that need to be set to run the compression workflow. These can be set with `local.settings.json` or any other way
 
