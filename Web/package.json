@@ -13,7 +13,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "autoprefixer": "^9.8.6",
-    "axios": "^0.21.2",
+    "axios": "^0.21.4",
     "babel-loader": "^8.2.2",
     "babel-preset-es2015": "^6.24.1",
     "bootstrap": "^4.3.1",
