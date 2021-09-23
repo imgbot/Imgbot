@@ -11,8 +11,8 @@ namespace Test
                                                 "---" +
                                                 Environment.NewLine + Environment.NewLine +
                                                 "[📝 docs](https://imgbot.net/docs) | " +
-                                                "[:octocat: repo](https://github.com/dabutvin/ImgBot) | " +
-                                                "[🙋🏾 issues](https://github.com/dabutvin/ImgBot/issues) | " +
+                                                "[:octocat: repo](https://github.com/imgbot/ImgBot) | " +
+                                                "[🙋🏾 issues](https://github.com/imgbot/ImgBot/issues) | " +
                                                 "[🏪 marketplace](https://github.com/marketplace/imgbot)" +
                                                 Environment.NewLine + Environment.NewLine +
                                                 "<i>~Imgbot - Part of [Optimole](https://optimole.com/) family</i>" +

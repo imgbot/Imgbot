@@ -62,8 +62,8 @@ namespace OpenPrFunction
             sb.AppendLine();
 
             sb.Append("[📝 docs](https://imgbot.net/docs) | ");
-            sb.Append("[:octocat: repo](https://github.com/dabutvin/ImgBot) | ");
-            sb.Append("[🙋🏾 issues](https://github.com/dabutvin/ImgBot/issues) | ");
+            sb.Append("[:octocat: repo](https://github.com/imgbot/ImgBot) | ");
+            sb.Append("[🙋🏾 issues](https://github.com/imgbot/ImgBot/issues) | ");
             sb.Append("[🏪 marketplace](https://github.com/marketplace/imgbot)");
 
             sb.AppendLine();
