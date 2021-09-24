@@ -8,7 +8,7 @@ RUN cd /src/CompressImagesFunction && dotnet publish CompressImagesFunction.cspr
 RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/libgit2-106a5f2.so /home/site/wwwroot/bin/
 RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so /home/site/wwwroot/bin/
 
-FROM mcr.microsoft.com/azure-functions/dotnet:2.0
+FROM mcr.microsoft.com/azure-functions/dotnet:2.0.12641
 
 RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
   curl libcurl3 autoconf automake libtool nasm make wget pkg-config
