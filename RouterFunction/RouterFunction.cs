@@ -3,6 +3,8 @@ using Common.Messages;
 using Common.TableModels;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace RouterFunction
 {
@@ -22,7 +24,8 @@ namespace RouterFunction
                 {
                     CloneUrl = routerMessage.CloneUrl,
                     Owner = routerMessage.Owner,
-                    LastChecked = DateTime.UtcNow
+                    LastChecked = DateTime.UtcNow,
+                    IsOptimized = true,
                 });
             }
             else
@@ -42,6 +45,7 @@ namespace RouterFunction
                 Owner = routerMessage.Owner,
                 RepoName = routerMessage.RepoName,
             });
+
 
             logger.LogInformation("RouterFunction: Added CompressImagesMessage for {Owner}/{RepoName}", routerMessage.Owner, routerMessage.RepoName);
         }

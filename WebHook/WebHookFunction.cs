@@ -169,7 +169,14 @@ namespace WebHook
         private static async Task<string> ProcessInstallationAsync(Hook hook, CloudTable marketplaceTable, CloudQueue routerMessages, CloudTable installationTable, ILogger logger)
         {
             var isPrivateEligible = false;
-            if (hook.repositories?.Any(x => x.@private) == true || hook.repositories_added?.Any(x => x.@private) == true)
+            var isOnAddedPlan = false;
+            var privateRepo = hook.repositories?.Any(x => x.@private) == true || hook.repositories_added?.Any(x => x.@private) == true;
+            if (privateRepo)
+            {
+                isOnAddedPlan = await IsOnAddedPlan(marketplaceTable, hook.installation.account.login, logger);
+            }
+
+            if (!isOnAddedPlan && privateRepo)
             {
                 isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.installation.account.login);
             }
@@ -179,7 +186,7 @@ namespace WebHook
                 case "created":
                     foreach (var repo in hook.repositories)
                     {
-                        if (repo.@private && !isPrivateEligible)
+                        if (repo.@private && (!isPrivateEligible || !isOnAddedPlan))
                         {
                             logger.LogError("ProcessInstallationAsync/added: Plan mismatch for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
                             continue;
@@ -191,6 +198,7 @@ namespace WebHook
                             Owner = hook.installation.account.login,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
+                            IsPrivate = repo.@private,
                         })));
 
                         logger.LogInformation("ProcessInstallationAsync/created: Added RouterMessage for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
@@ -200,7 +208,7 @@ namespace WebHook
                 case "added":
                     foreach (var repo in hook.repositories_added)
                     {
-                        if (repo.@private && !isPrivateEligible)
+                        if (repo.@private && (!isPrivateEligible || !isOnAddedPlan))
                         {
                             logger.LogError("ProcessInstallationAsync/added: Plan mismatch for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
                             continue;
@@ -212,7 +220,18 @@ namespace WebHook
                             Owner = hook.installation.account.login,
                             RepoName = repo.name,
                             CloneUrl = $"https://github.com/{repo.full_name}",
+                            IsPrivate = repo.@private,
                         })));
+                        await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
+                        {
+                            AccountType = hook.marketplace_purchase.account.type,
+                            SenderEmail = hook.sender.email,
+                            OrganizationBillingEmail = hook.marketplace_purchase.account.organization_billing_email,
+                            PlanId = hook.marketplace_purchase.plan.id,
+                            SenderId = hook.sender.id,
+                            SenderLogin = hook.sender.login,
+                            UsedPrivate = 7, // todo: update the value existing in table
+                        }));
 
                         logger.LogInformation("ProcessInstallationAsync/added: Added RouterMessage for {Owner}/{RepoName}", hook.installation.account.login, repo.name);
                     }
@@ -241,6 +260,12 @@ namespace WebHook
             {
                 case "changed":
                 case "purchased":
+                    var allowedPrivate = 0;
+                    if (hook.marketplace_purchase.plan.id == 6857)
+                    {
+                        allowedPrivate = 7; // todo: build a map for plan id and allowed repositories
+                    }
+
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
                     {
                         AccountType = hook.marketplace_purchase.account.type,
@@ -249,6 +274,8 @@ namespace WebHook
                         PlanId = hook.marketplace_purchase.plan.id,
                         SenderId = hook.sender.id,
                         SenderLogin = hook.sender.login,
+                        AllowedPrivate = allowedPrivate,
+                        UsedPrivate = 0,
                     }));
 
                     logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased {PlanId} for {Owner}", hook.marketplace_purchase.plan.id, hook.marketplace_purchase.account.login);
@@ -268,6 +295,15 @@ namespace WebHook
             var query = new TableQuery<Marketplace>().Where(
                     $"AccountLogin eq '{ownerLogin}' and (PlanId eq 2841 or PlanId eq 2840 or PlanId eq 1750 or PlanId eq 781 or Student eq true)");
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
+            return rows.Count() != 0;
+        }
+
+        private static async Task<bool> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin, ILogger logger)
+        {
+            var query = new TableQuery<Marketplace>().Where(
+                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 6857)");
+            var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
+            //logger.LogError(JsonConvert.SerializeObject(rows));
             return rows.Count() != 0;
         }
 

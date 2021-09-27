@@ -110,7 +110,8 @@ module.exports = function(grunt) {
     devserver: {
       dist: {
         options: {
-          base: 'dist'
+              base: 'dist',
+              port: 8000
         }
       }
     }

@@ -27,5 +27,9 @@ namespace Common.TableModels
         public string Owner { get; set; }
 
         public DateTime? LastChecked { get; set; }
+
+        public bool IsPrivate { get; set; }
+
+        public bool IsOptimized { get; set; }
     }
 }

@@ -34,5 +34,9 @@ namespace Common.TableModels
         public string SenderLogin { get; set; }
 
         public bool Student { get; set; }
+
+        public int AllowedPrivate { get; set; }
+
+        public int UsedPrivate { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Auth.Extensions;
 using Common;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -60,7 +61,8 @@ namespace Auth
         public static async Task<HttpResponseMessage> ListRepositoriesAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/{page:int}")]HttpRequestMessage req,
             string installationid,
-            int page)
+            int page,
+            ILogger logger)
         {
             var token = req.ReadCookie("token");
             if (token == null)
@@ -87,6 +89,7 @@ namespace Auth
 
             var next = ParseNextHeader(repositoriesResponse);
             var response = req.CreateResponse();
+            logger.LogError(JsonConvert.SerializeObject(repositories));
             response
               .SetJson(new { repositories, next })
               .EnableCors();
@@ -308,7 +311,9 @@ namespace Auth
                 ghRepository.html_url,
                 ghRepository.name,
                 ghRepository.fork,
-                lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
+                lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked,
+                IsPrivate = (installation.Result as Common.TableModels.Installation)?.IsPrivate,
+                IsOptimized = (installation.Result as Common.TableModels.Installation)?.IsOptimized
             };
         }
 
