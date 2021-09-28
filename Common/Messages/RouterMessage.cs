@@ -13,5 +13,7 @@
         public bool IsRebase { get; set; }
 
         public bool IsPrivate { get; set; }
+
+        public bool Compress { get; set; }
     }
 }
