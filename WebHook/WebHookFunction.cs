@@ -170,14 +170,12 @@ namespace WebHook
         {
             var isPrivateEligible = false;
             var isOnAddedPlan = false;
-            var usedPrivate = 0;
-            var allowedPrivate = 0;
+            int? usedPrivate = 0;
+            int? allowedPrivate = 0;
             var privateRepo = hook.repositories?.Any(x => x.@private) == true || hook.repositories_added?.Any(x => x.@private) == true;
             if (privateRepo)
             {
                 (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.installation.account.login, logger);
-                logger.LogInformation(isOnAddedPlan.ToString());
-                logger.LogInformation(allowedPrivate.ToString());
             }
 
             if (!isOnAddedPlan && privateRepo)
@@ -329,13 +327,12 @@ namespace WebHook
             return rows.Count() != 0;
         }
 
-        private static async Task<(bool isOnAddedPlan, int allowedPrivate, int usedPrivate)> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin, ILogger logger)
+        private static async Task<(bool isOnAddedPlan, int? allowedPrivate, int? usedPrivate)> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin, ILogger logger)
         {
             var query = new TableQuery<Marketplace>().Where(
                     $"AccountLogin eq '{ownerLogin}' and (PlanId eq 6857)");
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
 
-            // logger.LogError(JsonConvert.SerializeObject(rows));
             var plan = rows.FirstOrDefault();
             if (plan != null)
             {

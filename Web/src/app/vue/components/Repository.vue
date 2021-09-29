@@ -11,11 +11,17 @@
         >
           <octicon name="gear"></octicon>
         </button>
-        <h5 class="card-title mt-1">
+        <h5 class="card-title mt-1" style="display:inline !important;">
           <octicon v-if="repository.fork" name="repo-forked"></octicon>
           <octicon v-if="!repository.fork" name="repo"></octicon>
           <a target="_blank" :href="current.html_url">{{ current.name }}</a>
         </h5>
+        <h6 style="display:inline !important;" class="card-title mt-1" v-if="typeof repository.IsPrivate !== 'undefined' && repository.IsPrivate">
+           PRIVATE
+        </h6>
+        <h6 style="display:inline !important;" class="card-title mt-1" v-else>
+           PUBLIC
+        </h6>
       </div>
       <div class="card-body">
         <div class="card-text">{{ lastchecked }}</div>
@@ -80,7 +86,7 @@ import "vue-octicon/icons/gear";
 
 export default {
   name: "Repository",
-  props: ["repository", "installationid"],
+  props: ["repository", "installationid", "planId"],
   components: {
     Octicon
   },
@@ -94,6 +100,9 @@ export default {
   computed: {
     lastchecked: function() {
       if (this.current.lastchecked) {
+        if ( this.planId === 6857 && this.current.IsOptimized === false ) {
+          return "You cannot request more optimizations for private repositories on this plan";
+        }
         const ms =
           new Date().getTime() - new Date(this.current.lastchecked).getTime();
         const ago = moment.duration(ms, "milliseconds").humanize();

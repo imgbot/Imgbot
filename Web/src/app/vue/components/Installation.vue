@@ -23,6 +23,7 @@
         v-bind:key="repository.id"
         v-bind:repository="repository"
         v-bind:installationid="installation.id"
+        v-bind:planId="installation.planId"
       ></repository>
     </div>
     <hr>
