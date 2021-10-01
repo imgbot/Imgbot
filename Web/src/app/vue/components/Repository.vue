@@ -25,10 +25,16 @@
       </div>
       <div class="card-body">
         <div class="card-text">{{ lastchecked }}</div>
-        <button v-on:click="check" :disabled="checking" class="btn btn-secondary mt-4">
+        <button v-on:click="check" :disabled="checking" class="btn btn-secondary mt-4" v-if="isOptimized === 'undefined' || isOptimized === true" >
           <span v-if="!checking">Request new optimization</span>
           <span v-if="checking">Requesting ...</span>
         </button>
+        <button v-if="!(isOptimized === false && limit === true)"v-on:click="check (true)" :disabled="checking" class="btn btn-secondary mt-4">
+          <span v-if="!checking && isOptimized === true">Request to remove this repository from optimization</span>
+          <span v-if="!checking && isOptimized === false && limit === false">Request to include this repository for optimization</span>
+          <span v-if="checking">Requesting ...</span>
+        </button>
+
       </div>
     </div>
     <div
@@ -86,7 +92,7 @@ import "vue-octicon/icons/gear";
 
 export default {
   name: "Repository",
-  props: ["repository", "installationid", "planId"],
+  props: ["repository", "installationid", "planId", "limit"],
   components: {
     Octicon
   },
@@ -100,32 +106,48 @@ export default {
   computed: {
     lastchecked: function() {
       if (this.current.lastchecked) {
-        if ( this.planId === 6857 && this.current.IsOptimized === false ) {
-          return "You cannot request more optimizations for private repositories on this plan";
-        }
         const ms =
           new Date().getTime() - new Date(this.current.lastchecked).getTime();
         const ago = moment.duration(ms, "milliseconds").humanize();
+        if ( this.planId === 6857 && this.isOptimized === false) {
+          if ( this.limit === true ) {
+            return "This repository is not optimized because you reached the limit of private repositories";
+          }
+          return "This repository is not selected for optimization";
+        }
         return `The last optimization request was sent ${ago} ago`;
       } else {
         return "No optimization started recently";
       }
+    },
+    isOptimized: function () {
+      if ( Object.prototype.hasOwnProperty.call(this.current, 'IsOptimized') ) {
+        return this.current.IsOptimized;
+      }
+      return 'undefined';
     }
   },
   methods: {
-    check: function() {
+    check: function( changeOptimize = false ) {
       var vm = this;
 
       vm.checking = true;
-
+      let requestChangeOptimzationUrl = `${settings.authhost}/api/repositories/check/${vm.installationid}/${vm.current.id}`;
+      if ( changeOptimize === true) {
+        requestChangeOptimzationUrl += `/${!vm.current.IsOptimized}`;
+      }
       axios
         .get(
-          `${settings.authhost}/api/repositories/check/${vm.installationid}/${vm.current.id}`,
+            requestChangeOptimzationUrl,
           {
             withCredentials: true
           }
         )
         .then((checkResponse) => {
+          if ( Object.prototype.hasOwnProperty.call(checkResponse, 'data')
+              && Object.prototype.hasOwnProperty.call(checkResponse.data, 'usedPrivate') ) {
+                  this.$emit('updatedUsedRepos', checkResponse.data.usedPrivate);
+          }
           if (checkResponse.data.status === "branchexists") {
             alert("The Imgbot branch already exists in this repo. If you want a new round of optimization please delete this branch and try again.");
             vm.checking = false;

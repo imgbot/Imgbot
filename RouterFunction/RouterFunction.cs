@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 
 namespace RouterFunction
 {
@@ -19,6 +20,7 @@ namespace RouterFunction
             ILogger logger)
         {
             var compress = routerMessage.GetType().GetProperty("Compress") == null || routerMessage.Compress == true;
+
             if (installation == null)
             {
                 installations.Add(new Installation(routerMessage.InstallationId, routerMessage.RepoName)
@@ -33,6 +35,11 @@ namespace RouterFunction
             else
             {
                 installation.LastChecked = DateTime.UtcNow;
+            }
+
+            if (routerMessage.GetType().GetProperty("Update") != null && routerMessage.Update == true)
+            {
+                installation.IsOptimized = compress;
             }
 
             /*

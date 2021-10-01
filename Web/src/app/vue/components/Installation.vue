@@ -8,6 +8,8 @@
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
       <div>
         <a class="btn btn-outline-secondary btn-sm" target="_blank" :href="installation.html_url">Manage repos</a>
+        <button v-on:click="togglePrivate()" type="button" class="btn btn-success">Show only private repos</button>
+        <h5 class="d-inline-block" v-if="limit"><span class="btn btn-danger"> You have reached the limit of private repositories you can optimize</span></h5>
         <a class="btn btn-outline-secondary btn-sm" v-if="changePlan" target="_blank" :href="changePlanLink">{{ this.changePlan }}</a>
       </div>
       <div class="mt-4" v-if="repositories.length > 2">
@@ -18,12 +20,13 @@
     <div>
       <p class="mt-4" v-if="loaded && filteredRepositories.length < 1">No repos found</p>
       <loader v-if="!loaded"></loader>
-      <repository
+      <repository @updatedUsedRepos = "updateUsedRepos"
         v-for="repository in filteredRepositories"
         v-bind:key="repository.id"
         v-bind:repository="repository"
         v-bind:installationid="installation.id"
         v-bind:planId="installation.planId"
+        v-bind:limit="limit"
       ></repository>
     </div>
     <hr>
@@ -49,7 +52,8 @@ export default {
     return {
       repositories: [],
       repofilter: '',
-      loaded: false
+      loaded: false,
+      onlyPrivate: false
     }
   },
   computed: {
@@ -68,6 +72,8 @@ export default {
           return 'Individual plan'
         case 2841:
           return 'Professional plan'
+        case 6857:
+          return 'Limited plan'
       }
     },
     changePlan: function() {
@@ -94,9 +100,26 @@ export default {
     },
     filteredRepositories: function() {
       return this.repositories.filter(x => {
+        if ( this.onlyPrivate === true ) return x.IsPrivate;
         if (!this.repofilter.length) return true
         return x.name.toLowerCase().startsWith(this.repofilter.toLowerCase())
       })
+    },
+    limit () {
+      return Object.prototype.hasOwnProperty.call(this.installation, 'allowedPrivate')
+          && Object.prototype.hasOwnProperty.call(this.installation, 'usedPrivate')
+          && this.installation.allowedPrivate <= this.installation.usedPrivate;
+
+
+    }
+  },
+  methods : {
+    togglePrivate () {
+      this.onlyPrivate = ! this.onlyPrivate;
+    },
+    updateUsedRepos ( updatedValue ) {
+      console.log("here");
+      this.installation.usedPrivate = updatedValue;
     }
   },
   mounted() {
@@ -113,12 +136,12 @@ export default {
         .then(response => {
           vm.loaded = true
           vm.repositories = vm.repositories.concat(response.data.repositories)
+          // console.log(JSON.stringify(vm.repositories));
           if (response.data.next) {
             fetchRepos(response.data.next)
           }
         })
     }
-
     fetchRepos(1)
   }
 }

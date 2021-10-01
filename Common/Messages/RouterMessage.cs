@@ -15,5 +15,7 @@
         public bool IsPrivate { get; set; }
 
         public bool Compress { get; set; }
+
+        public bool Update { get; set; }
     }
 }
