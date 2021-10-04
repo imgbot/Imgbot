@@ -91,7 +91,6 @@ namespace Auth
 
             var next = ParseNextHeader(repositoriesResponse);
             var response = req.CreateResponse();
-            logger.LogError(JsonConvert.SerializeObject(repositories));
             response
               .SetJson(new { repositories, next })
               .EnableCors();

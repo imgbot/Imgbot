@@ -322,7 +322,7 @@ namespace WebHook
         private static async Task<bool> IsPrivateEligible(CloudTable marketplaceTable, string ownerLogin)
         {
             var unlimitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] == -1 || KnownGitHubs.Plans[k] == -2);
-            string plansQuery = default;
+            string plansQuery = string.Empty;
 
             foreach (int planId in unlimitedPlans)
             {
@@ -339,8 +339,8 @@ namespace WebHook
         private static async Task<(bool isOnAddedPlan, int? allowedPrivate, int? usedPrivate)> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin)
         {
             var limitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
-            string plansQuery = default;
-            string needsOr = null;
+            string plansQuery = string.Empty;
+            string needsOr = string.Empty;
             if (limitedPlans.Count() > 0)
             {
                 needsOr = " or";
