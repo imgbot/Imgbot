@@ -5,11 +5,11 @@ namespace Common
 {
     public static class KnownGitHubs
     {
-        public const int AppId = 137050;
+        public const int AppId = 4706;
 
-        public const string ImgBotLogin = "GrigoreMihai";
+        public const string ImgBotLogin = "ImgBotApp";
 
-        public const string ImgBotEmail = "grigoremihai56@gmail.com";
+        public const string ImgBotEmail = "ImgBotHelp@gmail.com";
 
         public const string CommitMessageTitle = "[ImgBot] Optimize images";
 
