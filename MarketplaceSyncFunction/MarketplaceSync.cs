@@ -46,7 +46,7 @@ namespace MarketplaceSyncFunction
                 },
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
             var currentPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] == -1 || KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
-            //Console.WriteLine(JsonConvert.SerializeObject(currentPlans));
+
             foreach (var planId in currentPlans)
             {
                 var planRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/marketplace_listing/plans/{planId}/accounts?per_page=100");
