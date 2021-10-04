@@ -175,7 +175,7 @@ namespace WebHook
             var privateRepo = hook.repositories?.Any(x => x.@private) == true || hook.repositories_added?.Any(x => x.@private) == true;
             if (privateRepo)
             {
-                (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.installation.account.login, logger);
+                (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.installation.account.login);
             }
 
             if (!isOnAddedPlan && privateRepo)
@@ -225,7 +225,6 @@ namespace WebHook
 
                     break;
                 case "added":
-                    logger.LogInformation("added repo");
 
                     foreach (var repo in hook.repositories_added)
                     {
@@ -290,9 +289,10 @@ namespace WebHook
                 case "changed":
                 case "purchased":
                     var allowedPrivate = 0;
-                    if (hook.marketplace_purchase.plan.id == 6857)
+                    var limitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
+                    if (limitedPlans.Contains(hook.marketplace_purchase.plan.id))
                     {
-                        allowedPrivate = 7;
+                        allowedPrivate = KnownGitHubs.Plans[hook.marketplace_purchase.plan.id];
                     }
 
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)
@@ -321,16 +321,46 @@ namespace WebHook
 
         private static async Task<bool> IsPrivateEligible(CloudTable marketplaceTable, string ownerLogin)
         {
+            var unlimitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] == -1 || KnownGitHubs.Plans[k] == -2);
+            string plansQuery = default;
+
+            foreach (int planId in unlimitedPlans)
+            {
+                plansQuery += "PlanId eq " + planId.ToString() + " or ";
+            }
+
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 2841 or PlanId eq 2840 or PlanId eq 1750 or PlanId eq 781 or Student eq true)");
+                    $"AccountLogin eq '{ownerLogin}' and ('${plansQuery}' Student eq true)");
+
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
             return rows.Count() != 0;
         }
 
-        private static async Task<(bool isOnAddedPlan, int? allowedPrivate, int? usedPrivate)> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin, ILogger logger)
+        private static async Task<(bool isOnAddedPlan, int? allowedPrivate, int? usedPrivate)> IsOnAddedPlan(CloudTable marketplaceTable, string ownerLogin)
         {
+            var limitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
+            string plansQuery = default;
+            string needsOr = null;
+            if (limitedPlans.Count() > 0)
+            {
+                needsOr = " or";
+            }
+
+            int i = 0;
+            foreach (int planId in limitedPlans)
+            {
+                plansQuery += "PlanId eq " + planId.ToString();
+                if (i != limitedPlans.Count() - 1)
+                {
+                    plansQuery += needsOr;
+                }
+
+                i++;
+            }
+
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and (PlanId eq 6857)");
+                    $"AccountLogin eq '{ownerLogin}' and ('${plansQuery}')");
+
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
 
             var plan = rows.FirstOrDefault();

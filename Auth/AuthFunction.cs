@@ -122,8 +122,6 @@ namespace Auth
 
                 foreach (var item in planData)
                 {
-                    logger.LogError(JsonConvert.SerializeObject(item));
-                    logger.LogError(JsonConvert.SerializeObject(eduData));
                     var marketplaceRow = new Marketplace(item.account.id, item.account.login)
                     {
                         AccountType = item.account.type,
@@ -131,7 +129,6 @@ namespace Auth
                         Student = isStudent,
                     };
                     await marketplaceTable.CreateIfNotExistsAsync();
-
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(marketplaceRow));
                 }
 

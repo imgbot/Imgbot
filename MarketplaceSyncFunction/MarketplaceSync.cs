@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -44,8 +45,9 @@ namespace MarketplaceSyncFunction
                     AppId = KnownGitHubs.AppId,
                 },
                 KnownEnvironmentVariables.APP_PRIVATE_KEY);
-
-            foreach (var planId in new[] { 2840, 2841 })
+            var currentPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] == -1 || KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
+            //Console.WriteLine(JsonConvert.SerializeObject(currentPlans));
+            foreach (var planId in currentPlans)
             {
                 var planRequest = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/marketplace_listing/plans/{planId}/accounts?per_page=100");
                 planRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);

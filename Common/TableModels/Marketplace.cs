@@ -11,7 +11,6 @@ namespace Common.TableModels
 
         public Marketplace(int accountId, string accountLogin)
         {
-            Console.WriteLine("marketplace");
             PartitionKey = accountId.ToString();
             RowKey = accountLogin;
 

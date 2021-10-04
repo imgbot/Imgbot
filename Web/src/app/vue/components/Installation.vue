@@ -8,7 +8,7 @@
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
       <div>
         <a class="btn btn-outline-secondary btn-sm" target="_blank" :href="installation.html_url">Manage repos</a>
-        <button v-on:click="togglePrivate()" type="button" class="btn btn-success">Show only private repos</button>
+        <button v-on:click="togglePrivate()" type="button" v-bind:class="[onlyPrivate ? 'btn-success' : 'btn-primary']" class="btn">{{this.privateDisplay}}</button>
         <h5 class="d-inline-block" v-if="limit"><span class="btn btn-danger"> You have reached the limit of private repositories you can optimize</span></h5>
         <a class="btn btn-outline-secondary btn-sm" v-if="changePlan" target="_blank" :href="changePlanLink">{{ this.changePlan }}</a>
       </div>
@@ -79,6 +79,7 @@ export default {
     changePlan: function() {
       switch (this.installation.planId) {
         case 1749:
+        case 6857:
           return 'Upgrade plan'
         case 1750:
         case 2840:
@@ -89,6 +90,7 @@ export default {
     changePlanLink: function() {
       switch (this.installation.planId) {
         case 1749:
+        case 6857:
           return this.installation.accounttype === 'User' ?
             `https://github.com/marketplace/imgbot/upgrade/4/${this.installation.accountid}` :
             `https://github.com/marketplace/imgbot/upgrade/5/${this.installation.accountid}`
@@ -109,8 +111,9 @@ export default {
       return Object.prototype.hasOwnProperty.call(this.installation, 'allowedPrivate')
           && Object.prototype.hasOwnProperty.call(this.installation, 'usedPrivate')
           && this.installation.allowedPrivate <= this.installation.usedPrivate;
-
-
+    },
+    privateDisplay: function() {
+      return this.onlyPrivate ? "Show all public and private repositories used" : "Show only private repos";
     }
   },
   methods : {
@@ -118,7 +121,6 @@ export default {
       this.onlyPrivate = ! this.onlyPrivate;
     },
     updateUsedRepos ( updatedValue ) {
-      console.log("here");
       this.installation.usedPrivate = updatedValue;
     }
   },
@@ -136,7 +138,6 @@ export default {
         .then(response => {
           vm.loaded = true
           vm.repositories = vm.repositories.concat(response.data.repositories)
-          // console.log(JSON.stringify(vm.repositories));
           if (response.data.next) {
             fetchRepos(response.data.next)
           }
