@@ -210,7 +210,7 @@ namespace Auth
 
             bool updateValid = true;
             int? usedPrivateValue = 0;
-            if (compress != null)
+            if (compress != null && repository.@private == true)
             {
                 updateValid = false;
                 var marketplaceTable = GetTable("marketplace");
@@ -225,7 +225,7 @@ namespace Auth
                     usedPrivateValue = usedPrivate;
                     if (shouldCompress)
                     {
-                        if (usedPrivate < allowedPrivate)
+                        if (usedPrivate < allowedPrivate || allowedPrivate == null)
                         {
                             usedPrivate++;
                             updateValid = true;

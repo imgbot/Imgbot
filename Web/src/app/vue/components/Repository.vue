@@ -29,9 +29,9 @@
           <span v-if="!checking">Request new optimization</span>
           <span v-if="checking">Requesting ...</span>
         </button>
-        <button v-if="!(isOptimized === false && limit === true)"v-on:click="check (true)" :disabled="checking" class="btn btn-secondary mt-4">
+        <button v-if="!(isOptimized === false && limit === true && current.IsPrivate === true)"v-on:click="check (true)" :disabled="checking" class="btn btn-secondary mt-4">
           <span v-if="!checking && isOptimized === true">Request to remove this repository from optimization</span>
-          <span v-if="!checking && isOptimized === false && limit === false">Request to include this repository for optimization</span>
+          <span v-if="!checking && isOptimized === false && ( limit === false || current.IsPrivate === false )">Request to include this repository for optimization</span>
           <span v-if="checking">Requesting ...</span>
         </button>
 
@@ -110,7 +110,7 @@ export default {
           new Date().getTime() - new Date(this.current.lastchecked).getTime();
         const ago = moment.duration(ms, "milliseconds").humanize();
         if ( this.planId === 6857 && this.isOptimized === false) {
-          if ( this.limit === true ) {
+          if ( this.limit === true && this.current.IsPrivate === true) {
             return "This repository is not optimized because you reached the limit of private repositories";
           }
           return "This repository is not selected for optimization";
@@ -145,7 +145,7 @@ export default {
         )
         .then((checkResponse) => {
           if ( Object.prototype.hasOwnProperty.call(checkResponse, 'data')
-              && Object.prototype.hasOwnProperty.call(checkResponse.data, 'usedPrivate') ) {
+              && Object.prototype.hasOwnProperty.call(checkResponse.data, 'usedPrivate') && vm.current.IsPrivate === true) {
                   this.$emit('updatedUsedRepos', checkResponse.data.usedPrivate);
           }
           if (checkResponse.data.status === "branchexists") {

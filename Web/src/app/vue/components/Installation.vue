@@ -109,6 +109,7 @@ export default {
     },
     limit () {
       return Object.prototype.hasOwnProperty.call(this.installation, 'allowedPrivate')
+          && this.installation.allowedPrivate !== null
           && Object.prototype.hasOwnProperty.call(this.installation, 'usedPrivate')
           && this.installation.allowedPrivate <= this.installation.usedPrivate;
     },

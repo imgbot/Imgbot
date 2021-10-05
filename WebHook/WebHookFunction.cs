@@ -288,7 +288,7 @@ namespace WebHook
             {
                 case "changed":
                 case "purchased":
-                    var allowedPrivate = 0;
+                    int? allowedPrivate = null;
                     var limitedPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] >= KnownGitHubs.SmallestLimitPaidPlan);
                     if (limitedPlans.Contains(hook.marketplace_purchase.plan.id))
                     {
@@ -330,7 +330,7 @@ namespace WebHook
             }
 
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and ('${plansQuery}' Student eq true)");
+                    $"AccountLogin eq '{ownerLogin}' and ({plansQuery} Student eq true)");
 
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
             return rows.Count() != 0;
@@ -359,7 +359,7 @@ namespace WebHook
             }
 
             var query = new TableQuery<Marketplace>().Where(
-                    $"AccountLogin eq '{ownerLogin}' and ('${plansQuery}')");
+                    $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
 
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
 
