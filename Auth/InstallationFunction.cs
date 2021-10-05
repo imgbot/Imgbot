@@ -8,7 +8,6 @@ using Auth.Extensions;
 using Common;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -63,8 +62,7 @@ namespace Auth
         public static async Task<HttpResponseMessage> ListRepositoriesAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/{installationid}/{page:int}")]HttpRequestMessage req,
             string installationid,
-            int page,
-            ILogger logger)
+            int page)
         {
             var token = req.ReadCookie("token");
             if (token == null)
