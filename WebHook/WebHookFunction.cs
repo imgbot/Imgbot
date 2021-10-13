@@ -63,7 +63,7 @@ namespace WebHook
                     result = await ProcessInstallationAsync(hook, marketplaceTable, routerMessages, installationTable, logger).ConfigureAwait(false);
                     break;
                 case "push":
-                    result = await ProcessPushAsync(hook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, logger)
+                    result = await ProcessPushAsync(hook, marketplaceTable, settingsTable, routerMessages, openPrMessages, deleteBranchMessages, installationTable, logger)
                                     .ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
@@ -81,17 +81,29 @@ namespace WebHook
             CloudQueue routerMessages,
             CloudQueue openPrMessages,
             CloudQueue deleteBranchMessages,
+            CloudTable installationTable,
             ILogger logger)
         {
-            // private check
-            if (hook.repository?.@private == true)
+            var isPrivateEligible = false;
+            var isOnAddedPlan = false;
+            int? usedPrivate = 0;
+            int? allowedPrivate = 0;
+            var privateRepo = hook.repository?.@private == true;
+            if (privateRepo)
             {
-                var isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.repository.owner.login);
-                if (!isPrivateEligible)
-                {
-                    logger.LogError("ProcessPush: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
-                    throw new Exception("Plan mismatch");
-                }
+                (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.repository.owner.login);
+            }
+
+            if (!isOnAddedPlan && privateRepo)
+            {
+                isPrivateEligible = await IsPrivateEligible(marketplaceTable, hook.repository.owner.login);
+            }
+
+            // private check
+            if (privateRepo && !isPrivateEligible && !isOnAddedPlan)
+            {
+                logger.LogError("ProcessInstallationAsync/added: Plan mismatch for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
+                throw new Exception("Plan mismatch");
             }
 
             // push to imgbot branch by imgbot
@@ -153,13 +165,24 @@ namespace WebHook
                 return "No relevant files touched";
             }
 
-            await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
+            var shouldAddRouterMessage = true;
+            if (privateRepo && isOnAddedPlan)
             {
-                InstallationId = hook.installation.id,
-                Owner = hook.repository.owner.login,
-                RepoName = hook.repository.name,
-                CloneUrl = $"https://github.com/{hook.repository.full_name}",
-            })));
+                var tableOp = TableOperation.Retrieve<Installation>(hook.installation.account.id.ToString(), hook.repository.name);
+                var tr = await installationTable.ExecuteAsync(tableOp);
+                var data = tr.Result as Installation;
+            }
+            
+            if (shouldAddRouterMessage == true)
+            {
+                await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
+                {
+                    InstallationId = hook.installation.id,
+                    Owner = hook.repository.owner.login,
+                    RepoName = hook.repository.name,
+                    CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                })));
+            }
 
             logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
 

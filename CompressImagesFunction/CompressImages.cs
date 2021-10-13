@@ -12,6 +12,8 @@ using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
@@ -97,6 +99,16 @@ namespace CompressImagesFunction
                 if (!string.IsNullOrEmpty(repoConfigJson))
                 {
                     repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
+                    //here
+                    Console.WriteLine(JsonConvert.SerializeObject(repoConfiguration));
+                    var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
+                    var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+                    var settings = new Common.TableModels.Settings(parameters.CompressImagesMessage.InstallationId.ToString(), parameters.CompressImagesMessage.RepoName)
+                    {
+
+                    };
+
+                    settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings)).Wait();
                 }
             }
             catch
