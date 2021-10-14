@@ -166,14 +166,24 @@ namespace WebHook
             }
 
             var shouldAddRouterMessage = true;
+
+            // always true if not on the new plan because the check for a private plan would exit at the begining
+            // if it is on the plans with repository limit we will check if it is a repo that needs to be optimized by using the flag
+            // no need to check for the limits
+            // it was checked when the repository flag was added
             if (privateRepo && isOnAddedPlan)
             {
-                var tableOp = TableOperation.Retrieve<Installation>(hook.installation.account.id.ToString(), hook.repository.name);
-                var tr = await installationTable.ExecuteAsync(tableOp);
-                var data = tr.Result as Installation;
+                shouldAddRouterMessage = false;
+                var installation = await installationTable.ExecuteAsync(TableOperation.Retrieve<Installation>(hook.installation.id.ToString(), hook.repository.name));
+
+                var isOptimized = (installation?.Result as Common.TableModels.Installation)?.IsOptimized;
+                if (isOptimized != null && isOptimized == true)
+                {
+                    shouldAddRouterMessage = true;
+                }
             }
-            
-            if (shouldAddRouterMessage == true)
+
+            if (shouldAddRouterMessage)
             {
                 await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
                 {
@@ -181,6 +191,8 @@ namespace WebHook
                     Owner = hook.repository.owner.login,
                     RepoName = hook.repository.name,
                     CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                    IsPrivate = privateRepo,
+                    Compress = true,
                 })));
             }
 

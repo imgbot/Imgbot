@@ -55,9 +55,8 @@ namespace RouterFunction
                     Owner = routerMessage.Owner,
                     RepoName = routerMessage.RepoName,
                 });
+                logger.LogInformation("RouterFunction: Added CompressImagesMessage for {Owner}/{RepoName}", routerMessage.Owner, routerMessage.RepoName);
             }
-
-            logger.LogInformation("RouterFunction: Added CompressImagesMessage for {Owner}/{RepoName}", routerMessage.Owner, routerMessage.RepoName);
         }
     }
 }
