@@ -11,5 +11,11 @@
         public bool CompressWiki { get; set; }
 
         public int? MinKBReduced { get; set; } = 10;
+
+        public string PrTitle { get; set; }
+
+        public string PrBody { get; set; }
+        
+        public string[] Labels { get; set; } 
     }
 }

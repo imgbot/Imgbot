@@ -376,7 +376,7 @@ namespace WebHook
             string needsOr = string.Empty;
             if (limitedPlans.Count() > 0)
             {
-                needsOr = " or";
+                needsOr = " or ";
             }
 
             int i = 0;

@@ -6,12 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
+using Common.TableModels;
 using CompressImagesFunction.Compressors;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
@@ -26,8 +29,45 @@ namespace CompressImagesFunction
             new GifsicleCompress(),
         };
 
+        private static bool PaidPlan (CloudStorageAccount storageAccount, string ownerLogin)
+        {
+            Console.WriteLine("checking");
+            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
+            var paidPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] != 0);
+            string plansQuery = string.Empty;
+            string needsOr = string.Empty;
+            if (paidPlans.Count() > 0)
+            {
+                needsOr = " or ";
+            }
+
+            int i = 0;
+            foreach (int planId in paidPlans)
+            {
+                plansQuery += "PlanId eq " + planId.ToString();
+                if (i != paidPlans.Count() - 1)
+                {
+                    plansQuery += needsOr;
+                }
+
+                i++;
+            }
+            Console.WriteLine("query");
+            Console.WriteLine(plansQuery);
+            var query = new TableQuery<Marketplace>().Where(
+                $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
+
+            var rows = marketplaceTable.ExecuteQuerySegmentedAsync(query, null).Result;
+
+            var plan = rows.FirstOrDefault();
+            Console.WriteLine("plan");
+            return plan != null;
+        }
+
         public static bool Run(CompressimagesParameters parameters, ICollector<CompressImagesMessage> compressImagesMessages, ILogger logger)
         {
+            var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
+            var paidPlan = PaidPlan(storageAccount, parameters.RepoOwner);
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
                 new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
@@ -97,6 +137,24 @@ namespace CompressImagesFunction
                 if (!string.IsNullOrEmpty(repoConfigJson))
                 {
                     repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
+                    //here
+                    Console.WriteLine(JsonConvert.SerializeObject(repoConfiguration));
+
+                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null || repoConfiguration.Labels.Any()))
+                    {
+                        Console.WriteLine("here");
+                        var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+                        var settings = new Common.TableModels.Settings(
+                            parameters.CompressImagesMessage.InstallationId.ToString(),
+                            parameters.CompressImagesMessage.RepoName)
+                        {
+                            PrBody = repoConfiguration.PrBody,
+                            PrTitle = repoConfiguration.PrTitle,
+                            Labels = repoConfiguration.Labels,
+                        };
+
+                        settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings)).Wait();
+                    }
                 }
             }
             catch
