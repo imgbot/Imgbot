@@ -15,7 +15,9 @@
         public string PrTitle { get; set; }
 
         public string PrBody { get; set; }
-        
-        public string[] Labels { get; set; } 
+
+        public string Labels { get; set; }
+
+        public bool? PrDetails { get; set; }
     }
 }

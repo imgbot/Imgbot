@@ -31,7 +31,6 @@ namespace CompressImagesFunction
 
         private static bool PaidPlan (CloudStorageAccount storageAccount, string ownerLogin)
         {
-            Console.WriteLine("checking");
             var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
             var paidPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] != 0);
             string plansQuery = string.Empty;
@@ -52,15 +51,13 @@ namespace CompressImagesFunction
 
                 i++;
             }
-            Console.WriteLine("query");
-            Console.WriteLine(plansQuery);
+
             var query = new TableQuery<Marketplace>().Where(
                 $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
 
             var rows = marketplaceTable.ExecuteQuerySegmentedAsync(query, null).Result;
-
             var plan = rows.FirstOrDefault();
-            Console.WriteLine("plan");
+
             return plan != null;
         }
 
@@ -137,12 +134,9 @@ namespace CompressImagesFunction
                 if (!string.IsNullOrEmpty(repoConfigJson))
                 {
                     repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
-                    //here
-                    Console.WriteLine(JsonConvert.SerializeObject(repoConfiguration));
 
-                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null || repoConfiguration.Labels.Any()))
+                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null || repoConfiguration.Labels.Any() || repoConfiguration.PrDetails != null))
                     {
-                        Console.WriteLine("here");
                         var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
                         var settings = new Common.TableModels.Settings(
                             parameters.CompressImagesMessage.InstallationId.ToString(),
@@ -152,6 +146,10 @@ namespace CompressImagesFunction
                             PrTitle = repoConfiguration.PrTitle,
                             Labels = repoConfiguration.Labels,
                         };
+                        if (repoConfiguration.PrDetails != null)
+                        {
+                            settings.PrDetails = repoConfiguration.PrDetails;
+                        }
 
                         settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings)).Wait();
                     }
