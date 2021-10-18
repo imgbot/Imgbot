@@ -29,38 +29,6 @@ namespace CompressImagesFunction
             new GifsicleCompress(),
         };
 
-        private static bool PaidPlan (CloudStorageAccount storageAccount, string ownerLogin)
-        {
-            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
-            var paidPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] != 0);
-            string plansQuery = string.Empty;
-            string needsOr = string.Empty;
-            if (paidPlans.Count() > 0)
-            {
-                needsOr = " or ";
-            }
-
-            int i = 0;
-            foreach (int planId in paidPlans)
-            {
-                plansQuery += "PlanId eq " + planId.ToString();
-                if (i != paidPlans.Count() - 1)
-                {
-                    plansQuery += needsOr;
-                }
-
-                i++;
-            }
-
-            var query = new TableQuery<Marketplace>().Where(
-                $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
-
-            var rows = marketplaceTable.ExecuteQuerySegmentedAsync(query, null).Result;
-            var plan = rows.FirstOrDefault();
-
-            return plan != null;
-        }
-
         public static bool Run(CompressimagesParameters parameters, ICollector<CompressImagesMessage> compressImagesMessages, ILogger logger)
         {
             var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
@@ -135,21 +103,19 @@ namespace CompressImagesFunction
                 {
                     repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
 
-                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null || repoConfiguration.Labels.Any() || repoConfiguration.PrDetails != null))
+                    // for now we are not adding the labels functionality || repoConfiguration.Labels.Any() TODO: add it when adding the labels feature
+                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null))
                     {
                         var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
+                        // Labels = repoConfiguration.Labels TODO: add it when adding the labels feature
                         var settings = new Common.TableModels.Settings(
                             parameters.CompressImagesMessage.InstallationId.ToString(),
                             parameters.CompressImagesMessage.RepoName)
                         {
                             PrBody = repoConfiguration.PrBody,
                             PrTitle = repoConfiguration.PrTitle,
-                            Labels = repoConfiguration.Labels,
                         };
-                        if (repoConfiguration.PrDetails != null)
-                        {
-                            settings.PrDetails = repoConfiguration.PrDetails;
-                        }
 
                         settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings)).Wait();
                     }
@@ -421,6 +387,38 @@ namespace CompressImagesFunction
 
             logger.LogInformation("Compressed {NumImages}", optimizedImages.Count);
             return optimizedImages.ToArray();
+        }
+
+        private static bool PaidPlan(CloudStorageAccount storageAccount, string ownerLogin)
+        {
+            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
+            var paidPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] != 0);
+            string plansQuery = string.Empty;
+            string needsOr = string.Empty;
+            if (paidPlans.Count() > 0)
+            {
+                needsOr = " or ";
+            }
+
+            int i = 0;
+            foreach (int planId in paidPlans)
+            {
+                plansQuery += "PlanId eq " + planId.ToString();
+                if (i != paidPlans.Count() - 1)
+                {
+                    plansQuery += needsOr;
+                }
+
+                i++;
+            }
+
+            var query = new TableQuery<Marketplace>().Where(
+                $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
+
+            var rows = marketplaceTable.ExecuteQuerySegmentedAsync(query, null).Result;
+            var plan = rows.FirstOrDefault();
+
+            return plan != null;
         }
     }
 }

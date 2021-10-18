@@ -65,7 +65,7 @@ namespace Test
 
             var expectedMarkdown = "## Beep boop. Your images are optimized!" + Environment.NewLine +
                           Environment.NewLine +
-                          "Your image file size has been reduced!" + Environment.NewLine +
+                          "Your image file size has been reduced 🎉" + Environment.NewLine +
                           Environment.NewLine +
                           "<details>" + Environment.NewLine +
                           "<summary>" + Environment.NewLine +
@@ -93,7 +93,7 @@ namespace Test
 
             var expectedMarkdown = "## Beep boop. Your images are optimized!" + Environment.NewLine +
                           Environment.NewLine +
-                          "Your image file size has been reduced!" + Environment.NewLine +
+                          "Your image file size has been reduced 🎉" + Environment.NewLine +
                           Environment.NewLine +
                           "<details>" + Environment.NewLine +
                           "<summary>" + Environment.NewLine +

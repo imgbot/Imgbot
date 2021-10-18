@@ -16,8 +16,6 @@
 
         public string PrBody { get; set; }
 
-        public string Labels { get; set; }
-
-        public bool? PrDetails { get; set; }
+        // public string Labels { get; set; } TODO: add when having the labels feature
     }
 }

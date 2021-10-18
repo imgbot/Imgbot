@@ -36,6 +36,15 @@
     "title": "Min KB threshold"
   },
   {
+    "slug": "pr-title",
+    "title": "Pull request title"
+  },
+  {
+    "slug": "pr-body",
+    "title": "Pull request body"
+  },
+
+  {
     "slug": "authorization",
     "title": "Authorization"
   },

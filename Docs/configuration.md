@@ -16,7 +16,10 @@ Here is an example .imgbotconfig setup that shows some of the options.
     ],
     "aggressiveCompression": "true", // true|false
     "compressWiki": "true", // true|false
-    "minKBReduced": 500 // delay new prs until size reduction meets this threshold (default to 10)
+    "minKBReduced": 500, // delay new prs until size reduction meets this threshold (default to 10)
+    "prTitle" : "Your own pr title",        
+    "prBody" : " Text before optimization ratio {optimization_ratio} Text after optimization ratio 
+                 Text before optimization details {optimization_details} Text after optimization details",
 }
 ```
 

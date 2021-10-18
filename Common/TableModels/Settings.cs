@@ -27,7 +27,5 @@ namespace Common.TableModels
         public string PrTitle { get; set; }
 
         public string Labels { get; set; }
-
-        public bool? PrDetails { get; set; }
     }
 }
