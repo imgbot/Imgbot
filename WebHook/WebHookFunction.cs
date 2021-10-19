@@ -89,10 +89,8 @@ namespace WebHook
             int? usedPrivate = 0;
             int? allowedPrivate = 0;
             var privateRepo = hook.repository?.@private == true;
-            if (privateRepo)
-            {
-                (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.repository.owner.login);
-            }
+
+            (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.repository.owner.login);
 
             if (!isOnAddedPlan && privateRepo)
             {
@@ -106,17 +104,33 @@ namespace WebHook
                 throw new Exception("Plan mismatch");
             }
 
+            var shouldAddRouterMessage = true;
+
+            // always true if not on the new plan because the check for a private plan would exit at the begining
+            // if it is on the plans with repository limit we will check if it is a repo that needs to be optimized by using the flag
+            // no need to check for the limits
+            // it was checked when the repository flag was added
+            if (isOnAddedPlan)
+            {
+                shouldAddRouterMessage = await ShouldOptimize(installationTable, hook.repository.name, hook.installation.id.ToString());
+            }
+
             // push to imgbot branch by imgbot
             if (hook.@ref == $"refs/heads/{KnownGitHubs.BranchName}" && hook.sender.login == "imgbot[bot]")
             {
-                await openPrMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new OpenPrMessage
+                if (shouldAddRouterMessage)
                 {
-                    InstallationId = hook.installation.id,
-                    RepoName = hook.repository.name,
-                    CloneUrl = $"https://github.com/{hook.repository.full_name}",
-                    Update = false,
-                })));
-                logger.LogInformation("ProcessPush: Added OpenPrMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
+                    await openPrMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
+                        new OpenPrMessage
+                        {
+                            InstallationId = hook.installation.id,
+                            RepoName = hook.repository.name,
+                            CloneUrl = $"https://github.com/{hook.repository.full_name}",
+                            Update = false,
+                        })));
+                    logger.LogInformation("ProcessPush: Added OpenPrMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
+                }
+
                 return "imgbot push";
             }
 
@@ -163,24 +177,6 @@ namespace WebHook
                 return "No relevant files touched";
             }
 
-            var shouldAddRouterMessage = true;
-
-            // always true if not on the new plan because the check for a private plan would exit at the begining
-            // if it is on the plans with repository limit we will check if it is a repo that needs to be optimized by using the flag
-            // no need to check for the limits
-            // it was checked when the repository flag was added
-            if (privateRepo && isOnAddedPlan)
-            {
-                shouldAddRouterMessage = false;
-                var installation = await installationTable.ExecuteAsync(TableOperation.Retrieve<Installation>(hook.installation.id.ToString(), hook.repository.name));
-
-                var isOptimized = (installation?.Result as Common.TableModels.Installation)?.IsOptimized;
-                if (isOptimized != null && isOptimized == true)
-                {
-                    shouldAddRouterMessage = true;
-                }
-            }
-
             if (shouldAddRouterMessage)
             {
                 await routerMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new RouterMessage
@@ -192,9 +188,8 @@ namespace WebHook
                     IsPrivate = privateRepo,
                     Compress = true,
                 })));
+                logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
             }
-
-            logger.LogInformation("ProcessPush: Added RouterMessage for {Owner}/{RepoName}", hook.repository.owner.login, hook.repository.name);
 
             return "truth";
         }
@@ -403,6 +398,19 @@ namespace WebHook
             }
 
             return (isOnAddedPlan: false, allowedPrivate: 0, usedPrivate: 0);
+        }
+
+        private static async Task<bool> ShouldOptimize(CloudTable installationTable, string repoName, string installId)
+        {
+            var installation = await installationTable.ExecuteAsync(TableOperation.Retrieve<Installation>(installId, repoName));
+
+            var isOptimized = (installation?.Result as Common.TableModels.Installation)?.IsOptimized;
+            if (isOptimized != null && isOptimized == true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         // We are using commit hooks here, so let's deduce whether this is an eligble scenario for auto-deleting a branch

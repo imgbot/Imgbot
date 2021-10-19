@@ -29,7 +29,7 @@
           <span v-if="!checking">Request new optimization</span>
           <span v-if="checking">Requesting ...</span>
         </button>
-        <button v-if="!(isOptimized === false && limit === true && current.IsPrivate === true)"v-on:click="check (true)" :disabled="checking" class="btn btn-secondary mt-4">
+        <button v-if="addedPlan && !(isOptimized === false && limit === true && current.IsPrivate === true)"v-on:click="check (true)" :disabled="checking" class="btn btn-secondary mt-4">
           <span v-if="!checking && isOptimized === true">Request to remove this repository from optimization</span>
           <span v-if="!checking && isOptimized === false && ( limit === false || current.IsPrivate === false )">Request to include this repository for optimization</span>
           <span v-if="checking">Requesting ...</span>
@@ -125,6 +125,9 @@ export default {
         return this.current.IsOptimized;
       }
       return 'undefined';
+    },
+    addedPlan: function() {
+      return this.planId === 6857;
     }
   },
   methods: {

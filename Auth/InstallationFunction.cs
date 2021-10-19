@@ -193,7 +193,7 @@ namespace Auth
             response.EnableCors();
 
             var imgbotBranch = await GetImgbotBranch(repository, token);
-            if (imgbotBranch != null)
+            if (imgbotBranch != null && compress == null)
             {
                 // branch already exists
                 response.SetJson(new { status = "branchexists" });
