@@ -90,7 +90,11 @@ namespace WebHook
             int? allowedPrivate = 0;
             var privateRepo = hook.repository?.@private == true;
 
-            (isOnAddedPlan, allowedPrivate, usedPrivate) = await IsOnAddedPlan(marketplaceTable, hook.repository.owner.login);
+            if (hook?.repository != null && marketplaceTable != null)
+            {
+                (isOnAddedPlan, allowedPrivate, usedPrivate) =
+                    await IsOnAddedPlan(marketplaceTable, hook.repository.owner.login);
+            }
 
             if (!isOnAddedPlan && privateRepo)
             {
@@ -391,10 +395,10 @@ namespace WebHook
 
             var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, null);
 
-            var plan = rows.FirstOrDefault();
+            var plan = rows?.FirstOrDefault();
             if (plan != null)
             {
-               return (isOnAddedPlan: true, allowedPrivate: plan.AllowedPrivate, usedPrivate: plan.UsedPrivate);
+                return (isOnAddedPlan: true, allowedPrivate: plan.AllowedPrivate, usedPrivate: plan.UsedPrivate);
             }
 
             return (isOnAddedPlan: false, allowedPrivate: 0, usedPrivate: 0);
