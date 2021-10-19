@@ -109,7 +109,7 @@ export default {
         const ms =
           new Date().getTime() - new Date(this.current.lastchecked).getTime();
         const ago = moment.duration(ms, "milliseconds").humanize();
-        if ( this.planId === 6857 && this.isOptimized === false) {
+        if ( this.addedPlan && this.isOptimized === false) {
           if ( this.limit === true && this.current.IsPrivate === true) {
             return "This repository is not optimized because you reached the limit of private repositories";
           }
@@ -127,7 +127,7 @@ export default {
       return 'undefined';
     },
     addedPlan: function() {
-      return this.planId === 6857;
+      return [ 6894, 6919, 6920, 6921, 6922,6923 ].includes(this.planId);
     }
   },
   methods: {

@@ -72,25 +72,40 @@ export default {
           return 'Individual plan'
         case 2841:
           return 'Professional plan'
-        case 6857:
-          return 'Limited plan'
+        case 6894:
+          return 'Starter'
+        case 6919:
+          return 'Team'
+        case 6920:
+          return 'Agency'
+        case 6921:
+          return 'Enterprise'
+        case 6922:
+          return 'Gold'
+        case 6923:
+          return 'Platinium'
+
       }
     },
     changePlan: function() {
       switch (this.installation.planId) {
         case 1749:
-        case 6857:
+        case 6894:
+        case 6919:
+        case 6920:
+        case 6921:
+        case 6922:
           return 'Upgrade plan'
         case 1750:
         case 2840:
         case 2841:
+        case 6923:
           return 'Downgrade plan'
       }
     },
     changePlanLink: function() {
       switch (this.installation.planId) {
         case 1749:
-        case 6857:
           return this.installation.accounttype === 'User' ?
             `https://github.com/marketplace/imgbot/upgrade/4/${this.installation.accountid}` :
             `https://github.com/marketplace/imgbot/upgrade/5/${this.installation.accountid}`
@@ -98,6 +113,18 @@ export default {
         case 2840:
         case 2841:
           return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
+        case 6894:
+          return `https://github.com/marketplace/imgbot/upgrade/7/${this.installation.accountid}`
+        case 6919:
+          return `https://github.com/marketplace/imgbot/upgrade/8/${this.installation.accountid}`
+        case 6920:
+          return `https://github.com/marketplace/imgbot/upgrade/9/${this.installation.accountid}`
+        case 6921:
+          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
+        case 6922:
+          return `https://github.com/marketplace/imgbot/upgrade/11/${this.installation.accountid}`
+        case 6923:
+          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {
