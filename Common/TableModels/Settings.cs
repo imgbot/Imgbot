@@ -21,5 +21,11 @@ namespace Common.TableModels
         public string RepoName { get; set; }
 
         public string DefaultBranchOverride { get; set; }
+
+        public string PrBody { get; set; }
+
+        public string PrTitle { get; set; }
+
+        public string Labels { get; set; }
     }
 }

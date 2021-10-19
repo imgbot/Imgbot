@@ -21,7 +21,14 @@ This file should be placed in the root of the repository and set to your liking.
     ],
     "aggressiveCompression": "true", // true|false
     "compressWiki": "true", // true|false
-    "minKBReduced": 500 // set reduction threshold (default to 10)
+    "minKBReduced": 500 // set reduction threshold (default to 10),
+    "prTitle" : "Compressed images", // set pull request title
+    // set the pull request body, supports any valid github markdown
+    // {optimization_ratio} display a message containing the optimization ratio
+    // {optimization_details} display the table containing the optimization details
+    "prBody" : " Text before optimization ratio {optimization_ratio} Text after optimization ratio 
+                Text before optimization details {optimization_details} Text after optimization details",
+    
 }
 ```
 
@@ -66,6 +73,26 @@ to help@imgbot.net
 - Accepts only numbers as input (e.g. `"minKBReduced": 500` for a 500 KB threshold)
 - Can be used to limit the frequency of PRs Imgbot will open over time
 - The default setting is 10
+
+**prTitle**
+
+- Optional
+- Available only for paid plans
+- Accepts only strings as input (e.g. `"prTitle": "My title"`)
+- Can be used to display any custom pull request title
+- The default setting is "[ImgBot] Optimize images"
+
+**prBody**
+
+- Optional
+- Available only for paid plans
+- Accepts only strings as input 
+- (e.g. `"prBody": "Text before  {optimization_ratio} Text after"` <br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     `Text before  {optimization_details} Text after"`)
+- Can be used to display any custom pull request body, written using github [markdown](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+- Supports two magic tags: `{optimization_ratio} //displays the mean optimization ratio for all images` <br /> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `{optimization_details} //display the optimization details for every images`
+- The default setting generates the body displayed [here](https://imgbot.net/images/screen.png?cache=2) 
 
 Find out more: https://imgbot.net/docs
 

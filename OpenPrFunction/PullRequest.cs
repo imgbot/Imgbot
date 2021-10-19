@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
@@ -47,19 +48,36 @@ namespace OpenPrFunction
 
                 var pru = new PullRequestUpdate()
                 {
-                    Body = PullRequestBody.Generate(stats),
+                    Body = PullRequestBody.Generate(stats, settings),
                 };
 
                 result = await githubClient.PullRequest.Update(parameters.RepoOwner, parameters.RepoName, pr.Number, pru);
             }
             else
             {
-                var pr = new NewPullRequest(KnownGitHubs.CommitMessageTitle, KnownGitHubs.BranchName, baseBranch)
+                var commitMessageTitle = KnownGitHubs.CommitMessageTitle;
+                if (settings?.PrTitle != null)
                 {
-                    Body = PullRequestBody.Generate(stats),
-                };
+                    commitMessageTitle = settings.PrTitle;
+                }
 
+                var pr = new NewPullRequest(commitMessageTitle, KnownGitHubs.BranchName, baseBranch)
+                {
+                    Body = PullRequestBody.Generate(stats, settings),
+                };
                 result = await githubClient.PullRequest.Create(parameters.RepoOwner, parameters.RepoName, pr);
+            }
+
+            var labels = new List<string>();
+            if (settings?.Labels != null)
+            {
+                var issueUpdate = new IssueUpdate();
+                foreach (var label in settings.Labels.Split(','))
+                {
+                    issueUpdate.AddLabel(label);
+                }
+
+                await githubClient.Issue.Update(parameters.RepoOwner, parameters.RepoName, result.Number, issueUpdate);
             }
 
             if (stats == null)

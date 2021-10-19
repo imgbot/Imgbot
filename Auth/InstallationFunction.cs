@@ -46,6 +46,8 @@ namespace Auth
                     x.account.avatar_url,
                     planId = (mktplc.Result as Common.TableModels.Marketplace)?.PlanId,
                     student = (mktplc.Result as Common.TableModels.Marketplace)?.Student,
+                    allowedPrivate = (mktplc.Result as Common.TableModels.Marketplace)?.AllowedPrivate,
+                    usedPrivate = (mktplc.Result as Common.TableModels.Marketplace)?.UsedPrivate,
                 };
             }));
 
@@ -167,9 +169,10 @@ namespace Auth
 
         [FunctionName("RequestRepositoryCheckFunction")]
         public static async Task<HttpResponseMessage> RequestRepositoryCheckAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/check/{installationid}/{repositoryid}")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "repositories/check/{installationid}/{repositoryid}/{compress?}")]HttpRequestMessage req,
             string installationid,
-            string repositoryid)
+            string repositoryid,
+            string compress)
         {
             var token = req.ReadCookie("token");
             if (token == null)
@@ -190,11 +193,57 @@ namespace Auth
             response.EnableCors();
 
             var imgbotBranch = await GetImgbotBranch(repository, token);
-            if (imgbotBranch != null)
+            if (imgbotBranch != null && compress == null)
             {
                 // branch already exists
                 response.SetJson(new { status = "branchexists" });
                 return response;
+            }
+
+            var shouldCompress = true;
+            if (compress == "false")
+            {
+                shouldCompress = false;
+            }
+
+            bool updateValid = true;
+            int? usedPrivateValue = 0;
+            if (compress != null && repository.@private == true)
+            {
+                updateValid = false;
+                var marketplaceTable = GetTable("marketplace");
+                var installationsData = await GetInstallationsData(token);
+                await Task.WhenAll(installationsData.installations.Select(async x =>
+                {
+                    var mktplc = await marketplaceTable.ExecuteAsync(
+                        TableOperation.Retrieve<Common.TableModels.Marketplace>(x.account.id.ToString(), x.account.login));
+
+                    var allowedPrivate = (mktplc.Result as Common.TableModels.Marketplace)?.AllowedPrivate;
+                    var usedPrivate = (mktplc.Result as Common.TableModels.Marketplace)?.UsedPrivate;
+                    usedPrivateValue = usedPrivate;
+                    if (shouldCompress)
+                    {
+                        if (usedPrivate < allowedPrivate || allowedPrivate == null)
+                        {
+                            usedPrivate++;
+                            updateValid = true;
+                        }
+                    }
+                    else
+                    {
+                        usedPrivate--;
+                        updateValid = true;
+                    }
+
+                    if (updateValid == true)
+                    {
+                        await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Common.TableModels.Marketplace(x.account.id, x.account.login)
+                        {
+                            UsedPrivate = usedPrivate,
+                        }));
+                        usedPrivateValue = usedPrivate;
+                    }
+                }));
             }
 
             await routerQueue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new Common.Messages.RouterMessage
@@ -203,9 +252,12 @@ namespace Auth
                 InstallationId = Convert.ToInt32(installationid),
                 Owner = repository.owner.login,
                 RepoName = repository.name,
+                Compress = shouldCompress,
+                IsPrivate = repository.@private,
+                Update = updateValid,
             })));
 
-            response.SetJson(new { status = "OK" });
+            response.SetJson(new { status = "OK", usedPrivate = usedPrivateValue });
             return response;
         }
 
@@ -222,6 +274,7 @@ namespace Auth
             }
 
             var repository = await GetRepository(installationid, token, repositoryid);
+
             if (repository == null)
             {
                 throw new Exception("repository request mismatch");
@@ -308,7 +361,9 @@ namespace Auth
                 ghRepository.html_url,
                 ghRepository.name,
                 ghRepository.fork,
-                lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked
+                lastchecked = (installation.Result as Common.TableModels.Installation)?.LastChecked,
+                IsPrivate = (installation.Result as Common.TableModels.Installation)?.IsPrivate,
+                IsOptimized = (installation.Result as Common.TableModels.Installation)?.IsOptimized
             };
         }
 

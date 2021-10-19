@@ -100,8 +100,8 @@ namespace Auth
                 var mktplcResponse = await HttpClient.SendAsync(mktplcRequest);
                 var planDataJson = await mktplcResponse.Content.ReadAsStringAsync();
                 var planData = JsonConvert.DeserializeObject<PlanData[]>(planDataJson);
-
                 var eduData = new Edu();
+                var isStudent = false;
                 try
                 {
                     var eduRequest = new HttpRequestMessage(HttpMethod.Get, "https://education.github.com/api/user");
@@ -110,6 +110,10 @@ namespace Auth
                     var eduResponse = await HttpClient.SendAsync(eduRequest);
                     var eduDataJson = await eduResponse.Content.ReadAsStringAsync();
                     eduData = JsonConvert.DeserializeObject<Edu>(eduDataJson);
+                    if (eduData != null)
+                    {
+                        isStudent = eduData.Student;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -122,9 +126,8 @@ namespace Auth
                     {
                         AccountType = item.account.type,
                         PlanId = item.plan.id,
-                        Student = eduData.Student,
+                        Student = isStudent,
                     };
-
                     await marketplaceTable.CreateIfNotExistsAsync();
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(marketplaceRow));
                 }

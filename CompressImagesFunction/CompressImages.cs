@@ -6,12 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common;
 using Common.Messages;
+using Common.TableModels;
 using CompressImagesFunction.Compressors;
 using ImageMagick;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
 namespace CompressImagesFunction
@@ -28,6 +31,8 @@ namespace CompressImagesFunction
 
         public static bool Run(CompressimagesParameters parameters, ICollector<CompressImagesMessage> compressImagesMessages, ILogger logger)
         {
+            var storageAccount = CloudStorageAccount.Parse(Common.KnownEnvironmentVariables.AzureWebJobsStorage);
+            var paidPlan = PaidPlan(storageAccount, parameters.RepoOwner);
             CredentialsHandler credentialsProvider =
                 (url, user, cred) =>
                 new UsernamePasswordCredentials { Username = KnownGitHubs.Username, Password = parameters.Password };
@@ -97,6 +102,23 @@ namespace CompressImagesFunction
                 if (!string.IsNullOrEmpty(repoConfigJson))
                 {
                     repoConfiguration = JsonConvert.DeserializeObject<RepoConfiguration>(repoConfigJson);
+
+                    // for now we are not adding the labels functionality || repoConfiguration.Labels.Any() TODO: add it when adding the labels feature
+                    if (paidPlan && (repoConfiguration.PrBody != null || repoConfiguration.PrTitle != null))
+                    {
+                        var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+
+                        // Labels = repoConfiguration.Labels TODO: add it when adding the labels feature
+                        var settings = new Common.TableModels.Settings(
+                            parameters.CompressImagesMessage.InstallationId.ToString(),
+                            parameters.CompressImagesMessage.RepoName)
+                        {
+                            PrBody = repoConfiguration.PrBody,
+                            PrTitle = repoConfiguration.PrTitle,
+                        };
+
+                        settingsTable.ExecuteAsync(TableOperation.InsertOrReplace(settings)).Wait();
+                    }
                 }
             }
             catch
@@ -365,6 +387,38 @@ namespace CompressImagesFunction
 
             logger.LogInformation("Compressed {NumImages}", optimizedImages.Count);
             return optimizedImages.ToArray();
+        }
+
+        private static bool PaidPlan(CloudStorageAccount storageAccount, string ownerLogin)
+        {
+            var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
+            var paidPlans = KnownGitHubs.Plans.Keys.Where(k => KnownGitHubs.Plans[k] != 0);
+            string plansQuery = string.Empty;
+            string needsOr = string.Empty;
+            if (paidPlans.Count() > 0)
+            {
+                needsOr = " or ";
+            }
+
+            int i = 0;
+            foreach (int planId in paidPlans)
+            {
+                plansQuery += "PlanId eq " + planId.ToString();
+                if (i != paidPlans.Count() - 1)
+                {
+                    plansQuery += needsOr;
+                }
+
+                i++;
+            }
+
+            var query = new TableQuery<Marketplace>().Where(
+                $"AccountLogin eq '{ownerLogin}' and ({plansQuery})");
+
+            var rows = marketplaceTable.ExecuteQuerySegmentedAsync(query, null).Result;
+            var plan = rows.FirstOrDefault();
+
+            return plan != null;
         }
     }
 }

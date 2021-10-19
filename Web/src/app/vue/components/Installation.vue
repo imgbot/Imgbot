@@ -8,6 +8,8 @@
       <h5 class="d-inline-block mb-4 align-bottom ml-3"><span class="badge badge-info">{{ this.plan }}</span></h5>
       <div>
         <a class="btn btn-outline-secondary btn-sm" target="_blank" :href="installation.html_url">Manage repos</a>
+        <button v-on:click="togglePrivate()" type="button" v-bind:class="[onlyPrivate ? 'btn-success' : 'btn-primary']" class="btn">{{this.privateDisplay}}</button>
+        <h5 class="d-inline-block" v-if="limit"><span class="btn btn-danger"> You have reached the limit of private repositories you can optimize</span></h5>
         <a class="btn btn-outline-secondary btn-sm" v-if="changePlan" target="_blank" :href="changePlanLink">{{ this.changePlan }}</a>
       </div>
       <div class="mt-4" v-if="repositories.length > 2">
@@ -18,11 +20,13 @@
     <div>
       <p class="mt-4" v-if="loaded && filteredRepositories.length < 1">No repos found</p>
       <loader v-if="!loaded"></loader>
-      <repository
+      <repository @updatedUsedRepos = "updateUsedRepos"
         v-for="repository in filteredRepositories"
         v-bind:key="repository.id"
         v-bind:repository="repository"
         v-bind:installationid="installation.id"
+        v-bind:planId="installation.planId"
+        v-bind:limit="limit"
       ></repository>
     </div>
     <hr>
@@ -48,7 +52,8 @@ export default {
     return {
       repositories: [],
       repofilter: '',
-      loaded: false
+      loaded: false,
+      onlyPrivate: false
     }
   },
   computed: {
@@ -67,15 +72,34 @@ export default {
           return 'Individual plan'
         case 2841:
           return 'Professional plan'
+        case 6894:
+          return 'Starter'
+        case 6919:
+          return 'Team'
+        case 6920:
+          return 'Agency'
+        case 6921:
+          return 'Enterprise'
+        case 6922:
+          return 'Gold'
+        case 6923:
+          return 'Platinium'
+
       }
     },
     changePlan: function() {
       switch (this.installation.planId) {
         case 1749:
+        case 6894:
+        case 6919:
+        case 6920:
+        case 6921:
+        case 6922:
           return 'Upgrade plan'
         case 1750:
         case 2840:
         case 2841:
+        case 6923:
           return 'Downgrade plan'
       }
     },
@@ -89,13 +113,43 @@ export default {
         case 2840:
         case 2841:
           return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
+        case 6894:
+          return `https://github.com/marketplace/imgbot/upgrade/7/${this.installation.accountid}`
+        case 6919:
+          return `https://github.com/marketplace/imgbot/upgrade/8/${this.installation.accountid}`
+        case 6920:
+          return `https://github.com/marketplace/imgbot/upgrade/9/${this.installation.accountid}`
+        case 6921:
+          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
+        case 6922:
+          return `https://github.com/marketplace/imgbot/upgrade/11/${this.installation.accountid}`
+        case 6923:
+          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {
       return this.repositories.filter(x => {
+        if ( this.onlyPrivate === true ) return x.IsPrivate;
         if (!this.repofilter.length) return true
         return x.name.toLowerCase().startsWith(this.repofilter.toLowerCase())
       })
+    },
+    limit () {
+      return Object.prototype.hasOwnProperty.call(this.installation, 'allowedPrivate')
+          && this.installation.allowedPrivate !== null
+          && Object.prototype.hasOwnProperty.call(this.installation, 'usedPrivate')
+          && this.installation.allowedPrivate <= this.installation.usedPrivate;
+    },
+    privateDisplay: function() {
+      return this.onlyPrivate ? "Show all public and private repositories used" : "Show only private repos";
+    }
+  },
+  methods : {
+    togglePrivate () {
+      this.onlyPrivate = ! this.onlyPrivate;
+    },
+    updateUsedRepos ( updatedValue ) {
+      this.installation.usedPrivate = updatedValue;
     }
   },
   mounted() {
@@ -117,7 +171,6 @@ export default {
           }
         })
     }
-
     fetchRepos(1)
   }
 }

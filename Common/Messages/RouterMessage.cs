@@ -11,5 +11,11 @@
         public string Owner { get; set; }
 
         public bool IsRebase { get; set; }
+
+        public bool IsPrivate { get; set; }
+
+        public bool Compress { get; set; }
+
+        public bool Update { get; set; }
     }
 }
