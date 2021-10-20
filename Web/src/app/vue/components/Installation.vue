@@ -66,6 +66,8 @@ export default {
           return 'Early adopter plan'
         case 1749:
           return 'Open source plan'
+        case 6927:
+          return 'Open source plan'
         case 1750:
           return 'Premium plan'
         case 2840:
@@ -95,6 +97,7 @@ export default {
         case 6920:
         case 6921:
         case 6922:
+        case 6927:
           return 'Upgrade plan'
         case 1750:
         case 2840:
@@ -106,13 +109,12 @@ export default {
     changePlanLink: function() {
       switch (this.installation.planId) {
         case 1749:
-          return this.installation.accounttype === 'User' ?
-            `https://github.com/marketplace/imgbot/upgrade/4/${this.installation.accountid}` :
-            `https://github.com/marketplace/imgbot/upgrade/5/${this.installation.accountid}`
+        case 6927:
+          return `https://github.com/marketplace/imgbot/upgrade/6/${this.installation.accountid}`
         case 1750:
         case 2840:
         case 2841:
-          return `https://github.com/marketplace/imgbot/upgrade/2/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/12/${this.installation.accountid}`
         case 6894:
           return `https://github.com/marketplace/imgbot/upgrade/7/${this.installation.accountid}`
         case 6919:
