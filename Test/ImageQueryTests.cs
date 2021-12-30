@@ -17,9 +17,11 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
@@ -63,8 +65,10 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
@@ -83,6 +87,7 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
         }
 
         [TestMethod]
@@ -100,6 +105,7 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
         }
 
         [TestMethod]
@@ -117,6 +123,7 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
         }
 
         [TestMethod]
@@ -164,6 +171,7 @@ namespace Test
             Assert.AreEqual(2, images.Length, $"Images found {string.Join("; ", images)}.");
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
         }
 
         [TestMethod]
@@ -210,7 +218,9 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/deep/nested/deepimage.png"));
         }
 
@@ -229,9 +239,11 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
         }
 
         [TestMethod]
@@ -249,9 +261,11 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
         }
 
         [TestMethod]
@@ -269,9 +283,11 @@ namespace Test
             Assert.IsTrue(images.Any(s => s == "data/a.jpg"));
             Assert.IsTrue(images.Any(s => s == "data/b.png"));
             Assert.IsTrue(images.Any(s => s == "data/c.png"));
+            Assert.IsTrue(images.Any(s => s == "data/d.ico"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item1.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item2.png"));
             Assert.IsTrue(images.Any(s => s == "data/folder/item3.jpg"));
+            Assert.IsTrue(images.Any(s => s == "data/folder/item4.ico"));
         }
     }
 }
