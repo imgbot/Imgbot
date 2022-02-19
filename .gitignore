@@ -16,3 +16,4 @@ lib
 .DS_Store
 UserPrefs.xml
 secrets.json
+.idea
