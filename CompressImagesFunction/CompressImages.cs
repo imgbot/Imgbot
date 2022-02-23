@@ -322,6 +322,15 @@ namespace CompressImagesFunction
                 });
             }
 
+            try
+            {
+                Directory.Delete(parameters.LocalPath, true);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"Delete issue with repository {parameters.LocalPath}");
+            }
+
             return true;
         }
 
