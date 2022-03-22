@@ -31,6 +31,7 @@ namespace WebHook
             var installationTable = storageAccount.CreateCloudTableClient().GetTableReference("installation");
             var marketplaceTable = storageAccount.CreateCloudTableClient().GetTableReference("marketplace");
             var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
+            var backupQueue = storageAccount.CreateCloudQueueClient().GetQueueReference("backup");
 
             return Run(
                 req,
@@ -40,6 +41,7 @@ namespace WebHook
                 installationTable,
                 marketplaceTable,
                 settingsTable,
+                backupQueue,
                 logger);
         }
 
@@ -51,6 +53,7 @@ namespace WebHook
             CloudTable installationTable,
             CloudTable marketplaceTable,
             CloudTable settingsTable,
+            CloudQueue backupMessages,
             ILogger logger)
         {
             var hookEvent = req.Headers.GetValues("X-GitHub-Event").First();
@@ -67,7 +70,7 @@ namespace WebHook
                                     .ConfigureAwait(false);
                     break;
                 case "marketplace_purchase":
-                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, logger).ConfigureAwait(false);
+                    result = await ProcessMarketplacePurchaseAsync(hook, marketplaceTable, backupMessages, logger).ConfigureAwait(false);
                     break;
             }
 
@@ -314,7 +317,7 @@ namespace WebHook
             return "truth";
         }
 
-        private static async Task<string> ProcessMarketplacePurchaseAsync(Hook hook, CloudTable marketplaceTable, ILogger logger)
+        private static async Task<string> ProcessMarketplacePurchaseAsync(Hook hook, CloudTable marketplaceTable, CloudQueue backupMessages, ILogger logger)
         {
             switch (hook.action)
             {
@@ -325,6 +328,28 @@ namespace WebHook
                     if (limitedPlans.Contains(hook.marketplace_purchase.plan.id))
                     {
                         allowedPrivate = KnownGitHubs.Plans[hook.marketplace_purchase.plan.id];
+                    }
+
+                    if (hook.marketplace_purchase.on_free_trial != true && KnownGitHubs.Plans.ContainsKey(hook.marketplace_purchase.plan.id) && KnownGitHubs.Plans[hook.marketplace_purchase.plan.id] != 0)
+                    {
+                        // TODO: check if call to table can be reliable removed, use previous purchase instead
+                        var mktplc = await marketplaceTable.ExecuteAsync(
+                            TableOperation.Retrieve<Common.TableModels.Marketplace>(hook.marketplace_purchase.account.id.ToString(), hook.marketplace_purchase.account.login));
+
+                        var recurrentSale = "new";
+
+                        if (mktplc?.Result != null)
+                        {
+                            recurrentSale = "recurrent";
+                        }
+
+                        await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
+                            new BackupMessage
+                            {
+                                PlanId = hook.marketplace_purchase.plan.id,
+                                Price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100,
+                                SaleType = recurrentSale
+                            })));
                     }
 
                     await marketplaceTable.ExecuteAsync(TableOperation.InsertOrMerge(new Marketplace(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login)

@@ -14,6 +14,8 @@ namespace WebHook.Model
         public List<Repository> repositories_removed { get; set; }
         public Sender sender { get; set; }
         public MarketplacePurchase marketplace_purchase { get; set; }
+        
+        public MarketplacePurchase previous_marketplace_purchase { get; set; }
 
         public int number { get; set; }
         public PullRequest pull_request { get; set; }
@@ -336,11 +338,13 @@ namespace WebHook.Model
             public Account account { get; set; }
 
             public Plan plan { get; set; }
+            public bool? on_free_trial { get; set; }
         }
 
         public class Plan
         {
             public int id { get; set; }
+            public int monthly_price_in_cents { get; set; }
         }
     }
 }
