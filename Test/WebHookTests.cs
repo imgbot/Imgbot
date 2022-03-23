@@ -32,7 +32,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -65,7 +66,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -98,7 +100,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -134,7 +137,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -167,7 +171,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -224,6 +229,7 @@ namespace Test
                 out var installationsTable,
                 out var marketplaceTable,
                 out var settingsTable,
+                out var backupMessages,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -261,7 +267,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -298,7 +305,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -335,7 +343,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -372,7 +381,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -428,6 +438,7 @@ namespace Test
                 out var installationsTable,
                 out var marketplaceTable,
                 out var settingsTable,
+                out var backupMessages,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -483,6 +494,7 @@ namespace Test
                 out var installationsTable,
                 out var marketplaceTable,
                 out var settingsTable,
+                out var backupMessages,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -516,7 +528,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -569,6 +582,7 @@ namespace Test
                 out var installationsTable,
                 out var marketplaceTable,
                 out var settingsTable,
+                out var backupMessages,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -603,7 +617,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -660,6 +675,7 @@ namespace Test
                 out var installationsTable,
                 out var marketplaceTable,
                 out var settingsTable,
+                out var backupMessages,
                 ExtraSetup);
 
             // Assert OKObjectResult and Value
@@ -697,7 +713,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -730,7 +747,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -767,7 +785,8 @@ namespace Test
                 out var deleteBranchMessages,
                 out var installationsTable,
                 out var marketplaceTable,
-                out var settingsTable);
+                out var settingsTable,
+                out var backupMessages);
 
             // Assert OKObjectResult and Value
             var response = (HookResponse)((OkObjectResult)result).Value;
@@ -802,6 +821,7 @@ namespace Test
             out CloudTable installationsTable,
             out CloudTable marketplaceTable,
             out CloudTable settingsTable,
+            out CloudQueue backupMessages,
             Action<CloudQueue, CloudQueue, CloudTable, CloudTable, CloudTable> extraSetup = null)
         {
             var request = Substitute.For<HttpRequestMessage>();
@@ -811,6 +831,8 @@ namespace Test
             installationsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/installation"));
             marketplaceTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/marketplace"));
             settingsTable = Substitute.For<CloudTable>(new Uri("https://myaccount.table.core.windows.net/Tables/settings"));
+            backupMessages = Substitute.For<CloudQueue>(new Uri("https://myaccount.queue.core.windows.net/Queue/backup"));
+
             var logger = Substitute.For<ILogger>();
 
             request.Headers.Add("X-GitHub-Event", new[] { githubEvent });
@@ -819,7 +841,7 @@ namespace Test
             extraSetup?.Invoke(routerMessages, openPrMessages, installationsTable, marketplaceTable, settingsTable);
 
             return WebHook.WebHookFunction.Run(
-                request, routerMessages, openPrMessages, deleteBranchMessages, installationsTable, marketplaceTable, settingsTable, logger);
+                request, routerMessages, openPrMessages, deleteBranchMessages, installationsTable, marketplaceTable, settingsTable, backupMessages, logger);
         }
     }
 }
