@@ -127,7 +127,7 @@ export default {
       return 'undefined';
     },
     addedPlan: function() {
-      return [ 6894, 6919, 6920, 6921, 6922,6923 ].includes(this.planId);
+      return [ 6894, 6919, 6920, 6921, 6922,6923,7386,7387,7388,7389,7390 ].includes(this.planId);
     }
   },
   methods: {

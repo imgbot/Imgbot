@@ -22,7 +22,7 @@ namespace Common
         // </remarks>
         public const string AccessTokensUrlFormat = "https://api.github.com/app/installations/{0}/access_tokens";
 
-        public const int SmallestLimitPaidPlan = 5;
+        public const int SmallestLimitPaidPlan = 1;
 
         // -1 for existing plans that include unlimited private
         // -2 for old plans which also have unlimited private, that do not need marketplacesync
@@ -44,6 +44,11 @@ namespace Common
                 { 6921, 50 },
                 { 6922, 100 },
                 { 6923, 200 },
+                { 7386, 1 },
+                { 7387, 3 },
+                { 7388, 10 },
+                { 7389, 25 },
+                { 7390, 100 },
             });
     }
 }
