@@ -332,15 +332,32 @@ namespace WebHook
 
                     if (hook.marketplace_purchase.on_free_trial != true && KnownGitHubs.Plans.ContainsKey(hook.marketplace_purchase.plan.id) && KnownGitHubs.Plans[hook.marketplace_purchase.plan.id] != 0)
                     {
-                        // TODO: check if call to table can be reliable removed, use previous purchase instead
                         var mktplc = await marketplaceTable.ExecuteAsync(
-                            TableOperation.Retrieve<Common.TableModels.Marketplace>(hook.marketplace_purchase.account.id.ToString(), hook.marketplace_purchase.account.login));
+                            TableOperation.Retrieve<Marketplace>(hook.marketplace_purchase.account.id.ToString(), hook.marketplace_purchase.account.login));
 
                         var recurrentSale = "new";
 
                         if (mktplc?.Result != null)
                         {
-                            recurrentSale = "recurrent";
+                            if ((mktplc.Result as Marketplace)?.FreeTrial == true)
+                            {
+                                recurrentSale = "trial_upgrade";
+                            }
+                            else
+                            {
+                                var previousPlan = (mktplc.Result as Marketplace)?.PlanId ?? 0;
+
+                                if (previousPlan != 0 && KnownGitHubs.Plans.ContainsKey(previousPlan) &&
+                                    KnownGitHubs.Plans[previousPlan] != 0)
+                                {
+                                    recurrentSale = "recurrent";
+                                    if (KnownGitHubs.Plans[previousPlan] <
+                                        KnownGitHubs.Plans[hook.marketplace_purchase.plan.id])
+                                    {
+                                        recurrentSale = "upgrade_" + previousPlan.ToString();
+                                    }
+                                }
+                            }
                         }
 
                         await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
@@ -362,6 +379,7 @@ namespace WebHook
                         SenderLogin = hook.sender.login,
                         AllowedPrivate = allowedPrivate,
                         UsedPrivate = 0,
+                        FreeTrial = hook.marketplace_purchase.on_free_trial,
                     }));
 
                     logger.LogInformation("ProcessMarketplacePurchaseAsync/purchased {PlanId} for {Owner}", hook.marketplace_purchase.plan.id, hook.marketplace_purchase.account.login);

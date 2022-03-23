@@ -14,8 +14,6 @@ namespace WebHook.Model
         public List<Repository> repositories_removed { get; set; }
         public Sender sender { get; set; }
         public MarketplacePurchase marketplace_purchase { get; set; }
-        
-        public MarketplacePurchase previous_marketplace_purchase { get; set; }
 
         public int number { get; set; }
         public PullRequest pull_request { get; set; }
