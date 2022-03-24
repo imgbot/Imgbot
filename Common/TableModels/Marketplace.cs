@@ -38,5 +38,7 @@ namespace Common.TableModels
         public int? AllowedPrivate { get; set; }
 
         public int? UsedPrivate { get; set; }
+
+        public bool? FreeTrial { get; set; }
     }
 }

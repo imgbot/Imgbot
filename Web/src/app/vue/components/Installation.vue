@@ -77,14 +77,19 @@ export default {
         case 6894:
           return 'Starter'
         case 6919:
+        case 7386:
           return 'Team'
         case 6920:
+        case 7387:
           return 'Agency'
         case 6921:
+        case 7388:
           return 'Enterprise'
         case 6922:
+        case 7389:
           return 'Gold'
         case 6923:
+        case 7390:
           return 'Platinium'
 
       }
@@ -98,11 +103,16 @@ export default {
         case 6921:
         case 6922:
         case 6927:
+        case 7386:
+        case 7387:
+        case 7388:
+        case 7389:
           return 'Upgrade plan'
         case 1750:
         case 2840:
         case 2841:
         case 6923:
+        case 7390:
           return 'Downgrade plan'
       }
     },
@@ -110,23 +120,33 @@ export default {
       switch (this.installation.planId) {
         case 1749:
         case 6927:
-          return `https://github.com/marketplace/imgbot/upgrade/6/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/13/${this.installation.accountid}`
         case 1750:
         case 2840:
         case 2841:
           return `https://github.com/marketplace/imgbot/upgrade/12/${this.installation.accountid}`
         case 6894:
-          return `https://github.com/marketplace/imgbot/upgrade/7/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/13/${this.installation.accountid}`
         case 6919:
-          return `https://github.com/marketplace/imgbot/upgrade/8/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/14/${this.installation.accountid}`
         case 6920:
-          return `https://github.com/marketplace/imgbot/upgrade/9/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/15/${this.installation.accountid}`
         case 6921:
-          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/16/${this.installation.accountid}`
         case 6922:
-          return `https://github.com/marketplace/imgbot/upgrade/11/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/17/${this.installation.accountid}`
         case 6923:
-          return `https://github.com/marketplace/imgbot/upgrade/10/${this.installation.accountid}`
+          return `https://github.com/marketplace/imgbot/upgrade/16/${this.installation.accountid}`
+        case 7386:
+          return `https://github.com/marketplace/imgbot/upgrade/14/${this.installation.accountid}`
+        case 7387:
+          return `https://github.com/marketplace/imgbot/upgrade/15/${this.installation.accountid}`
+        case 7388:
+          return `https://github.com/marketplace/imgbot/upgrade/16/${this.installation.accountid}`
+        case 7389:
+          return `https://github.com/marketplace/imgbot/upgrade/17/${this.installation.accountid}`
+        case 7390:
+          return `https://github.com/marketplace/imgbot/upgrade/16/${this.installation.accountid}`
       }
     },
     filteredRepositories: function() {

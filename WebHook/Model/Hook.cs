@@ -336,11 +336,13 @@ namespace WebHook.Model
             public Account account { get; set; }
 
             public Plan plan { get; set; }
+            public bool? on_free_trial { get; set; }
         }
 
         public class Plan
         {
             public int id { get; set; }
+            public int monthly_price_in_cents { get; set; }
         }
     }
 }
