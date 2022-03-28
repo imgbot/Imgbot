@@ -1,12 +1,12 @@
 {
   "version": "2.0",
-  "functionTimeout": "01:00:00",
+  "functionTimeout": "02:00:00",
   "logging": {
     "fileLoggingMode": "never"
   },
  "extensions": {
    "queues": {
-     "batchSize": 4
+     "batchSize": 2
    }
  }
 }

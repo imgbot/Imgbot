@@ -139,7 +139,7 @@
           <div class="col-11 col-lg offset-lg-1">
             <p>
               <img alt src="/images/128x128_circle.png" width="30" />
-              Imgbot &copy; 2017-2020
+              Imgbot &copy; 2017-2022
             </p>
           </div>
           <div class="col-11 col-lg">
