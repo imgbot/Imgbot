@@ -12,40 +12,50 @@ If this is something you need in your project, Imgbot offers an ignore option.
 Ignoring by extension
 
 ```
-"ignoredFiles": [
-    "*.jpeg"
-]
+{
+    "ignoredFiles": [
+        "*.jpeg"
+    ]
+}
 ```
 
 Ignoring all images in a specific folder
 
 ```
-"ignoredFiles": [
-    "public/special_images/*"
-]
+{
+    "ignoredFiles": [
+        "public/special_images/*"
+    ]
+}
 ```
 
 Ignoring individual image files
 
 ```
-"ignoredFiles": [
-    "special-image1.png",
-    "other-image1.png"
-]
+{
+    "ignoredFiles": [
+        "special-image1.png",
+        "other-image1.png"
+    ]
+}
 ```
 
 Ignoring nested folders
 
 ```
-"ignoredFiles": [
-    "**/test_images/**"
-]
+{
+    "ignoredFiles": [
+        "**/test_images/**"
+    ]
+}
 ```
 
 Ignoring paths that start with a pattern
 
 ```
-"ignoredFiles": [
-    "path/to/prefix*"
-]
+{
+    "ignoredFiles": [
+        "path/to/prefix*"
+    ]
+}
 ```
