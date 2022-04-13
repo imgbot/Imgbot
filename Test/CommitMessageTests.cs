@@ -23,8 +23,14 @@ namespace Test
                 new CompressionResult
                 {
                     Title = "path/to/image2.png",
-                    SizeBefore = 500.3234,
-                    SizeAfter = 360.1321987
+                    SizeBefore = 1400.3234,
+                    SizeAfter = 603.1321987
+                },
+                new CompressionResult
+                {
+                    Title = "path/to/image3.png",
+                    SizeBefore = 2621440.06,
+                    SizeAfter = 2228224.051
                 },
             };
 
@@ -32,9 +38,10 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                            Environment.NewLine +
-                           "*Total -- 600.69KiB -> 455.92KiB (24.1%)" + Environment.NewLine +
+                           "*Total -- 2.50GiB -> 2.13GiB (15.02%)" + Environment.NewLine +
                            Environment.NewLine +
-                           "path/to/image2.png -- 500.32KiB -> 360.13KiB (28.02%)" + Environment.NewLine +
+                           "path/to/image2.png -- 1.37MiB -> 603.13KiB (56.93%)" + Environment.NewLine +
+                           "path/to/image3.png -- 2.50GiB -> 2.13GiB (15%)" + Environment.NewLine +
                            "path/to/image.png -- 100.37KiB -> 95.79KiB (4.56%)" + Environment.NewLine +
                            Environment.NewLine +
                            "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
