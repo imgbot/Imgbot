@@ -12,7 +12,7 @@
       "id": "a154ac81960a04b679c5bae0a449eef8f2365e47",
       "tree_id": "733b30d1b02758c7be87feccc0e00b877636c656",
       "distinct": true,
-      "message": "[ImgBot] Optimize images\n\n*Total -- 581.78kb -> 529.95kb (8.91%)\n\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+      "message": "[ImgBot] Optimize images\n\n*Total -- 581.78KiB -> 529.95KiB (8.91%)\n\n/imgbot_white_large@3x.png -- 36.96KiB -> 15.83KiB (57.16%)\n/linux:test.png -- 27.14KiB -> 19.01KiB (29.96%)\n/gradient.jpg -- 517.69KiB -> 495.11KiB (4.36%)",
       "timestamp": "2019-02-10T15:48:09-08:00",
       "url": "https://github.com/dabutvin/test/commit/a154ac81960a04b679c5bae0a449eef8f2365e47",
       "author": {
@@ -42,7 +42,7 @@
     "id": "a154ac81960a04b679c5bae0a449eef8f2365e47",
     "tree_id": "733b30d1b02758c7be87feccc0e00b877636c656",
     "distinct": true,
-    "message": "[ImgBot] Optimize images\n\n*Total -- 581.78kb -> 529.95kb (8.91%)\n\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\n/linux:test.png -- 27.14kb -> 19.01kb (29.96%)\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+    "message": "[ImgBot] Optimize images\n\n*Total -- 581.78KiB -> 529.95KiB (8.91%)\n\n/imgbot_white_large@3x.png -- 36.96KiB -> 15.83KiB (57.16%)\n/linux:test.png -- 27.14KiB -> 19.01KiB (29.96%)\n/gradient.jpg -- 517.69KiB -> 495.11KiB (4.36%)",
     "timestamp": "2019-02-10T15:48:09-08:00",
     "url": "https://github.com/dabutvin/test/commit/a154ac81960a04b679c5bae0a449eef8f2365e47",
     "author": {

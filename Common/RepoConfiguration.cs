@@ -10,7 +10,7 @@
 
         public bool CompressWiki { get; set; }
 
-        public int? MinKBReduced { get; set; } = 10;
+        public int? MinKiBReduced { get; set; } = 10;
 
         public string PrTitle { get; set; }
 

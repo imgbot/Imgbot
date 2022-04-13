@@ -18,8 +18,8 @@ namespace CompressImagesFunction
 
             var commitMessage = new StringBuilder();
 
-            var totalOrigKb = 0.0;
-            var totalOptKb = 0.0;
+            var totalOrigKiB = 0.0;
+            var totalOptKiB = 0.0;
             commitMessage.AppendLine(KnownGitHubs.CommitMessageTitle);
             commitMessage.AppendLine();
 
@@ -29,8 +29,8 @@ namespace CompressImagesFunction
                 imageLog.Append(optimizedImage);
                 imageLog.AppendLine();
 
-                totalOrigKb += optimizedImage.SizeBefore;
-                totalOptKb += optimizedImage.SizeAfter;
+                totalOrigKiB += optimizedImage.SizeBefore;
+                totalOptKiB += optimizedImage.SizeAfter;
             }
 
             if (optimizedImages.Length > 1)
@@ -38,8 +38,8 @@ namespace CompressImagesFunction
                 var totalCompression = new CompressionResult
                 {
                     Title = "*Total",
-                    SizeBefore = totalOrigKb,
-                    SizeAfter = totalOptKb,
+                    SizeBefore = totalOrigKiB,
+                    SizeAfter = totalOptKiB,
                 };
 
                 commitMessage.Append(totalCompression);
@@ -76,7 +76,7 @@ namespace CompressImagesFunction
                         continue;
                     }
 
-                    var pattern = @"\*?(.*) -- (.*)kb -> (.*)kb \((.*)%\)";
+                    var pattern = @"\*?(.*) -- (.*)KiB -> (.*)KiB \((.*)%\)";
                     var capture = Regex.Matches(commitLines[i], pattern)[0];
 
                     compressionResults.Add(new CompressionResult

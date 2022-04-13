@@ -13,6 +13,6 @@
         public double PercentSaved => (1 - (SizeAfter / SizeBefore)) * 100d;
 
         public override string ToString() =>
-            $"{Title.Replace('\\', '/')} -- {SizeBefore:N2}kb -> {SizeAfter:N2}kb ({PercentSaved:0.##}%)";
+            $"{Title.Replace('\\', '/')} -- {SizeBefore:N2}KiB -> {SizeAfter:N2}KiB ({PercentSaved:0.##}%)";
     }
 }

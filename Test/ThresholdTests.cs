@@ -23,7 +23,7 @@ namespace Test
             var compressionResults = new CompressionResult[] { };
             var configuration = new RepoConfiguration
             {
-                MinKBReduced = null
+                MinKiBReduced = null
             };
             var shouldOptimize = Threshold.MeetsThreshold(configuration, compressionResults);
             Assert.IsTrue(shouldOptimize);
@@ -35,7 +35,7 @@ namespace Test
             var compressionResults = new CompressionResult[] { };
             var configuration = new RepoConfiguration
             {
-                MinKBReduced = 0
+                MinKiBReduced = 0
             };
             var shouldOptimize = Threshold.MeetsThreshold(configuration, compressionResults);
             Assert.IsTrue(shouldOptimize);
@@ -59,7 +59,7 @@ namespace Test
             };
             var configuration = new RepoConfiguration
             {
-                MinKBReduced = 500
+                MinKiBReduced = 500
             };
             var shouldOptimize = Threshold.MeetsThreshold(configuration, compressionResults);
             Assert.IsTrue(shouldOptimize);
@@ -83,7 +83,7 @@ namespace Test
             };
             var configuration = new RepoConfiguration
             {
-                MinKBReduced = 500
+                MinKiBReduced = 500
             };
             var shouldOptimize = Threshold.MeetsThreshold(configuration, compressionResults);
             Assert.IsFalse(shouldOptimize);

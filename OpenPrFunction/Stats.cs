@@ -12,11 +12,11 @@ namespace OpenPrFunction
          *
          *      [ImgBot] Optimize images
 
-                *Total -- 854.23kb -> 308.28kb (63.91%)
+                *Total -- 854.23KiB -> 308.28KiB (63.91%)
 
-                /featurecard.png -- 542.34kb -> 86.13kb (84.12%)
-                /graph.png -- 148.78kb -> 88.71kb (40.38%)
-                /featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)
+                /featurecard.png -- 542.34KiB -> 86.13KiB (84.12%)
+                /graph.png -- 148.78KiB -> 88.71KiB (40.38%)
+                /featured-marketplace.png -- 163.11KiB -> 133.44KiB (18.19%)
          *
          */
         public static ImageStat[] ParseStats(string commitBody)

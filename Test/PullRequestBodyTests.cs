@@ -23,11 +23,11 @@ namespace Test
         {
             var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
-                         "*Total -- 854.23kb -> 308.28kb (63.91%)" + Environment.NewLine +
+                         "*Total -- 854.23KiB -> 308.28KiB (63.91%)" + Environment.NewLine +
                          Environment.NewLine +
-                         "/featurecard.png -- 542.34kb -> 86.13kb (84.12%)" + Environment.NewLine +
-                         "/graph.png -- 148.78kb -> 88.71kb (40.38%)" + Environment.NewLine +
-                         "/featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)" + Environment.NewLine +
+                         "/featurecard.png -- 542.34KiB -> 86.13KiB (84.12%)" + Environment.NewLine +
+                         "/graph.png -- 148.78KiB -> 88.71KiB (40.38%)" + Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11KiB -> 133.44KiB (18.19%)" + Environment.NewLine +
                          Environment.NewLine +
                          "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -42,11 +42,11 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featurecard.png | 542.34kb | 86.13kb | 84.12% |" + Environment.NewLine +
-                          "| /graph.png | 148.78kb | 88.71kb | 40.38% |" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
+                          "| /featurecard.png | 542.34KiB | 86.13KiB | 84.12% |" + Environment.NewLine +
+                          "| /graph.png | 148.78KiB | 88.71KiB | 40.38% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11KiB | 133.44KiB | 18.19% |" + Environment.NewLine +
                           "| | | | |" + Environment.NewLine +
-                          "| **Total :** | **854.23kb** | **308.28kb** | **63.91%** |" + Environment.NewLine +
+                          "| **Total :** | **854.23KiB** | **308.28KiB** | **63.91%** |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
@@ -59,7 +59,7 @@ namespace Test
         {
             var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
-                         "/featured-marketplace.png -- 163.11kb -> 160.11kb (0.02%)" + Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11KiB -> 160.11KiB (0.02%)" + Environment.NewLine +
                          Environment.NewLine +
                          "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -74,7 +74,7 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 160.11kb | 0.02% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11KiB | 160.11KiB | 0.02% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
@@ -87,7 +87,7 @@ namespace Test
         {
             var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
-                         "/featured-marketplace.png -- 163.11kb -> 155.11kb (4.40%)" + Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11KiB -> 155.11KiB (4.40%)" + Environment.NewLine +
                          Environment.NewLine +
                          "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -102,7 +102,7 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 155.11kb | 4.40% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11KiB | 155.11KiB | 4.40% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
@@ -115,7 +115,7 @@ namespace Test
         {
             var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
-                         "/featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)" + Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11KiB -> 133.44KiB (18.19%)" + Environment.NewLine +
                          Environment.NewLine +
                          "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -130,7 +130,7 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11KiB | 133.44KiB | 18.19% |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));
@@ -171,11 +171,11 @@ namespace Test
         {
             var commitMessage = "[ImgBot] Optimize images" + Environment.NewLine +
                          Environment.NewLine +
-                         "*Total -- 854.23kb -> 308.28kb (63.91%)" + Environment.NewLine +
+                         "*Total -- 854.23KiB -> 308.28KiB (63.91%)" + Environment.NewLine +
                          Environment.NewLine +
-                         "/featurecard.png -- 542.34kb -> 86.13kb (84.12%)" + Environment.NewLine +
-                         "/graph.png -- 148.78kb -> 88.71kb (40.38%)" + Environment.NewLine +
-                         "/featured-marketplace.png -- 163.11kb -> 133.44kb (18.19%)" + Environment.NewLine;
+                         "/featurecard.png -- 542.34KiB -> 86.13KiB (84.12%)" + Environment.NewLine +
+                         "/graph.png -- 148.78KiB -> 88.71KiB (40.38%)" + Environment.NewLine +
+                         "/featured-marketplace.png -- 163.11KiB -> 133.44KiB (18.19%)" + Environment.NewLine;
 
             var expectedMarkdown = "## Beep boop. Your images are optimized!" + Environment.NewLine +
                           Environment.NewLine +
@@ -188,11 +188,11 @@ namespace Test
                           Environment.NewLine +
                           "| File | Before | After | Percent reduction |" + Environment.NewLine +
                           "|:--|:--|:--|:--|" + Environment.NewLine +
-                          "| /featurecard.png | 542.34kb | 86.13kb | 84.12% |" + Environment.NewLine +
-                          "| /graph.png | 148.78kb | 88.71kb | 40.38% |" + Environment.NewLine +
-                          "| /featured-marketplace.png | 163.11kb | 133.44kb | 18.19% |" + Environment.NewLine +
+                          "| /featurecard.png | 542.34KiB | 86.13KiB | 84.12% |" + Environment.NewLine +
+                          "| /graph.png | 148.78KiB | 88.71KiB | 40.38% |" + Environment.NewLine +
+                          "| /featured-marketplace.png | 163.11KiB | 133.44KiB | 18.19% |" + Environment.NewLine +
                           "| | | | |" + Environment.NewLine +
-                          "| **Total :** | **854.23kb** | **308.28kb** | **63.91%** |" + Environment.NewLine +
+                          "| **Total :** | **854.23KiB** | **308.28KiB** | **63.91%** |" + Environment.NewLine +
                           "</details>" + expectedFooter;
 
             var result = PullRequestBody.Generate(Stats.ParseStats(commitMessage));

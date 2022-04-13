@@ -12,7 +12,7 @@
       "id": "5385c8cd37bdd0051b2c082aa556a00d54d4ccc7",
       "tree_id": "9401e01b4114eb0d57b3b68777444787706a9836",
       "distinct": false,
-      "message": "[ImgBot] Optimize images\n\n*Total -- 554.64kb -> 510.94kb (7.88%)\n\n/imgbot_white_large@3x.png -- 36.96kb -> 15.83kb (57.16%)\n/gradient.jpg -- 517.69kb -> 495.11kb (4.36%)",
+      "message": "[ImgBot] Optimize images\n\n*Total -- 554.64KiB -> 510.94KiB (7.88%)\n\n/imgbot_white_large@3x.png -- 36.96KiB -> 15.83KiB (57.16%)\n/gradient.jpg -- 517.69KiB -> 495.11KiB (4.36%)",
       "timestamp": "2019-02-10T21:44:02Z",
       "url": "https://github.com/dabutvin/test/commit/5385c8cd37bdd0051b2c082aa556a00d54d4ccc7",
       "author": {

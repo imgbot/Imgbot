@@ -32,10 +32,10 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                            Environment.NewLine +
-                           "*Total -- 600.69kb -> 455.92kb (24.1%)" + Environment.NewLine +
+                           "*Total -- 600.69KiB -> 455.92KiB (24.1%)" + Environment.NewLine +
                            Environment.NewLine +
-                           "path/to/image2.png -- 500.32kb -> 360.13kb (28.02%)" + Environment.NewLine +
-                           "path/to/image.png -- 100.37kb -> 95.79kb (4.56%)" + Environment.NewLine +
+                           "path/to/image2.png -- 500.32KiB -> 360.13KiB (28.02%)" + Environment.NewLine +
+                           "path/to/image.png -- 100.37KiB -> 95.79KiB (4.56%)" + Environment.NewLine +
                            Environment.NewLine +
                            "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -59,7 +59,7 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                              Environment.NewLine +
-                             "path/to/image.png -- 100.30kb -> 95.70kb (4.59%)" + Environment.NewLine +
+                             "path/to/image.png -- 100.30KiB -> 95.70KiB (4.59%)" + Environment.NewLine +
                              Environment.NewLine +
                              "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -89,10 +89,10 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                             Environment.NewLine +
-                            "*Total -- 501.89kb -> 455.68kb (9.21%)" + Environment.NewLine +
+                            "*Total -- 501.89KiB -> 455.68KiB (9.21%)" + Environment.NewLine +
                             Environment.NewLine +
-                            "path/to/image2.png -- 300.92kb -> 260.56kb (13.41%)" + Environment.NewLine +
-                            "path/to/image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine +
+                            "path/to/image2.png -- 300.92KiB -> 260.56KiB (13.41%)" + Environment.NewLine +
+                            "path/to/image.png -- 200.97KiB -> 195.12KiB (2.91%)" + Environment.NewLine +
                             Environment.NewLine +
                             "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -122,10 +122,10 @@ namespace Test
 
             var expectedMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                         Environment.NewLine +
-                        "*Total -- 501.89kb -> 455.68kb (9.21%)" + Environment.NewLine
+                        "*Total -- 501.89KiB -> 455.68KiB (9.21%)" + Environment.NewLine
                         + Environment.NewLine +
-                        "path/to/image2.png -- 300.92kb -> 260.56kb (13.41%)" + Environment.NewLine +
-                        "path/to/_image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine +
+                        "path/to/image2.png -- 300.92KiB -> 260.56KiB (13.41%)" + Environment.NewLine +
+                        "path/to/_image.png -- 200.97KiB -> 195.12KiB (2.91%)" + Environment.NewLine +
                         Environment.NewLine +
                         "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
@@ -269,10 +269,10 @@ namespace Test
         {
             var commitMessage = KnownGitHubs.CommitMessageTitle + Environment.NewLine +
                         Environment.NewLine +
-                        "*Total -- 501.89kb -> 455.68kb (9.21%)" + Environment.NewLine
+                        "*Total -- 501.89KiB -> 455.68KiB (9.21%)" + Environment.NewLine
                         + Environment.NewLine +
-                        "path/to/image.png -- 200.97kb -> 195.12kb (2.91%)" + Environment.NewLine +
-                        "path/to/image2.png -- 300.92kb -> 260.56kb (13.41%)" + Environment.NewLine +
+                        "path/to/image.png -- 200.97KiB -> 195.12KiB (2.91%)" + Environment.NewLine +
+                        "path/to/image2.png -- 300.92KiB -> 260.56KiB (13.41%)" + Environment.NewLine +
                         Environment.NewLine +
                         "Signed-off-by: ImgBotApp <ImgBotHelp@gmail.com>" + Environment.NewLine;
 
