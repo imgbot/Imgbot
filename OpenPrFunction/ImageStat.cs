@@ -16,7 +16,7 @@ namespace OpenPrFunction
         // this function will convert to 1283.30 (double)
         public static double ToDouble(string value)
         {
-            return Convert.ToDouble(value.Split(new[] { "KiB" }, StringSplitOptions.None)[0]);
+            return Convert.ToDouble(value.Split(new[] { "KiB", "MiB", "GiB" }, StringSplitOptions.None)[0]);
         }
     }
 }

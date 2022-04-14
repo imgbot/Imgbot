@@ -16,23 +16,23 @@
         {
             string unitBefore = "KiB", unitAfter = "KiB";
             double convSizeBefore = SizeBefore, convSizeAfter = SizeAfter;
-            if (SizeBefore / 1048576d > 1d)
+            if (SizeBefore / 1048576d >= 1d)
             {
                 unitBefore = "GiB";
                 convSizeBefore = SizeBefore / 1048576d;
             }
-            else if (SizeBefore / 1024d > 1d)
+            else if (SizeBefore / 1024d >= 1d)
             {
                 unitBefore = "MiB";
                 convSizeBefore = SizeBefore / 1024d;
             }
 
-            if (SizeAfter / 1048576d > 1d)
+            if (SizeAfter / 1048576d >= 1d)
             {
                 unitAfter = "GiB";
                 convSizeAfter = SizeAfter / 1048576d;
             }
-            else if (SizeAfter / 1024d > 1d)
+            else if (SizeAfter / 1024d >= 1d)
             {
                 unitAfter = "MiB";
                 convSizeAfter = SizeAfter / 1024d;
