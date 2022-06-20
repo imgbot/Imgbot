@@ -387,6 +387,18 @@ namespace WebHook
                     return hook.action;
                 case "cancelled":
                     await marketplaceTable.DropRow(hook.marketplace_purchase.account.id, hook.marketplace_purchase.account.login);
+                    if (KnownGitHubs.Plans.ContainsKey(hook.marketplace_purchase.plan.id) &&
+                        KnownGitHubs.Plans[hook.marketplace_purchase.plan.id] != 0)
+                    {
+                        await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
+                            new BackupMessage
+                            {
+                                PlanId = hook.marketplace_purchase.plan.id,
+                                Price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100,
+                                SaleType = "cancelled"
+                            })));
+                    }
+
                     logger.LogInformation("ProcessMarketplacePurchaseAsync/cancelled {PlanId} for {Owner}", hook.marketplace_purchase.plan.id, hook.marketplace_purchase.account.login);
                     return "cancelled";
                 default:
