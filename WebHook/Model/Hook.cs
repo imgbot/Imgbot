@@ -336,6 +336,7 @@ namespace WebHook.Model
             public Account account { get; set; }
 
             public Plan plan { get; set; }
+            public string billing_cycle { get; set; }
             public bool? on_free_trial { get; set; }
         }
 
@@ -343,6 +344,7 @@ namespace WebHook.Model
         {
             public int id { get; set; }
             public int monthly_price_in_cents { get; set; }
+            public int yearly_price_in_cents { get; set; }
         }
     }
 }
