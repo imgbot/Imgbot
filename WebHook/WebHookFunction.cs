@@ -360,12 +360,20 @@ namespace WebHook
                             }
                         }
 
+                        var price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100;
+
+                        if (hook.marketplace_purchase.billing_cycle == "yearly")
+                        {
+                            price = hook.marketplace_purchase.plan.yearly_price_in_cents / 100;
+                        }
+
                         await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
                             new BackupMessage
                             {
                                 PlanId = hook.marketplace_purchase.plan.id,
-                                Price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100,
-                                SaleType = recurrentSale
+                                Price = price,
+                                SaleType = recurrentSale,
+                                BillingCycle = hook.marketplace_purchase.billing_cycle
                             })));
                     }
 
@@ -390,12 +398,20 @@ namespace WebHook
                     if (KnownGitHubs.Plans.ContainsKey(hook.marketplace_purchase.plan.id) &&
                         KnownGitHubs.Plans[hook.marketplace_purchase.plan.id] != 0)
                     {
+                        var price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100;
+
+                        if (hook.marketplace_purchase.billing_cycle == "yearly")
+                        {
+                            price = hook.marketplace_purchase.plan.yearly_price_in_cents / 100;
+                        }
+
                         await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
                             new BackupMessage
                             {
                                 PlanId = hook.marketplace_purchase.plan.id,
-                                Price = hook.marketplace_purchase.plan.monthly_price_in_cents / 100,
-                                SaleType = "cancelled"
+                                Price = price,
+                                SaleType = "cancelled",
+                                BillingCycle = hook.marketplace_purchase.billing_cycle
                             })));
                     }
 

@@ -6,6 +6,8 @@ namespace Common.Messages
 
         public string SaleType { get; set; }
 
+        public string BillingCycle { get; set; }
+
         public int Price { get; set; }
     }
 }
