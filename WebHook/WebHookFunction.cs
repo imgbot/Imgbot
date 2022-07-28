@@ -373,7 +373,9 @@ namespace WebHook
                                 PlanId = hook.marketplace_purchase.plan.id,
                                 Price = price,
                                 SaleType = recurrentSale,
-                                BillingCycle = hook.marketplace_purchase.billing_cycle
+                                BillingCycle = hook.marketplace_purchase.billing_cycle,
+                                SenderEmail = hook.sender.email,
+                                OrganizationBillingEmail = hook.marketplace_purchase.account.organization_billing_email
                             })));
                     }
 
@@ -405,13 +407,22 @@ namespace WebHook
                             price = hook.marketplace_purchase.plan.yearly_price_in_cents / 100;
                         }
 
+                        var returnType = "cancelled";
+
+                        if (hook.marketplace_purchase.on_free_trial == true)
+                        {
+                            returnType = "cancelled_free_trial";
+                        }
+
                         await backupMessages.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(
                             new BackupMessage
                             {
                                 PlanId = hook.marketplace_purchase.plan.id,
                                 Price = price,
-                                SaleType = "cancelled",
-                                BillingCycle = hook.marketplace_purchase.billing_cycle
+                                SaleType = returnType,
+                                BillingCycle = hook.marketplace_purchase.billing_cycle,
+                                SenderEmail = hook.sender.email,
+                                OrganizationBillingEmail = hook.marketplace_purchase.account.organization_billing_email
                             })));
                     }
 
