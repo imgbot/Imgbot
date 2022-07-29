@@ -9,5 +9,9 @@ namespace Common.Messages
         public string BillingCycle { get; set; }
 
         public int Price { get; set; }
+
+        public string SenderEmail { get; set; }
+
+        public string OrganizationBillingEmail { get; set; }
     }
 }
