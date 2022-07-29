@@ -13,6 +13,5 @@ namespace Common.Messages
         public string SenderEmail { get; set; }
 
         public string OrganizationBillingEmail { get; set; }
-
     }
 }
