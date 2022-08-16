@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "functionTimeout": "02:00:00",
+  "functionTimeout": "06:00:00",
   "logging": {
     "fileLoggingMode": "never"
   },

@@ -36,7 +36,7 @@ namespace CompressImagesFunction
             }
             else
             {
-                logger.LogInformation($"Time out exceeded!");
+                logger.LogInformation("Time out exceeded {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
                 longRunningCompressMessages.Add(compressImagesMessage);
             }
         }
@@ -49,7 +49,7 @@ namespace CompressImagesFunction
             ILogger logger,
             ExecutionContext context)
         {
-            logger.LogInformation($"Starting long compress");
+            logger.LogInformation("Starting long compress {Owner}/{RepoName}", compressImagesMessage.Owner, compressImagesMessage.RepoName);
 
             var storageAccount = CloudStorageAccount.Parse(KnownEnvironmentVariables.AzureWebJobsStorage);
             var settingsTable = storageAccount.CreateCloudTableClient().GetTableReference("settings");
