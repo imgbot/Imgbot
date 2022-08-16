@@ -30,7 +30,7 @@ namespace CompressImagesFunction
             var installationTokenProvider = new InstallationTokenProvider();
             var repoChecks = new RepoChecks();
             var task = RunAsync(installationTokenProvider, compressImagesMessage, openPrMessages, compressImagesMessages, settingsTable, repoChecks, logger, context);
-            if (await Task.WhenAny(task, Task.Delay(570000)) == task)
+            if (await Task.WhenAny(task, Task.Delay(750000)) == task)
             {
                 await task;
             }
