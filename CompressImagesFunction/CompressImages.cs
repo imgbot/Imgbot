@@ -17,6 +17,11 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
+// note to self
+// container is running with latest updates (Magic.NET library seems ok with ldd) 
+// issue to fix now 
+// The 'CompressImagesFunction' function is in error: The binding type(s) 'queueTrigger, queue' are not registered. Please ensure the type is correct and the binding extension is installed.
+
 namespace CompressImagesFunction
 {
     public static class CompressImages

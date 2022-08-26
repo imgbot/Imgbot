@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
-
   <Target Name="CopyNativeBinaries" AfterTargets="Build">
     <ItemGroup>
       <NativeBinary Include="$(TargetDir)bin/runtimes/linux-x64/native/libgit2-106a5f2.so" />
@@ -17,10 +16,10 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="10.1.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.0.1" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5" />
     <PackageReference Include="Octokit" Version="0.50.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
