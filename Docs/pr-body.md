@@ -1,9 +1,10 @@
-You can set a pull request body for your Imgbot PRs through the `.imgbotconfig` file.
+To set an optional custom body for your pull requests, you can set a pull request body for your Imgbot pull requests using the `.imgbotconfig` file.
 
-- This configuration is optional and is only required if you want a custom body for your pr's
-- Available only for paid plans
-- Accepts any string written using github [markdown](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
-- The default pr body to display is the one from [here](https://imgbot.net/images/screen.png?cache=2)
+
+
+- Accepts any string written using [GitHub markdown](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+- The default pull request body is one from [here](https://imgbot.net/images/screen.png?cache=2),
+- For paid plans only.
 
 `.imgbotconfig`
 
