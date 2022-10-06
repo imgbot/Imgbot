@@ -1,11 +1,6 @@
-Some users may want to keep some images from being optimized. There can be a variety of reasons to want to keep an image in it's original state that differ from project to project.
+Some users may want to keep some images from being optimized that depends on the project. Imgbot offers an optional ignore option for specific images or folders.
 
-If this is something you need in your project, Imgbot offers an ignore option.
-
- - This configuration is optional and is only required if there are specific images or folders of images you do not want touched
- - Accepts regex patterns and simple globbing
- - Limits the images optimized by Imgbot by essentially ignoring them
- - When ignoring by filename no path is necessary
+The ignore option accepts regex patterns and simple globbing. Ignoring by filename does not require a path, see examples below.
 
 `.imgbotconfig`
 
