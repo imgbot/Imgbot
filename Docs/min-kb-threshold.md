@@ -1,13 +1,12 @@
-You can set a space saved threshold using the `.imgbotconfig` file.
+To change the default threshold, you can set an optional space saved threshold using the `.imgbotconfig` file. 
 
- - This configuration is optional and is only required if you want to change the default threshold
- - Default setting is 10KB
- - Accepts only numbers as input (e.g. `"minKBReduced": 500` for a 500 KB threshold)
- - Can be used to limit the frequency of PRs Imgbot will open over time
+- This option limits the Imgbot pull request frequency over time.
+- Accepts only numbers as input (see examples below)
+- The default value is 10 kilobytes.
 
 `.imgbotconfig`
 
-Setting 500 KB threshold
+Setting 500 KB threshold:
 
 ```
 {
@@ -15,7 +14,8 @@ Setting 500 KB threshold
 }
 ```
 
-To disable this threshold and always open a PR no matter how much size is reduced unset the default
+To disable the threshold and open a pull request no matter how much size is reduced, unset the default:
+
 ```
 {
     "minKBReduced": null
