@@ -1,10 +1,6 @@
-Imgbot supports optional configuration through a `.imgbotconfig` json file.
-This is not a required step to using Imgbot and is only for more advanced scenarios.
+Optionally, for more advanced scenarios, you can configure Imgbot using an `.imgbotconfig` json file in the root of your GitHub repository <!-- exact filename? can we remove the json? --> and set to your liking.
 
-This file should be placed in the root of the repository and set to your liking.
-See [this past issue](https://github.com/dabutvin/Imgbot/issues/49) for details about the location for this file.
-
-Here is an example .imgbotconfig setup that shows some of the options.
+Here is an example `.imgbotconfig` file setup that shows some of the options:
 
 ```
 {
@@ -23,11 +19,9 @@ Here is an example .imgbotconfig setup that shows some of the options.
 }
 ```
 
-Outside of the `.imgbotconfig` file, there are additional settings that can be configured by logging in to
-[the website](https://imgbot.net/app). This is the current list of settings supported in this UI:
+Outside of the `.imgbotconfig` file, you can configure additional options by logging into [imgbot.net](https://imgbot.net/app). This is the current list of settings supported in this UI:
 
- - Default branch override (If you want Imgbot to look after a different branch instead of the default for the repo)
+ - Default branch override (Imgbot will look after a different branch instead of the repository default branch)
 
-If there are any configuration settings you would like to see supported,
-please feel free to [open an issue](https://github.com/dabutvin/Imgbot/issues/new) in the repo or shoot an email over
-to help@imgbot.net
+For any other option you would like to see supported, feel free to [open an issue](https://github.com/dabutvin/Imgbot/issues/new) or shoot an email over
+to *help@imgbot.net*.
