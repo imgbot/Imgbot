@@ -1,6 +1,3 @@
-All the code for Imgbot is available on GitHub. We will gladly accept contributions for the service, the website, and the documentation.
-If you are unsure what to work on, but still want to contribute you can look for an [existing issue](https://github.com/dabutvin/Imgbot/issues) in the repo.
-
 The following is where you can find out how to get set up to run locally as well as detailed information on exactly how Imgbot works.
 
 ### Imgbot Service
