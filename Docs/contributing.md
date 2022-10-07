@@ -4,16 +4,15 @@ The following is where you can find out how to get set up to run locally as well
 
 The core of Imgbot runs on a serverless stack called [Azure Functions](https://azure.microsoft.com/en-us/services/functions/).
 The Function apps are running the image compression, pushing the commits, and opening the Pull Requests.
-Once you get the tools you need to work with Azure functions you can run the apps locally.
+Once you get the tools you need to work with Azure functions, you can run the apps locally.
 
-You can either get the tools [integrated with Visual Studio](https://blogs.msdn.microsoft.com/webdev/2017/05/10/azure-function-tools-for-visual-studio-2017/) and use `F5`
-or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run Imgbot.Function`.
-If you are using Visual Studio for Mac there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
+You can either get the tools [integrated with Visual Studio](https://blogs.msdn.microsoft.com/webdev/2017/05/10/azure-function-tools-for-visual-studio-2017/) and use `F5` or you can [get the CLI](https://github.com/Azure/azure-functions-cli) standalone and use `func run Imgbot.Function`.
+If you are using Visual Studio for Mac, there is [built-in support](https://docs.microsoft.com/en-us/visualstudio/mac/azure-functions) for Azure functions.
 
-We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code in order to compile and get intellisense.
-Each function has a task you can execute that will clean + build + run the process. To start one open the prompt with `cmd/ctrl + shift + p` and select `Run task`. From there you will see all the tasks checked into `.vscode/tasks.json`. Choose a function to run such as `Run CompressImagesFunction` and it will build and start up. To attach to this process choose the `Debug a function` configuration from the debug tab to see the running processes. Type `func` into the picker to see your running function and select it. It's a two-step process, the debugger and the function process. When you kill the debugger, the process will still be running. You can kill the function host by bringing up the prompt again with `cmd/ctrl + shift + p` and select `Kill the active terminal instance`.
+We also have support for running with VS Code. You will still need to get the CLI as mentioned above and the C# extension for VS Code to compile and get intellisense.
+Each function has a task you can execute that will clean + build + run the process. To start one, open the prompt with `cmd/ctrl + shift + p` and select `Run task`. From there you will see all the tasks checked into `.vscode/tasks.json`. Choose a function to run, such as `Run CompressImagesFunction`, and it will build and start up. To attach to this process choose the `Debug a function` configuration from the debug tab to see the running processes. Type `func` into the picker to see your running function and select it. It's a two-step process, the debugger and the function process. When you kill the debugger, the process will still be running. You can kill the function host by bringing up the prompt again with `cmd/ctrl + shift + p` and select `Kill the active terminal instance`.
 
-Azure Functions operate on top of storage. To run the function locally you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage` filled out and `FUNCTIONS_WORKER_RUNTIME` set to `dotnet`.
+Azure Functions operate on top of storage. To run the function locally, you will need to bring your own storage account and add a `local.settings.json` in the root with `AzureWebJobsStorage` filled out and `FUNCTIONS_WORKER_RUNTIME` set to `dotnet`.
 
 You can see the schema of this file in [the doc](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#local-settings-file)
 
@@ -21,16 +20,16 @@ Alternatively, running `func init` from the function directory will stamp out ev
 
 `func azure functionapp fetch-app-settings <functionName>`
 
-If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [dockerhub](https://hub.docker.com/r/vertigostudio/imgbot-compress).
+If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker, see the image on [dockerhub](https://hub.docker.com/r/vertigostudio/imgbot-compress).
 
-There are a few additional environment settings that need to be set to run the compression workflow. These can be set with `local.settings.json` or any other way
+To be set to run the compression workflow, set additional environment settings with `local.settings.json`:
 
  - APP_PRIVATE_KEY - the secret certificate provided by GitHub during app registration
  - PGP_PRIVATE_KEY - the secret key used for signing commits
  - PGP_PASSWORD - the secret password used for signing commits
  - TMP - the location to do the cloning
 
-Now that you are running the service locally, within the root of the repo you will see the following directories:
+Now that you are running the service locally, within the root of the repo, you will see the following directories:
 
 - `CompressImagesFunction` - The function that does the work of cloning, compressing, and pushing commits
 - `Install` - The shared library to provide Installation Tokens to the functions
@@ -86,9 +85,9 @@ The installation token serves as a password to clone private repos, push to remo
 
 The username to accompany the installation token password is `x-access-token`.
 
-For security reasons, we cannot provide contributors with a pem file as this is a secret that delegates permissions in GitHub. You can run every part of the function except parts where authentication is required without this secret. If you are working on a part of the function that requires this secret then you can generate one for yourself to test with. [Register a GitHub app](https://github.com/settings/apps/new) for development purposes and install this app into the repo you are using to test with. Set the AppId in the code and you should be good to go.
+For security reasons, we cannot provide contributors with a pem file because this is a secret that delegates permissions in GitHub. You can run every part of the function except parts where authentication is required without this secret. If you are working on a part of the function that requires this secret, you can generate one for yourself to test with. [Register a GitHub app](https://github.com/settings/apps/new) for development purposes and install this app into the repo you are using to test with. Set the AppId in the code and you should be good to go.
 
-If there is a part of this process that isn't clear or you have any questions at all feel free to open an issue in this repo and we'll work it out :)
+If there is a part of this process that isn't clear or you have any questions at all, feel free to open an issue in this repo and we'll work it out :)
 
 #### Schedules
 
@@ -130,7 +129,7 @@ Each time a repo that already has Imgbot installed gets pushed to, GitHub fires 
 
 The frontend that drives https://imgbot.net/ is a generated static web app built with Grunt and a little bit of JavaScript. This static site is generated to be completely stand alone and hosted on a CDN for caching worldwide. The grid system for the Imgbot site is bootstrap 4. The purpose of this website is to run the landing page and docs for Imgbot.
 
-You will find the `package.json` file for the website in the `Web/` directory of the repo. From here the input files live in the `src/` directory and the generated site is output to the `dist/` directory and git-ignored.
+You will find the `package.json` file for the website in the `Web/` directory of the repo. Input files live in the `src/` directory and the generated site is output to the `dist/` directory and git-ignored.
 
 To kick off the generation
 
@@ -179,7 +178,5 @@ The template that renders the documentation is [Web/src/docs/layout.jst](https:/
 
 ### Tests
 
-Imgbot uses VSTest with NSubstitue to manage unit testing of the logic within the Imgbot codebase.
-The tests live in the Test directory.
-Please do your best to add tests as new features or logic are added so we can keep Imgbot running smoothly.
-:)
+To manage unit testing of the logic within the Imgbot codebase, Imgbot uses VSTest with NSubstitue.
+The tests live in the Test directory. Add tests as new features or logic are added so we can keep Imgbot running smoothly. :)
