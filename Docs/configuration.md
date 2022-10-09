@@ -1,4 +1,4 @@
-Optionally, for more advanced scenarios, you can configure Imgbot using an `.imgbotconfig` json file in the root of your GitHub repository <!-- exact filename? can we remove the json? --> and set to your liking.
+Optionally, for more advanced scenarios, you can configure Imgbot using an `.imgbotconfig` json file in the root of your GitHub repository.
 
 Here is an example `.imgbotconfig` file setup that shows some of the options:
 
