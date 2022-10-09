@@ -9,7 +9,7 @@ Imgbot currently implements the following algorithms:
  - [MozJpeg](https://github.com/mozilla/mozjpeg)
 
 
-By default, Imgbot uses the `LosslessCompress()` method. When setting up Imgbot, you can also switch to the aggressive `LossyCompression()` compression. <!-- what's the difference? -->
+By default, Imgbot uses the `LosslessCompress()` method. When setting up Imgbot, you can also switch to the aggressive `LossyCompression()` compression. Learn more about [the aggressive compression](#aggressive-compression).
 
 After cloning the repo, the compression happens in-place. Once installed into any repo, Imgbot will run the selected compression routine on an ongoing basis and open pull requests to keep your images optimized.
 
