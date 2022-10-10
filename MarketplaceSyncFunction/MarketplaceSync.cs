@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Common;
+using Common.TableModels;
 using Install;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -23,8 +24,7 @@ namespace MarketplaceSyncFunction
         [Singleton]
         [FunctionName("MarketplaceSync")]
         public static async Task TimerTrigger(
-            [TimerTrigger("0 0 * * * *", RunOnStartup = true)]
-            TimerInfo timerInfo,
+            [TimerTrigger("0 0 * * * *", RunOnStartup = true)]TimerInfo timerInfo,
             ILogger logger,
             ExecutionContext context)
         {
@@ -61,7 +61,6 @@ namespace MarketplaceSyncFunction
                 var planResponse = await HttpClient.SendAsync(planRequest);
                 var planJson = await planResponse.Content.ReadAsStringAsync();
 
-                Console.WriteLine(planJson);
                 Account[] accountsInPlan = new Account[0];
                 try
                 {
@@ -97,8 +96,8 @@ namespace MarketplaceSyncFunction
                     "PlanId eq " + planId.ToString()).Take(1000);
 
                 TableContinuationToken contToken = null;
-                var queryOptions = new TableRequestOptions();
 
+                var deletedPurchases = new List<string>();
                 do
                 {
                     var rows = await marketplaceTable.ExecuteQuerySegmentedAsync(query, contToken);
@@ -114,12 +113,14 @@ namespace MarketplaceSyncFunction
                             continue;
                         }
 
-                        Console.WriteLine("should be deleted");
-                        Console.WriteLine(purchase.AccountId);
+                        deletedPurchases.Add(purchase.PartitionKey);
+
+                        // await marketplaceTable.DropRow(purchase.PartitionKey, purchase.AccountLogin);
                     }
                 }
                 while (contToken != null);
 
+                logger.LogInformation("MarketplaceSync missing git purchases " + JsonConvert.SerializeObject(deletedPurchases));
                 logger.LogInformation("MarketplaceSync finished");
             }
         }
