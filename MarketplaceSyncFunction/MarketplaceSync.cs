@@ -115,7 +115,7 @@ namespace MarketplaceSyncFunction
 
                         deletedPurchases.Add(purchase.PartitionKey);
 
-                        // await marketplaceTable.DropRow(purchase.PartitionKey, purchase.AccountLogin);
+                        await marketplaceTable.DropRow(purchase.PartitionKey, purchase.AccountLogin);
                     }
                 }
                 while (contToken != null);

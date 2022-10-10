@@ -8,7 +8,7 @@
    "queues": {
      "batchSize": 2,
      "maxDequeueCount" : 2,
-     "newBatchThreshold" : 1
+     "newBatchThreshold" : 2
    }
  }
 }
