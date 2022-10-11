@@ -5,7 +5,8 @@ RUN mkdir -p /home/site/wwwroot
 RUN cd /src/CompressImagesFunction && dotnet publish CompressImagesFunction.csproj -c Release --output /home/site/wwwroot
 
 # Native Binaries
-RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/libgit2-106a5f2.so /home/site/wwwroot/bin/
+# TODO find why the runtimes folder is no longer created on dotnet sdk3.1
+RUN cd /src/CompressImagesFunction && cp libgit2-106a5f2.so /home/site/wwwroot/bin/
 RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/Magick.Native-Q16-x64.dll.so /home/site/wwwroot/bin/
 
 FROM mcr.microsoft.com/azure-functions/dotnet:3.0
