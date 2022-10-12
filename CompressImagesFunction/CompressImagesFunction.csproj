@@ -1,31 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <MagickCopyNativeLinux>true</MagickCopyNativeLinux>
-<!--    <RuntimeIdentifiers>linux-x64;osx;win-x64</RuntimeIdentifiers>-->
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+    <UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <Target Name="CopyNativeBinaries" AfterTargets="Build">
     <ItemGroup>
-      <NativeBinary Include="$(TargetDir)bin/libgit2-106a5f2.so" />
-      <NativeBinary Include="$(TargetDir)bin/libgit2-106a5f2.dylib" />
-      <NativeBinary Include="$(TargetDir)bin/git2-106a5f2.dll" />
-      <NativeBinary Include="$(TargetDir)bin/Magick.Native-Q16-x64.dll.so" />
-      <NativeBinary Include="$(TargetDir)bin/Magick.Native-Q16-x64.dll.dylib" />
-      <NativeBinary Include="$(TargetDir)bin/Magick.Native-Q16-x64.dll" />
+      <NativeBinary Include="$(TargetDir)runtimes/linux-x64/native/libgit2-b7bad55.so" />
+      <NativeBinary Include="$(TargetDir)runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so" />
     </ItemGroup>
     <Copy SourceFiles="@(NativeBinary)" DestinationFiles="@(NativeBinary->'$(TargetDir)bin/%(Filename)%(Extension)')" />
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.306" />
+    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator" Version="4.0.1" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.0.1" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.2.0" />
     <PackageReference Include="Octokit" Version="0.50.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
