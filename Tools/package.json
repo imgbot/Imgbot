@@ -1,6 +1,6 @@
 {
   "name": "imgbot-tools",
   "dependencies": {
-    "azure-storage": "^2.10.2"
+    "azure-storage": "^2.10.7"
   }
 }
