@@ -21,9 +21,6 @@
     <None Update="imgbot.2017-08-23.private-key.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="test-imgbot7.2021-09-09.private-key.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
