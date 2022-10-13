@@ -1,19 +1,19 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS dotnet
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS dotnet
 
 COPY . /src/
 RUN mkdir -p /home/site/wwwroot
 RUN cd /src/CompressImagesFunction && dotnet publish CompressImagesFunction.csproj -c Release --output /home/site/wwwroot
 
 # Native Binaries
-RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/libgit2-106a5f2.so /home/site/wwwroot/bin/
-RUN cd /src/CompressImagesFunction && cp bin/Release/netstandard2.0/bin/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so /home/site/wwwroot/bin/
+RUN cd /src/CompressImagesFunction && cp bin/Release/net6.0/runtimes/linux-x64/native/libgit2-b7bad55.so /home/site/wwwroot/bin/
+RUN cd /src/CompressImagesFunction && cp bin/Release/net6.0/runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so /home/site/wwwroot/bin/
 
-FROM mcr.microsoft.com/azure-functions/dotnet:2.0
+FROM mcr.microsoft.com/azure-functions/dotnet:4
 
 RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
-  curl libcurl3 autoconf automake libtool nasm make wget pkg-config
+  curl libcurl4 autoconf automake libtool nasm make wget pkg-config
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g svgo@^1.3.2
 
