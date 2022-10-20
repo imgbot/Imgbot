@@ -3,7 +3,7 @@ Imgbot uses compression algorithms to optimize images. While the file size is go
 
 To provide the strong optimization, Imgbot uses multiple compression algorithms. 
 
-Imgbot currently implements the following algorithms:
+Currently, Imgbot implements the following algorithms:
  - [ImageMagick](http://www.imagemagick.org)
  - [Svgo](https://github.com/svg/svgo)
  - [MozJpeg](https://github.com/mozilla/mozjpeg)
