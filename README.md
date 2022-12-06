@@ -11,7 +11,7 @@ Imgbot supports optional configuration through a `.imgbotconfig` json file.
 This is not a required step to using Imgbot and is only for more advanced scenarios.
 This file should be placed in the root of the repository and set to your liking.
 
-```
+```jsonc
 {
     "schedule": "daily", // daily|weekly|monthly
     "ignoredFiles": [
