@@ -15,7 +15,7 @@ namespace CompressImagesFunction.Compressors
             };
         }
 
-        public string[] SupportedExtensions => new[] { ".png", ".jpg", ".jpeg", ".gif" };
+        public string[] SupportedExtensions => new[] { ".png", ".jpg", ".jpeg", ".gif", ".ico" };
 
         public void LosslessCompress(string path)
         {
