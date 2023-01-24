@@ -12,15 +12,15 @@ namespace CompressImagesFunction
         /// <returns>True when the images are compressed enough to warrant a PR.</returns>
         public static bool MeetsThreshold(RepoConfiguration repoConfiguration, CompressionResult[] compressionResults)
         {
-            if (repoConfiguration.MinKBReduced == null || repoConfiguration.MinKBReduced <= 0)
+            if (repoConfiguration.MinKiBReduced == null || repoConfiguration.MinKiBReduced <= 0)
             {
                 // no threshold specified - let's continue
                 return true;
             }
 
-            // determine total KB reduced
-            var totalKBReduced = compressionResults.Sum(x => x.SizeBefore - x.SizeAfter);
-            return repoConfiguration.MinKBReduced <= totalKBReduced;
+            // determine total KiB reduced
+            var totalKiBReduced = compressionResults.Sum(x => x.SizeBefore - x.SizeAfter);
+            return repoConfiguration.MinKiBReduced <= totalKiBReduced;
         }
     }
 }
