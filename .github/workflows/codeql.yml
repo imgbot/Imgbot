@@ -1,3 +1,4 @@
+# imgbot/.github/workflows/codeql.yml: GitHub Actions codeql workflow for imgbot
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
@@ -16,11 +17,19 @@ on:
     branches:
       - master
       - dependabot/*
+      - analytics-ui
+      - api
+      - feat/*
+      - update_compress_function
   pull_request:
     # The branches below must be a subset of the branches above
     branches:
       - master
       - dependabot/*
+      - analytics-ui
+      - api
+      - feat/*
+      - update_compress_function
   schedule:
     - cron: '42 20 * * 0'
 
