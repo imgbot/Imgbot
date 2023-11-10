@@ -14,7 +14,6 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="Atom.Web.Mvc" Version="1.11.4" />
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
