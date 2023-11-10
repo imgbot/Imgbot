@@ -13,6 +13,6 @@ build_script:
 - cmd: set PATH=C:\msys64\usr\bin;C:\msys64\mingw64\bin;%PATH%
 - cmd: appveyor DownloadFile "https://raw.githubusercontent.com/swig/cccl/master/cccl"
 - cmd: call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %PLATFORM%
-- cmd: bash -cvx "if test -x \"$(which vcpkg)\"; then (vcpkg update && vcpkg upgrade && (vcpkg install vcpkg-msbuild || vcpkg install vcpkg-tool-mozbuild || vcpkg install vcpkg-tool-lessmsi || vcpkg install meson)); fi"
+- cmd: bash -cvx "if test -x \"$(which vcpkg)\"; then (vcpkg update && vcpkg upgrade && (vcpkg install vcpkg-msbuild || vcpkg install vcpkg-tool-mozbuild || vcpkg install vcpkg-tool-lessmsi || vcpkg install vcpkg-tool-meson || vcpkg install msgpack)); fi"
 - cmd: bash -cvx "if test -x \"$(which scoop)\"; then (scoop bucket add extras && scoop install extras/msbuild-structured-log-viewer); fi
 - cmd: bash -cvx "msbuild \"C:\projects\imgbot\ImgBot.sln\" /verbosity:minimal /logger:\"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll\" || msbuild || dotnet build || dotnet msbuild || dotnet test || dotnet vstest ImgBot.sln || ls -R"
