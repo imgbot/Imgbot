@@ -10,3 +10,4 @@ before_build:
 configuration: Release
 build_script:
 - sh: msbuild "C:\projects\imgbot\ImgBot.sln" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" || msbuild || dotnet build
+- cmd: bash -cvx "msbuild \"C:\projects\imgbot\ImgBot.sln\" /verbosity:minimal /logger:\"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll\" || msbuild || dotnet build"
