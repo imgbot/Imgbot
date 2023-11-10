@@ -29,7 +29,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/CompressImagesFunction/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/CompressImagesFunction/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -43,7 +43,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/OpenPrFunction/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/OpenPrFunction/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -57,7 +57,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/PrPoisonHandler/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/PrPoisonHandler/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -71,7 +71,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/RouterFunction/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/RouterFunction/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -85,7 +85,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/WebHook/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/WebHook/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -99,7 +99,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/Auth/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/Auth/bin/Debug/net6.0"
         },
         "command": "func host start --useHttps",
         "isBackground": true,
@@ -113,7 +113,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/MarketplaceSyncFunction/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/MarketplaceSyncFunction/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
@@ -127,7 +127,7 @@
         "type": "shell",
         "dependsOn": "build",
         "options": {
-          "cwd": "${workspaceFolder}/DeleteBranchFunction/bin/Debug/netstandard2.0"
+          "cwd": "${workspaceFolder}/DeleteBranchFunction/bin/Debug/net6.0"
         },
         "command": "func host start",
         "isBackground": true,
