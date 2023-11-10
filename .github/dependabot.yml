@@ -6,6 +6,7 @@ updates:
     interval: daily
     time: "13:00"
 - package-ecosystem: npm
+  directory: "/Tools"
   directory: "/Web"
   schedule:
     interval: daily
