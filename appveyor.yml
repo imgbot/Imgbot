@@ -8,5 +8,5 @@ branches:
 before_build:
 - nuget restore
 configuration: Release
-build:
-  verbosity: minimal
+build_script:
+- sh: msbuild "C:\projects\imgbot\ImgBot.sln" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" || msbuild || dotnet build
