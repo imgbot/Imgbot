@@ -13,5 +13,6 @@ build_script:
 - cmd: set PATH=C:\msys64\usr\bin;C:\msys64\mingw64\bin;%PATH%
 - cmd: appveyor DownloadFile "https://raw.githubusercontent.com/swig/cccl/master/cccl"
 - cmd: call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %PLATFORM%
+- cmd: vcpkg update
 - cmd: vcpkg install vcpkg-msbuild
 - cmd: bash -cvx "msbuild \"C:\projects\imgbot\ImgBot.sln\" /verbosity:minimal /logger:\"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll\" || msbuild || dotnet build || dotnet msbuild || dotnet test || dotnet vstest ImgBot.sln || ls -R"
