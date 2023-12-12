@@ -32,7 +32,7 @@
     "grunt-webpack": "^6.0.0",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
-    "marked": "^11.0.1",
+    "marked": "^11.1.0",
     "moment": "^2.29.1",
     "vue": "^3.3.11",
     "vue-hot-reload-api": "^2.3.4",
