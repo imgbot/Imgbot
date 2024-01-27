@@ -11,7 +11,7 @@
   "author": "dabutvin",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.23.7",
+    "@babel/core": "^7.23.9",
     "@vue/compiler-sfc": "^3.4.14",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.6",
