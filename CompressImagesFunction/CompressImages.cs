@@ -351,7 +351,7 @@ namespace CompressImagesFunction
                             var extension = Path.GetExtension(image);
                             foreach (var optimizer in optimizers)
                             {
-                                if (optimizer.SupportedExtensions.Contains(extension))
+                                if (optimizer.SupportedExtensions.Contains(extension.ToLower()))
                                 {
                                     if (aggressiveCompression)
                                     {
