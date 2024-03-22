@@ -2,6 +2,7 @@
   "azureFunctions.projectRuntime": "~2",
   "azureFunctions.projectLanguage": "C#",
   "azureFunctions.templateFilter": "Verified",
-  "azureFunctions.deploySubpath": "bin/Release/netstandard2.0/publish",
-  "azureFunctions.preDeployTask": "publish"
+  "azureFunctions.deploySubpath": "bin/Release/net6.0/publish",
+  "azureFunctions.preDeployTask": "publish",
+  "azureFunctions.projectSubpath": "CompressImagesFunction"
 }
