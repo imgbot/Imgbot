@@ -135,13 +135,13 @@ export default {
       var vm = this;
 
       vm.checking = true;
-      let requestChangeOptimzationUrl = `${settings.authhost}/api/repositories/check/${vm.installationid}/${vm.current.id}`;
+      let requestChangeOptimizationUrl = `${settings.authhost}/api/repositories/check/${vm.installationid}/${vm.current.id}`;
       if ( changeOptimize === true) {
-        requestChangeOptimzationUrl += `/${!vm.current.IsOptimized}`;
+        requestChangeOptimizationUrl += `/${!vm.current.IsOptimized}`;
       }
       axios
         .get(
-            requestChangeOptimzationUrl,
+            requestChangeOptimizationUrl,
           {
             withCredentials: true
           }

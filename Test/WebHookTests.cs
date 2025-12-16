@@ -464,7 +464,7 @@ namespace Test
         [TestMethod]
         public async Task GivenInstallationDeleted_ShouldReturnOkDropPartition()
         {
-            var mockIntallations = new[]
+            var mockInstallations = new[]
             {
                 new DynamicTableEntity("654321", "repo1") { ETag = "*" },
                 new DynamicTableEntity("654321", "repo2") { ETag = "*" },
@@ -473,7 +473,7 @@ namespace Test
             var tableQuerySegment = (TableQuerySegment)typeof(TableQuerySegment)
                 .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
                 .First(x => x.GetParameters().Count() == 1)
-                .Invoke(new object[] { mockIntallations });
+                .Invoke(new object[] { mockInstallations });
 
             void ExtraSetup(
                 CloudQueue extraRouterMessages,

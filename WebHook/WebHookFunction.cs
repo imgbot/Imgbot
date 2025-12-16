@@ -113,7 +113,7 @@ namespace WebHook
 
             var shouldAddRouterMessage = true;
 
-            // always true if not on the new plan because the check for a private plan would exit at the begining
+            // always true if not on the new plan because the check for a private plan would exit at the beginning
             // if it is on the plans with repository limit we will check if it is a repo that needs to be optimized by using the flag
             // no need to check for the limits
             // it was checked when the repository flag was added
@@ -499,7 +499,7 @@ namespace WebHook
             return false;
         }
 
-        // We are using commit hooks here, so let's deduce whether this is an eligble scenario for auto-deleting a branch
+        // We are using commit hooks here, so let's deduce whether this is an eligible scenario for auto-deleting a branch
         // 1. should be merged using the web gui on github.com
         // 2. should be merging into the default branch from the imgbot branch
         // 3. should only contain the merge commit and the imgbot commit to be eligible

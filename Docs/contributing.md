@@ -24,7 +24,7 @@ Alternatively, running `func init` from the function directory will stamp out ev
 
 `func azure functionapp fetch-app-settings <functionName>`
 
-If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [dockerhub](https://hub.docker.com/r/vertigostudio/imgbot-compress).
+If you don't want to compile and run the `CompressImagesFunction` directly, you can use docker. See the image on [Docker Hub](https://hub.docker.com/r/vertigostudio/imgbot-compress).
 
 There are a few additional environment settings that need to be set to run the compression workflow. These can be set with `local.settings.json` or any other way
 
@@ -127,7 +127,7 @@ Today this is done by combining the name of the repo with a random number.
 The 2 main events we deal with through webhooks are installation events and push events.
 Each time a repo has Imgbot installed, GitHub fires a hook to `WebHookFunction.cs` and we start the installation workflow.
 
-Each time a repo that already has Imgbot installed gets pushed to, GitHub fires a hook to `WebHookFunction.cs` and, if the commit contains an image update, we start the compression worflow.
+Each time a repo that already has Imgbot installed gets pushed to, GitHub fires a hook to `WebHookFunction.cs` and, if the commit contains an image update, we start the compression workflow.
 
 ### Imgbot website
 
@@ -182,7 +182,7 @@ The template that renders the documentation is [Web/src/docs/layout.jst](https:/
 
 ### Tests
 
-Imgbot uses VSTest with NSubstitue to manage unit testing of the logic within the Imgbot codebase.
+Imgbot uses VSTest with NSubstitute to manage unit testing of the logic within the Imgbot codebase.
 The tests live in the Test directory.
 Please do your best to add tests as new features or logic are added so we can keep Imgbot running smoothly.
 :)
